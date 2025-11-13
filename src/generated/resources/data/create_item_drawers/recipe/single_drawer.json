@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "create:item_vault"
+    },
+    {
+      "item": "create:item_hatch"
+    }
+  ],
+  "result": {
+    "count": 1,
+    "id": "create_item_drawers:single_drawer"
+  }
+}

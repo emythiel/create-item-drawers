@@ -1,0 +1,3 @@
+// 1.21.1	2025-11-13T18:19:32.0092834	Tags for minecraft:block mod id create_item_drawers
+b9a895e3cbacd49c3652fcf9a6f99ba943941282 data/minecraft/tags/block/mineable/pickaxe.json
+b9a895e3cbacd49c3652fcf9a6f99ba943941282 data/minecraft/tags/block/needs_stone_tool.json

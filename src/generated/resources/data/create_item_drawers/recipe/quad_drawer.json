@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "H": {
+      "item": "create:item_hatch"
+    },
+    "V": {
+      "item": "create:item_vault"
+    }
+  },
+  "pattern": [
+    "H H",
+    " V ",
+    "H H"
+  ],
+  "result": {
+    "count": 1,
+    "id": "create_item_drawers:quad_drawer"
+  }
+}
