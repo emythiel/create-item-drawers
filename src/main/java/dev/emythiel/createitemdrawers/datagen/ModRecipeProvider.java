@@ -31,9 +31,9 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
 
         // Double Drawer Recipe
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModBlocks.DOUBLE_DRAWER.get())
-            .pattern(" H ")
-            .pattern(" V ")
-            .pattern(" H ")
+            .pattern("H")
+            .pattern("V")
+            .pattern("H")
             .define('H', hatch)
             .define('V', vault)
             .unlockedBy("has_vault", has(vault))
