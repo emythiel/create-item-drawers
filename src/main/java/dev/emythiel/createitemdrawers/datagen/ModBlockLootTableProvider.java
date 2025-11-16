@@ -1,8 +1,11 @@
 package dev.emythiel.createitemdrawers.datagen;
 
+import com.tterrag.registrate.util.entry.RegistryEntry;
+import dev.emythiel.createitemdrawers.CreateItemDrawers;
+import dev.emythiel.createitemdrawers.registry.CreateItemDrawersRegistrate;
 import dev.emythiel.createitemdrawers.registry.ModBlocks;
-import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.data.loot.BlockLootSubProvider;
 import net.minecraft.world.flag.FeatureFlags;
 import net.minecraft.world.level.block.Block;
@@ -24,7 +27,12 @@ public class ModBlockLootTableProvider extends BlockLootSubProvider {
 
     @NotNull
     @Override
-    protected  Iterable<Block> getKnownBlocks() {
-        return ModBlocks.BLOCKS.getEntries().stream().map(Holder::value)::iterator;
+    protected Iterable<Block> getKnownBlocks() {
+        return CreateItemDrawersRegistrate.REGISTRATE
+            .getAll(Registries.BLOCK)
+            .stream()
+            .filter(e -> e.getId().getNamespace().equals(CreateItemDrawers.MODID))
+            .map(RegistryEntry::get)
+            .toList();
     }
 }

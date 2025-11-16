@@ -1,11 +1,11 @@
 {
   "variants": {
-    "facing=north": {
-      "model": "create_item_drawers:block/single_drawer"
-    },
     "facing=east": {
       "model": "create_item_drawers:block/single_drawer",
       "y": 90
+    },
+    "facing=north": {
+      "model": "create_item_drawers:block/single_drawer"
     },
     "facing=south": {
       "model": "create_item_drawers:block/single_drawer",

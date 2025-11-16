@@ -13,7 +13,7 @@ public abstract class BaseBlock extends Block {
         super(properties);
 
         // ensure default state has a facing
-        this.registerDefaultState(this.stateDefinition.any()
+        this.registerDefaultState(this.getStateDefinition().any()
             .setValue(HorizontalDirectionalBlock.FACING, Direction.NORTH));
     }
 

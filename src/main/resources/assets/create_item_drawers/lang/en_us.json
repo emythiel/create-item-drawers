@@ -4,9 +4,9 @@
   "create_item_drawers.configuration.section.create_item_drawers.common.toml.title": "Create: Item Drawers Configs",
   "create_item_drawers.configuration.items": "Item List",
 
+  "creativetab.create_item_drawers": "Create: Item Drawers",
+
   "block.create_item_drawers.single_drawer": "Single Item Drawer",
   "block.create_item_drawers.double_drawer": "Double Item Drawer",
-  "block.create_item_drawers.quad_drawer": "Quad Item Drawer",
-
-  "creativetab.create_item_drawers": "Create: Item Drawers"
+  "block.create_item_drawers.quad_drawer": "Quad Item Drawer"
 }

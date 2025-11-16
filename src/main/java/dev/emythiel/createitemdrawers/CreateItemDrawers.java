@@ -1,8 +1,6 @@
 package dev.emythiel.createitemdrawers;
 
-import dev.emythiel.createitemdrawers.registry.ModBlocks;
-import dev.emythiel.createitemdrawers.registry.ModCreativeModeTab;
-import dev.emythiel.createitemdrawers.registry.ModItems;
+import dev.emythiel.createitemdrawers.registry.*;
 import org.slf4j.Logger;
 
 import com.mojang.logging.LogUtils;
@@ -39,12 +37,16 @@ public class CreateItemDrawers {
         // Register our mod's ModConfigSpec so that FML can create and load the config file for us
         modContainer.registerConfig(ModConfig.Type.COMMON, Config.SPEC);
 
+        // Register Create Registrate
+        CreateItemDrawersRegistrate.REGISTRATE.registerEventListeners(modEventBus);
+
+        // Register blocks and items
+        ModBlocks.register();
+        ModBlockEntities.register();
+        ModItems.register(modEventBus);
+
         // Register creative tab
         ModCreativeModeTab.register(modEventBus);
-
-        // Register items and blocks
-        ModItems.register(modEventBus);
-        ModBlocks.register(modEventBus);
     }
 
     private void commonSetup(FMLCommonSetupEvent event) {

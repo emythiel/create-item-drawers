@@ -1,0 +1,9 @@
+// 1.21.1	2025-11-16T20:03:56.9127638	Registrate Provider for create_item_drawers [Registries, Data Maps, Recipes, Advancements, Loot Tables, Tags (enchantments), Tags (blocks), Tags (items), Tags (fluids), Tags (entity_types), generic_server_provider, Blockstates, Item models, Lang (en_us/en_ud), generic_client_provider]
+769fa289ab236abbb8be96d351b31f9fb3a67af0 assets/create_item_drawers/lang/en_ud.json
+9369c019b26f23522c3dd99ab53c056500415cbd assets/create_item_drawers/lang/en_us.json
+35ed3bf4f8e98310c19ad3bfb218abe7757f87f9 assets/create_item_drawers/models/item/double_drawer.json
+7ca7c934c665dd581bbeef97413eac9e3e732fac assets/create_item_drawers/models/item/quad_drawer.json
+9c03e464d9e143400aed8c9650573d8e9a9d4873 assets/create_item_drawers/models/item/single_drawer.json
+98feca8b43207f21fad9920f6069006f4f51f3c7 data/create_item_drawers/loot_table/blocks/double_drawer.json
+6681de1cb9e931d7d78f09acfd35781d7f2cf044 data/create_item_drawers/loot_table/blocks/quad_drawer.json
+7b737acf261041526341edcf0895cf7c37f4710f data/create_item_drawers/loot_table/blocks/single_drawer.json
