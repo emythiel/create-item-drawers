@@ -1,5 +1,6 @@
 package dev.emythiel.createitemdrawers.storage;
 
+import dev.emythiel.createitemdrawers.config.ServerConfig;
 import net.minecraft.world.item.ItemStack;
 
 /**
@@ -14,20 +15,17 @@ import net.minecraft.world.item.ItemStack;
  */
 public class DrawerStorage {
     private final DrawerSlot[] slots;
-    private final int baseMultiplier;
     private int upgradeMultiplier = 1;
 
     /**
      * Initializes N drawer slots.
      *
      * @param slotCount      number of slots (1, 2, or 4 depending on drawer type)
-     * @param baseMultiplier base capacity multiplier for this drawer variant
      */
-    public DrawerStorage(int slotCount, int baseMultiplier) {
+    public DrawerStorage(int slotCount) {
         this.slots = new DrawerSlot[slotCount];
         for (int i = 0; i < slotCount; i++)
             this.slots[i] = new DrawerSlot();
-        this.baseMultiplier = baseMultiplier;
     }
 
 
@@ -65,6 +63,12 @@ public class DrawerStorage {
      */
     public int getCapacity(int slotIndex, ItemStack itemForCapacity) {
         DrawerSlot slot = slots[slotIndex];
+        int baseMultiplier = switch(getSlotCount()) {
+            case 1 -> ServerConfig.SINGLE_CAPACITY.get();
+            case 2 -> ServerConfig.DOUBLE_CAPACITY.get();
+            case 4 -> ServerConfig.QUAD_CAPACITY.get();
+            default -> 32;
+        };
 
         ItemStack item = !slot.getStoredItem().isEmpty()
             ? slot.getStoredItem()
@@ -73,8 +77,7 @@ public class DrawerStorage {
         if (item.isEmpty())
             return 64 * baseMultiplier * upgradeMultiplier;  // fallback
 
-        int perStack = item.getMaxStackSize();
-        return perStack * baseMultiplier * upgradeMultiplier;
+        return baseMultiplier * item.getMaxStackSize() * upgradeMultiplier;
     }
 
 

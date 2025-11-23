@@ -4,9 +4,9 @@ import com.simibubi.create.foundation.block.IBE;
 import dev.emythiel.createitemdrawers.block.base.BaseBlock;
 import dev.emythiel.createitemdrawers.block.entity.DrawerBlockEntity;
 import dev.emythiel.createitemdrawers.registry.ModBlockEntities;
+import dev.emythiel.createitemdrawers.storage.DrawerSlot;
 import dev.emythiel.createitemdrawers.util.DrawerInteractionHelper;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -19,12 +19,10 @@ import net.minecraft.world.phys.BlockHitResult;
 public class DrawerBlock extends BaseBlock implements IBE<DrawerBlockEntity> {
 
     private final int slotCount;
-    private final int baseMultiplier;
 
-    public DrawerBlock(Properties properties, int slotCount, int baseMultiplier) {
+    public DrawerBlock(Properties properties, int slotCount) {
         super(properties);
         this.slotCount = slotCount;
-        this.baseMultiplier = baseMultiplier;
     }
 
     @Override
@@ -39,7 +37,6 @@ public class DrawerBlock extends BaseBlock implements IBE<DrawerBlockEntity> {
 
     // Getter for slots the drawer has
     public int getSlotCount() { return slotCount; }
-    public int getBaseMultiplier() { return baseMultiplier; }
 
     @Override
     protected ItemInteractionResult useItemOn(ItemStack held, BlockState state, Level level, BlockPos pos,
@@ -54,13 +51,44 @@ public class DrawerBlock extends BaseBlock implements IBE<DrawerBlockEntity> {
         if (slot < 0)
             return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
 
+        boolean sneaking = player.isShiftKeyDown();
+        DrawerSlot drawerSlot = be.getStorage().getSlot(slot);
+
+
+        // Attempt to insert held item first
         if (!held.isEmpty()) {
+            int before = held.getCount();
             ItemStack leftover = be.getStorage().insert(slot, held, false);
+            boolean inserted = leftover.getCount() < before;
+
             player.setItemInHand(hand, leftover);
+
+            if (inserted) {
+                be.setChangedAndSync();
+
+                if (!sneaking)
+                    return ItemInteractionResult.SUCCESS;
+            }
+        }
+
+        ItemStack stored = drawerSlot.getStoredItem();
+
+        if (sneaking) {
+            for (int i = 0; i < player.getInventory().getContainerSize(); i++) {
+                ItemStack inv = player.getInventory().getItem(i);
+                if (inv.isEmpty())
+                    continue;
+
+                if (!ItemStack.isSameItemSameComponents(inv, stored))
+                    continue;
+
+                ItemStack leftover = be.getStorage().insert(slot, inv, false);
+                player.getInventory().setItem(i, leftover);
+            }
             be.setChangedAndSync();
             return ItemInteractionResult.SUCCESS;
         }
 
-        return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+        return ItemInteractionResult.SUCCESS;
     }
 }

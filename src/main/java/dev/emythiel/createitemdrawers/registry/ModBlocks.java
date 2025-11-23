@@ -10,7 +10,7 @@ public class ModBlocks {
         CreateItemDrawersRegistrate.REGISTRATE;
 
     public static final BlockEntry<DrawerBlock> SINGLE_DRAWER =
-        REGISTRATE.block("single_drawer", p -> new DrawerBlock(p, 1, 32))
+        REGISTRATE.block("single_drawer", p -> new DrawerBlock(p, 1))
             .properties(p -> p
                 .strength(3f)
                 .requiresCorrectToolForDrops()
@@ -20,7 +20,7 @@ public class ModBlocks {
             .register();
 
     public static final BlockEntry<DrawerBlock> DOUBLE_DRAWER =
-        REGISTRATE.block("double_drawer", p -> new DrawerBlock(p, 2, 16))
+        REGISTRATE.block("double_drawer", p -> new DrawerBlock(p, 2))
             .properties(p -> p
                 .strength(3f)
                 .requiresCorrectToolForDrops()
@@ -30,7 +30,7 @@ public class ModBlocks {
             .register();
 
     public static final BlockEntry<DrawerBlock> QUAD_DRAWER =
-        REGISTRATE.block("quad_drawer", p -> new DrawerBlock(p, 4, 8))
+        REGISTRATE.block("quad_drawer", p -> new DrawerBlock(p, 4))
             .properties(p -> p
                 .strength(3f)
                 .requiresCorrectToolForDrops()

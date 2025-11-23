@@ -1,8 +1,14 @@
 {
-  "create_item_drawers.configuration.title": "Create: Item Drawers Configs",
-  "create_item_drawers.configuration.section.create_item_drawers.common.toml": "Create: Item Drawers Configs",
-  "create_item_drawers.configuration.section.create_item_drawers.common.toml.title": "Create: Item Drawers Configs",
-  "create_item_drawers.configuration.items": "Item List",
+  "create_item_drawers.configuration.title": "Create: Item Drawers Configuration",
+
+  "create_item_drawers.configuration.render-settings": "Render Settings",
+  "create_item_drawers.configuration.itemRenderDistance": "Item Render Distance",
+  "create_item_drawers.configuration.textRenderDistance": "Text Render Distance",
+  "create_item_drawers.configuration.storage-settings": "Storage Settings",
+  "create_item_drawers.configuration.singleCapacity": "Single Drawer Stacks",
+  "create_item_drawers.configuration.doubleCapacity": "Double Drawer Stacks",
+  "create_item_drawers.configuration.quadCapacity": "Quad Drawer Stacks",
+  "create_item_drawers.configuration.blacklist": "Blacklisted Items",
 
   "creativetab.create_item_drawers": "Create: Item Drawers",
 

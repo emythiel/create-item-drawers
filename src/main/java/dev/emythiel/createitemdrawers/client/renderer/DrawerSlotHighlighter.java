@@ -32,9 +32,6 @@ public class DrawerSlotHighlighter {
     }
 
     private static DrawerBlockEntity getDrawer(RenderHighlightEvent.Block event) {
-        if (event.getCamera() == null || event.getCamera().getEntity() == null)
-            return null;
-
         var level = event.getCamera().getEntity().level();
         var pos = event.getTarget().getBlockPos();
 

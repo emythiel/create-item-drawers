@@ -1,7 +1,10 @@
 package dev.emythiel.createitemdrawers.storage;
 
+import dev.emythiel.createitemdrawers.config.ServerConfig;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 
 /**
@@ -58,6 +61,10 @@ public class DrawerSlot {
      *   ✔ non-empty slot must match stored item
      */
     public boolean canAccept(ItemStack stack) {
+        ResourceLocation id = BuiltInRegistries.ITEM.getKey(stack.getItem());
+        if (ServerConfig.isBlacklisted(id))
+            return false;
+
         if (stack.isEmpty())
             return false;
 

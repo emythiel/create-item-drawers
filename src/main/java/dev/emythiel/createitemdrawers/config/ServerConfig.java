@@ -1,3 +1,63 @@
+package dev.emythiel.createitemdrawers.config;
+
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.ResourceLocation;
+import net.neoforged.neoforge.common.ModConfigSpec;
+
+import java.util.List;
+
+public class ServerConfig {
+
+    public static final ModConfigSpec SPEC;
+
+    public static ModConfigSpec.IntValue SINGLE_CAPACITY;
+    public static ModConfigSpec.IntValue DOUBLE_CAPACITY;
+    public static ModConfigSpec.IntValue QUAD_CAPACITY;
+
+    public static ModConfigSpec.ConfigValue<List<? extends String>> BLACKLIST;
+
+    static {
+        ModConfigSpec.Builder builder = new ModConfigSpec.Builder();
+
+        builder.comment("Storage capacity (in stacks) for the drawers").push("storage-settings");
+        SINGLE_CAPACITY = builder
+            .comment("Single slot drawers")
+            .defineInRange("singleCapacity", 32, 1, 65536);
+        DOUBLE_CAPACITY = builder
+            .comment("Double slot drawers")
+            .defineInRange("doubleCapacity", 16, 1, 65536);
+        QUAD_CAPACITY = builder
+            .comment("Quad slot drawers")
+            .defineInRange("quadCapacity", 8, 1, 65536);
+        builder.pop();
+
+        BLACKLIST = builder
+            .comment(
+                "List of item IDs that cannot be stored in drawers",
+                "Example: [\"minecraft:diamond_sword\", \"minecraft:stone\"]"
+            )
+            .defineListAllowEmpty(
+                "blacklist",
+                List.of(),
+                () -> "",
+                ServerConfig::validateItemName);
+
+        SPEC = builder.build();
+    }
+
+    private static boolean validateItemName(final Object obj) {
+        return obj instanceof String itemName && BuiltInRegistries.ITEM.containsKey(ResourceLocation.parse(itemName));
+    }
+
+    public static boolean isBlacklisted(ResourceLocation id) {
+        return BLACKLIST.get().contains(id.toString());
+    }
+}
+
+
+
+/*
+
 package dev.emythiel.createitemdrawers;
 
 import java.util.List;
@@ -40,3 +100,6 @@ public class Config {
         return obj instanceof String itemName && BuiltInRegistries.ITEM.containsKey(ResourceLocation.parse(itemName));
     }
 }
+
+
+ */

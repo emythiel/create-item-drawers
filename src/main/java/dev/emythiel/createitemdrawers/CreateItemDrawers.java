@@ -1,6 +1,10 @@
 package dev.emythiel.createitemdrawers;
 
+import dev.emythiel.createitemdrawers.config.ClientConfig;
+import dev.emythiel.createitemdrawers.config.ServerConfig;
 import dev.emythiel.createitemdrawers.registry.*;
+import net.neoforged.neoforge.client.gui.ConfigurationScreen;
+import net.neoforged.neoforge.client.gui.IConfigScreenFactory;
 import org.slf4j.Logger;
 
 import com.mojang.logging.LogUtils;
@@ -26,6 +30,12 @@ public class CreateItemDrawers {
     // The constructor for the mod class is the first code that is run when your mod is loaded.
     // FML will recognize some parameter types like IEventBus or ModContainer and pass them in automatically.
     public CreateItemDrawers(IEventBus modEventBus, ModContainer modContainer) {
+        // Register mod configuration files
+        modContainer.registerConfig(ModConfig.Type.CLIENT, ClientConfig.SPEC);
+        modContainer.registerConfig(ModConfig.Type.SERVER, ServerConfig.SPEC);
+        // Register mod configuration screen
+        modContainer.registerExtensionPoint(IConfigScreenFactory.class, ConfigurationScreen::new);
+
         // Register the commonSetup method for modloading
         modEventBus.addListener(this::commonSetup);
 
@@ -33,9 +43,6 @@ public class CreateItemDrawers {
         // Note that this is necessary if and only if we want *this* class (CreateItemDrawers) to respond directly to events.
         // Do not add this line if there are no @SubscribeEvent-annotated functions in this class, like onServerStarting() below.
         NeoForge.EVENT_BUS.register(this);
-
-        // Register our mod's ModConfigSpec so that FML can create and load the config file for us
-        modContainer.registerConfig(ModConfig.Type.COMMON, Config.SPEC);
 
         // Register Create Registrate
         CreateItemDrawersRegistrate.REGISTRATE.registerEventListeners(modEventBus);
