@@ -1,7 +1,6 @@
 package dev.emythiel.createitemdrawers.block.entity;
 
 import dev.emythiel.createitemdrawers.block.DrawerBlock;
-import dev.emythiel.createitemdrawers.registry.ModBlockEntities;
 import dev.emythiel.createitemdrawers.storage.DrawerItemHandler;
 import dev.emythiel.createitemdrawers.storage.DrawerStorage;
 import net.minecraft.core.BlockPos;
@@ -16,7 +15,6 @@ import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.items.IItemHandler;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;

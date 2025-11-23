@@ -1,6 +1,5 @@
 package dev.emythiel.createitemdrawers.util;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import net.createmod.catnip.math.VecHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
