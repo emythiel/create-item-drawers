@@ -2,8 +2,10 @@ package dev.emythiel.createitemdrawers.block.entity;
 
 import dev.emythiel.createitemdrawers.block.DrawerBlock;
 import dev.emythiel.createitemdrawers.registry.ModBlockEntities;
+import dev.emythiel.createitemdrawers.storage.DrawerItemHandler;
 import dev.emythiel.createitemdrawers.storage.DrawerStorage;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -14,7 +16,10 @@ import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.neoforged.neoforge.capabilities.Capabilities;
+import net.neoforged.neoforge.items.IItemHandler;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * DrawerBlockEntity represents a placed drawer block in the world.
@@ -26,13 +31,11 @@ import org.jetbrains.annotations.NotNull;
  */
 public class DrawerBlockEntity extends BaseBlockEntity {
     private final DrawerStorage storage;
+    private final DrawerItemHandler itemHandler;
+
     private boolean renderItem = true;
     private boolean renderCount = true;
 
-    /*public DrawerBlockEntity(int slots, int baseMult, BlockPos pos, BlockState state) {
-        super(ModBlockEntities.DRAWER_BLOCK_ENTITY.get(), pos, state);
-        this.storage = new DrawerStorage(slots, baseMult);
-    }*/
     public DrawerBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
         super(type, pos, state);
 
@@ -42,10 +45,16 @@ public class DrawerBlockEntity extends BaseBlockEntity {
             // Fallback (This shouldn't happen?)
             this.storage = new DrawerStorage(1);
         }
+
+        this.itemHandler = new DrawerItemHandler(this);
     }
 
     public DrawerStorage getStorage() {
         return storage;
+    }
+
+    public IItemHandler getItemHandler(@Nullable Direction side) {
+        return itemHandler;
     }
 
     @Override

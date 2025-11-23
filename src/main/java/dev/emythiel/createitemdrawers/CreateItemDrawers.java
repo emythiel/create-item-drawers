@@ -1,8 +1,11 @@
 package dev.emythiel.createitemdrawers;
 
+import dev.emythiel.createitemdrawers.block.entity.DrawerBlockEntity;
 import dev.emythiel.createitemdrawers.config.ClientConfig;
 import dev.emythiel.createitemdrawers.config.ServerConfig;
 import dev.emythiel.createitemdrawers.registry.*;
+import net.neoforged.neoforge.capabilities.Capabilities;
+import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.client.gui.ConfigurationScreen;
 import net.neoforged.neoforge.client.gui.IConfigScreenFactory;
 import org.slf4j.Logger;
@@ -38,6 +41,7 @@ public class CreateItemDrawers {
 
         // Register the commonSetup method for modloading
         modEventBus.addListener(this::commonSetup);
+        modEventBus.addListener(this::registerCapabilities);
 
         // Register ourselves for server and other game events we are interested in.
         // Note that this is necessary if and only if we want *this* class (CreateItemDrawers) to respond directly to events.
@@ -58,6 +62,14 @@ public class CreateItemDrawers {
 
     private void commonSetup(FMLCommonSetupEvent event) {
 
+    }
+
+    private void registerCapabilities(RegisterCapabilitiesEvent event) {
+        event.registerBlockEntity(
+            Capabilities.ItemHandler.BLOCK,
+            ModBlockEntities.DRAWER_BLOCK_ENTITY.get(),
+            DrawerBlockEntity::getItemHandler
+        );
     }
 
     // You can use SubscribeEvent and let the Event Bus discover methods to call
