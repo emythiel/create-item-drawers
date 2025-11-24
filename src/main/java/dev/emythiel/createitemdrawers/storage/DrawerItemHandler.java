@@ -91,20 +91,20 @@ public class DrawerItemHandler implements IItemHandler {
         if (amount <= 0)
             return ItemStack.EMPTY;
 
-        for (int i = 0; i < storage().getSlotCount(); i++) {
-            DrawerSlot s = storage().getSlot(i);
-            if (s.isEmpty())
-                continue;
+        if (slot < 0 || slot >= storage().getSlotCount())
+            return ItemStack.EMPTY;
 
-            ItemStack out = storage().extract(i, amount, simulate);
-            if (!out.isEmpty()) {
-                if (!simulate)
-                    drawer.setChangedAndSync();
-                return out;
-            }
+        DrawerSlot s = storage().getSlot(slot);
+        if (s.isEmpty())
+            return ItemStack.EMPTY;
+
+        ItemStack extracted = storage().extract(slot, amount, simulate);
+
+        if (!simulate && !extracted.isEmpty()) {
+            drawer.setChangedAndSync();
         }
 
-        return ItemStack.EMPTY;
+        return extracted;
     }
 
     @Override
@@ -117,11 +117,10 @@ public class DrawerItemHandler implements IItemHandler {
         if (stack.isEmpty())
             return false;
 
-        for (int i = 0; i < storage().getSlotCount(); i++) {
-            if (storage().getSlot(i).canAccept(stack))
-                return true;
-        }
-        return false;
+        if (slot < 0 || slot >= storage().getSlotCount())
+            return false;
+
+        return storage().getSlot(slot).canAccept(stack);
     }
 
     private boolean isVirtualSlot(int slot) {
