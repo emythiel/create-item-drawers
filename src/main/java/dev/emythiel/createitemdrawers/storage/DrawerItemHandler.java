@@ -45,43 +45,46 @@ public class DrawerItemHandler implements IItemHandler {
             return ItemStack.EMPTY;
 
         ItemStack remaining = stack;
+        int slotCount = storage().getSlotCount();
 
-        // Insert into a slot with same item (if possible) first
-        for (int i = 0; i < storage().getSlotCount(); i++) {
+        // Check and insert into a slot containing same item first
+        for (int i = 0; i < slotCount && !remaining.isEmpty(); i++) {
             DrawerSlot s = storage().getSlot(i);
 
             if (s.isEmpty())
                 continue;
 
-            if (!ItemStack.isSameItemSameComponents(s.getStoredItem(), remaining))
+            if (!s.canAccept(remaining))
                 continue;
 
             remaining = storage().insert(i, remaining, simulate);
-            if (remaining.isEmpty())
-                break;
-        }
-
-        if (remaining.isEmpty()) {
-            if (!simulate)
-                drawer.setChangedAndSync();
-            return ItemStack.EMPTY;
         }
 
         // Insert into first available slot
-        for (int i = 0; i < storage().getSlotCount(); i++) {
-            DrawerSlot s = storage().getSlot(i);
+        if (!remaining.isEmpty() && slot >= 0 && slot < slotCount) {
+            DrawerSlot s = storage().getSlot(slot);
 
-            if (!s.isEmpty())
-                continue;
-
-            remaining = storage().insert(i, remaining, simulate);
-            if (remaining.isEmpty())
-                break;
+            if (s.canAccept(remaining))
+                remaining = storage().insert(slot, remaining, simulate);
         }
 
-        if (!simulate && remaining.getCount() != stack.getCount()) {
+        /* TODO: Fallback loop through every slot
+            should not be needed when calling slot directly above, but test anyway.
+        if (!remaining.isEmpty()) {
+            for (int i = 0; i < slotCount && !remaining.isEmpty(); i++) {
+                DrawerSlot s = storage().getSlot(i);
+                if (!s.isEmpty())
+                    continue;
+
+                if (!s.canAccept(remaining))
+                    continue;
+
+                remaining = storage().insert(i, remaining, simulate);
+            }
+        }*/
+
+        if (!simulate && remaining.getCount() != stack.getCount())
             drawer.setChangedAndSync();
-        }
 
         return remaining;
     }
@@ -121,13 +124,5 @@ public class DrawerItemHandler implements IItemHandler {
             return false;
 
         return storage().getSlot(slot).canAccept(stack);
-    }
-
-    private boolean isVirtualSlot(int slot) {
-        return slot == 0;
-    }
-
-    private int realSlot(int slot) {
-        return slot - 1;
     }
 }
