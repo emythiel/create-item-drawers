@@ -23,6 +23,9 @@ public class DrawerItemHandler implements IItemHandler {
 
     @Override
     public ItemStack getStackInSlot(int slot) {
+        if (slot < 0 || slot >= storage().getSlotCount())
+            return ItemStack.EMPTY;
+
         DrawerSlot s = storage().getSlot(slot);
         if (s.isEmpty())
             return ItemStack.EMPTY;
@@ -32,8 +35,7 @@ public class DrawerItemHandler implements IItemHandler {
             return ItemStack.EMPTY;
 
         ItemStack copy = base.copy();
-        int count = Math.min(base.getMaxStackSize(), s.getCount());
-        copy.setCount(count);
+        copy.setCount(s.getCount());
         return copy;
     }
 
@@ -120,5 +122,13 @@ public class DrawerItemHandler implements IItemHandler {
                 return true;
         }
         return false;
+    }
+
+    private boolean isVirtualSlot(int slot) {
+        return slot == 0;
+    }
+
+    private int realSlot(int slot) {
+        return slot - 1;
     }
 }

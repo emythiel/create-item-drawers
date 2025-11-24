@@ -13,7 +13,7 @@ public class DrawerInteractionHelper {
             case 1 -> new Vec3(0.5, 0.5, 0);
             case 2 -> new Vec3(0.5, slot == 0 ? 0.75 : 0.25, 0);
             case 4 -> {
-                double x = (slot % 2 == 0) ? 0.75 : 0.25;
+                double x = (slot % 2 == 0) ? 0.25 : 0.75;
                 double y = (slot < 2) ? 0.75 : 0.25;
                 yield new Vec3(x, y, 0);
             }
@@ -42,7 +42,7 @@ public class DrawerInteractionHelper {
             case 2 -> (y > 0.5) ? 0 : 1;
             case 4 -> {
                 int row = (y > 0.5) ? 0 : 1;
-                int col = (x > 0.5) ? 1 : 0;
+                int col = (x > 0.5) ? 0 : 1;
                 yield row * 2 + col;
             }
             default -> -1;
@@ -66,6 +66,7 @@ public class DrawerInteractionHelper {
 
         Direction facing = be.getBlockState().getValue(HorizontalDirectionalBlock.FACING);
 
+        // Flip column on quad drawer
         if (slots == 4) {
             double oldMinX = minX;
             minX = 1 - maxX;
