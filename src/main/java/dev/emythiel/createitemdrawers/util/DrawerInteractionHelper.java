@@ -66,12 +66,6 @@ public class DrawerInteractionHelper {
 
         Direction facing = be.getBlockState().getValue(HorizontalDirectionalBlock.FACING);
 
-        // Flip column on quad drawer
-        if (slots == 4) {
-            double oldMinX = minX;
-            minX = 1 - maxX;
-            maxX = 1 - oldMinX;
-        }
         Vec3 p1 = RenderHelper.faceUVToWorld(pos, facing, minX, minY, 0.035);
         Vec3 p2 = RenderHelper.faceUVToWorld(pos, facing, maxX, maxY, 0.035);
 

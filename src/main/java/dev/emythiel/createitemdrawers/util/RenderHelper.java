@@ -24,6 +24,9 @@ public class RenderHelper {
     public static Vec3 faceUVToWorld(BlockPos pos, Direction face, double u, double v, double depth) {
         Vec3 base = Vec3.atLowerCornerOf(pos);
 
+        // Flip u, so x axis isn't wrong
+        u = 1 - u;
+
         return switch (face) {
             case NORTH -> base.add(u, v, depth);
             case SOUTH -> base.add(1 - u, v, 1 - depth);
