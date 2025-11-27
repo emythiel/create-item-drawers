@@ -21,7 +21,7 @@ public class DrawerSlot {
 
     private ItemStack storedItem = ItemStack.EMPTY;
     private int count = 0;
-    private ItemStack filterItem = ItemStack.EMPTY;
+    private boolean lockMode = false;
     private boolean voidMode = false;
 
     public DrawerSlot() {}
@@ -41,8 +41,15 @@ public class DrawerSlot {
     public boolean isVoidMode() { return voidMode; }
     public void setVoidMode(boolean v) { this.voidMode = v; }
 
-    public ItemStack getFilterItem() { return filterItem; }
-    public void setFilterItem(ItemStack item) {this.filterItem = item;}
+    public boolean isLockMode() { return lockMode; }
+    public void setLockMode(boolean v) { this.lockMode = v;}
+
+    public void unlock() {
+        lockMode = false;
+        if (count <= 0) {
+            storedItem = ItemStack.EMPTY;
+        }
+    }
 
 
     /* Item matching logic */
@@ -62,18 +69,18 @@ public class DrawerSlot {
      */
     public boolean canAccept(ItemStack stack) {
         ResourceLocation id = BuiltInRegistries.ITEM.getKey(stack.getItem());
-        if (ServerConfig.isBlacklisted(id))
+        if (ServerConfig.isBlacklisted(id) || stack.isEmpty())
             return false;
 
-        if (stack.isEmpty())
-            return false;
+        // Locked, slot not empty -> must match template
+        if (lockMode && !isEmpty())
+            return matches(stack);
 
-        if (!filterItem.isEmpty() && !ItemStack.isSameItemSameComponents(filterItem, stack))
-            return false;
-
+        // Unlocked, empty -> accept anything
         if (isEmpty())
             return true;
 
+        // Unlocked, not empty -> must match stored item
         return matches(stack);
     }
 
@@ -134,7 +141,8 @@ public class DrawerSlot {
         if (!simulate) {
             count -= take;
             if (count <= 0) {
-                storedItem = ItemStack.EMPTY;
+                if (!lockMode)
+                    storedItem = ItemStack.EMPTY; // Keep stored item as template if locked
                 count = 0;
             }
         }
@@ -150,11 +158,7 @@ public class DrawerSlot {
             tag.put("Item", storedItem.save(provider));
         }
         tag.putInt("Count", count);
-
-        if (!filterItem.isEmpty()) {
-            tag.put("Filter", filterItem.save(provider));
-        }
-
+        tag.putBoolean("Locked", lockMode);
         tag.putBoolean("Void", voidMode);
     }
 
@@ -165,13 +169,7 @@ public class DrawerSlot {
             storedItem = ItemStack.EMPTY;
         }
         count = tag.getInt("Count");
-
-        if (tag.contains("Filter")) {
-            filterItem = ItemStack.parseOptional(provider, tag.getCompound("Filter"));
-        } else {
-            filterItem = ItemStack.EMPTY;
-        }
-
+        lockMode = tag.getBoolean("Locked");
         voidMode = tag.getBoolean("Void");
     }
 }

@@ -56,9 +56,9 @@ public class DrawerBlockEntity extends BaseBlockEntity {
     }
 
     public boolean getRenderItems() { return renderItem; }
-    public void setRenderItems(boolean render) { this.renderItem = render; }
+    public void setRenderItems(boolean v) { this.renderItem = v; }
     public boolean getRenderCounts() { return renderCount; }
-    public void setRenderCounts(boolean render) { this.renderCount = render; }
+    public void setRenderCounts(boolean v) { this.renderCount = v; }
 
 
     @Override

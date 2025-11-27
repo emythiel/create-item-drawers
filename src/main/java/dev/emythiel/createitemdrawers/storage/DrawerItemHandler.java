@@ -64,6 +64,9 @@ public class DrawerItemHandler implements IItemHandler {
         if (!remaining.isEmpty() && slot >= 0 && slot < slotCount) {
             DrawerSlot s = storage().getSlot(slot);
 
+            if (s.isEmpty() && s.isLockMode())
+                return remaining;
+
             if (s.canAccept(remaining))
                 remaining = storage().insert(slot, remaining, simulate);
         }
@@ -75,6 +78,9 @@ public class DrawerItemHandler implements IItemHandler {
                 DrawerSlot s = storage().getSlot(i);
                 if (!s.isEmpty())
                     continue;
+
+                if (s.isEmpty() && s.isLockMode())
+                    return remaining;
 
                 if (!s.canAccept(remaining))
                     continue;
