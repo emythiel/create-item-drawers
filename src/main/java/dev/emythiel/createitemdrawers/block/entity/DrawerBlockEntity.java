@@ -55,6 +55,12 @@ public class DrawerBlockEntity extends BaseBlockEntity {
         return itemHandler;
     }
 
+    public boolean getRenderItems() { return renderItem; }
+    public void setRenderItems(boolean render) { this.renderItem = render; }
+    public boolean getRenderCounts() { return renderCount; }
+    public void setRenderCounts(boolean render) { this.renderCount = render; }
+
+
     @Override
     protected void saveAdditional(CompoundTag tag, HolderLookup.Provider provider) {
         super.saveAdditional(tag, provider);

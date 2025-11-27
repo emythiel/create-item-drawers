@@ -146,11 +146,9 @@ public class DrawerSlot {
     /* NBT serialization */
 
     public void save(CompoundTag tag, HolderLookup.Provider provider) {
-
         if (!storedItem.isEmpty()) {
             tag.put("Item", storedItem.save(provider));
         }
-
         tag.putInt("Count", count);
 
         if (!filterItem.isEmpty()) {
@@ -166,8 +164,6 @@ public class DrawerSlot {
         } else {
             storedItem = ItemStack.EMPTY;
         }
-
-
         count = tag.getInt("Count");
 
         if (tag.contains("Filter")) {

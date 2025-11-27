@@ -41,10 +41,10 @@ public class DrawerRenderer implements BlockEntityRenderer<DrawerBlockEntity> {
         int itemDist = ClientConfig.ITEM_RENDER_DISTANCE.get();
         int textDist = ClientConfig.TEXT_RENDER_DISTANCE.get();
 
-        boolean items = distSq <= itemDist * itemDist;
-        boolean texts = distSq <= textDist * textDist;
+        boolean items = be.getRenderItems() && distSq <= itemDist * itemDist;
+        boolean texts = be.getRenderCounts() && distSq <= textDist * textDist;
 
-        if (!items && texts)
+        if (!items && !texts)
             return;
 
         // Check if player is in front of block (don't render if behind)
