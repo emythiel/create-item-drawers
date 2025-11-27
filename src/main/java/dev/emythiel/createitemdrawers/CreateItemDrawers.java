@@ -58,6 +58,9 @@ public class CreateItemDrawers {
 
         // Register creative tab
         ModCreativeModeTab.register(modEventBus);
+
+        // Register GUI screens
+        ModMenus.register();
     }
 
     private void commonSetup(FMLCommonSetupEvent event) {

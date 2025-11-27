@@ -3,15 +3,22 @@ package dev.emythiel.createitemdrawers.block.entity;
 import dev.emythiel.createitemdrawers.block.DrawerBlock;
 import dev.emythiel.createitemdrawers.storage.DrawerItemHandler;
 import dev.emythiel.createitemdrawers.storage.DrawerStorage;
+import dev.emythiel.createitemdrawers.gui.DrawerMenu;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import net.minecraft.world.MenuProvider;
+import net.minecraft.world.SimpleMenuProvider;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
@@ -27,7 +34,7 @@ import org.jetbrains.annotations.Nullable;
  *   ✔ Save and load all storage + settings to NBT
  *   ✔ Provide block update sync to clients
  */
-public class DrawerBlockEntity extends BaseBlockEntity {
+public class DrawerBlockEntity extends BaseBlockEntity implements MenuProvider {
     private final DrawerStorage storage;
     private final DrawerItemHandler itemHandler;
 
@@ -46,6 +53,18 @@ public class DrawerBlockEntity extends BaseBlockEntity {
 
         this.itemHandler = new DrawerItemHandler(this);
     }
+
+    /*public void openMenu(Player player) {
+        if (level == null || level.isClientSide)
+            return;
+
+        MenuProvider provider = new SimpleMenuProvider(
+            (id, inv, ply) -> new DrawerMenu(id, inv, this),
+            Component.literal("Drawer Settings")
+        );
+
+        NetworkHooks.openScreen((ServerPlayer) player, provider, worldPosition);
+    }*/
 
     public DrawerStorage getStorage() {
         return storage;
@@ -111,4 +130,24 @@ public class DrawerBlockEntity extends BaseBlockEntity {
         saveAdditional(tag, provider);
         return tag;
     }
+
+    // GUI handling
+    @Override
+    public AbstractContainerMenu createMenu(int id, Inventory inv, Player player) {
+        return DrawerMenu.create(id, inv, this);
+    }
+
+    @Override
+    public Component getDisplayName() {
+        return Component.literal("Drawer");
+    }
+
+    public MenuProvider getMenuProvider() {
+        return new SimpleMenuProvider(
+            (id, inv, player) -> DrawerMenu.create(id, inv, this),
+            Component.literal("Drawer Settings")
+        );
+    }
+
+
 }

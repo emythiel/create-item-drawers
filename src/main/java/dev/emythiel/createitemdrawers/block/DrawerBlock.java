@@ -1,20 +1,27 @@
 package dev.emythiel.createitemdrawers.block;
 
+import com.simibubi.create.AllItems;
 import com.simibubi.create.foundation.block.IBE;
 import dev.emythiel.createitemdrawers.block.base.BaseBlock;
 import dev.emythiel.createitemdrawers.block.entity.DrawerBlockEntity;
 import dev.emythiel.createitemdrawers.registry.ModBlockEntities;
 import dev.emythiel.createitemdrawers.storage.DrawerSlot;
 import dev.emythiel.createitemdrawers.util.DrawerInteractionHelper;
+import dev.emythiel.createitemdrawers.gui.DrawerMenu;
 import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.ItemInteractionResult;
+import net.minecraft.world.MenuProvider;
+import net.minecraft.world.SimpleMenuProvider;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
+import net.neoforged.neoforge.network.NetworkInitialization;
 
 public class DrawerBlock extends BaseBlock implements IBE<DrawerBlockEntity> {
 
@@ -46,6 +53,14 @@ public class DrawerBlock extends BaseBlock implements IBE<DrawerBlockEntity> {
 
         if (!isFrontFace(state, hit.getDirection()))
             return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+
+        // Open GUI if front face is right-clicked with Create Wrench
+        if (held.is(AllItems.WRENCH.get())) {
+            if (!level.isClientSide) {
+                player.openMenu(be, buf -> buf.writeBlockPos(pos));
+            }
+            return ItemInteractionResult.SUCCESS;
+        }
 
         int slot = DrawerInteractionHelper.getHitSlot(be, hit.getLocation());
         if (slot < 0)
