@@ -18,8 +18,8 @@ public class DrawerScreen extends AbstractContainerScreen<DrawerMenu> {
     public DrawerScreen(DrawerMenu menu, Inventory inv, Component title) {
         super(menu, inv, title);
 
-        this.imageWidth = 176;
-        this.imageHeight = 200;
+        this.imageWidth = 181;
+        this.imageHeight = 221;
     }
 
     @Override
