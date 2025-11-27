@@ -28,7 +28,7 @@ public class DrawerSlot {
 
     /** A slot is “empty” if the stored item is empty OR count == 0. */
     public boolean isEmpty() {
-        return storedItem.isEmpty() || count <= 0;
+        return storedItem.isEmpty();
     }
 
 
