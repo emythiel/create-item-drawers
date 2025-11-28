@@ -8,7 +8,8 @@ import com.simibubi.create.foundation.gui.widget.SelectionScrollInput;
 import dev.emythiel.createitemdrawers.CreateItemDrawers;
 import dev.emythiel.createitemdrawers.block.entity.DrawerBlockEntity;
 import dev.emythiel.createitemdrawers.gui.widgets.ToggleButton;
-import dev.emythiel.createitemdrawers.network.DrawerConfigPacket;
+import dev.emythiel.createitemdrawers.network.RenderPacket;
+import dev.emythiel.createitemdrawers.network.SlotTogglePacket;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.core.BlockPos;
@@ -17,6 +18,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.Slot;
 import net.neoforged.neoforge.network.PacketDistributor;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
@@ -69,7 +71,7 @@ public class DrawerScreen extends AbstractContainerScreen<DrawerMenu> {
     }
 
     @Override
-    protected void renderTooltip(GuiGraphics graphics, int mouseX, int mouseY) {
+    protected void renderTooltip(@NotNull GuiGraphics graphics, int mouseX, int mouseY) {
         super.renderTooltip(graphics, mouseX, mouseY);
     }
 
@@ -103,15 +105,21 @@ public class DrawerScreen extends AbstractContainerScreen<DrawerMenu> {
         addRenderableWidget(renderScroll);
 
         // Per slot void/lock toggles
-        int slots = be.getStorage().getSlotCount();
-        for (int i = 0; i < slots; i++) {
-            int sx = leftPos + 88 + ((i % 2) * 20) - 10;
-            int sy = topPos + 50 + ((i / 2) * 20);
+        for (Slot slot : this.menu.slots) {
+            if (!(slot instanceof ReadOnlySlotItemHandler roSlot)) continue;
 
-            int slotIndex = i;
+            int slotIndex = roSlot.getSlotIndex();
 
+            int sx = leftPos + slot.x;
+            int sy = topPos + slot.y;
+
+            int toggleY = sy + INV_SLOT_WIDGET_SIZE + 2;
+            int lockX = sx;
+            int voidX = sx + TOGGLE_W + 3;
+
+            // Lock mode
             addRenderableWidget(new ToggleButton(
-                sx, sy,
+                lockX, toggleY,
                 TEXTURE,
                 TOGGLE_OFF_X, TOGGLE_OFF_Y,
                 TOGGLE_ON_X, TOGGLE_ON_Y,
@@ -119,13 +127,32 @@ public class DrawerScreen extends AbstractContainerScreen<DrawerMenu> {
                 () -> be.getStorage().getSlot(slotIndex).isLockMode(),
                 newVal -> {
                     be.getStorage().getSlot(slotIndex).setLockMode(newVal);
-                    sendTogglePacket(be.getBlockPos(), "slotLock_" + slotIndex, newVal);
+                    sendTogglePacket(be.getBlockPos(), slotIndex, "lock", newVal);
                 }
+            ).withTooltip(() ->
+                be.getStorage().getSlot(slotIndex).isLockMode()
+                    ? Component.translatable("gui.create_item_drawers.tooltip.unlock_slot")
+                    : Component.translatable("gui.create_item_drawers.tooltip.lock_slot")
             ));
 
+            // Void mode
+            addRenderableWidget(new ToggleButton(
+                voidX, toggleY,
+                TEXTURE,
+                TOGGLE_OFF_X, TOGGLE_OFF_Y,
+                TOGGLE_ON_X, TOGGLE_ON_Y,
+                TOGGLE_W, TOGGLE_H,
+                () -> be.getStorage().getSlot(slotIndex).isVoidMode(),
+                newVal -> {
+                    be.getStorage().getSlot(slotIndex).setVoidMode(newVal);
+                    sendTogglePacket(be.getBlockPos(), slotIndex, "void", newVal);
+                }
+            ).withTooltip(() ->
+                be.getStorage().getSlot(slotIndex).isVoidMode()
+                    ? Component.translatable("gui.create_item_drawers.tooltip.disable_void")
+                    : Component.translatable("gui.create_item_drawers.tooltip.enable_void")
+            ));
         }
-
-
     }
 
     private void drawSlotBackgrounds(GuiGraphics graphics) {
@@ -144,20 +171,13 @@ public class DrawerScreen extends AbstractContainerScreen<DrawerMenu> {
         }
     }
 
-    private void renderToggleWidget(GuiGraphics graphics, int x, int y) {
-
-    }
-
-    private static final int SLOT_SIZE = 18;
-    private int slotX(int col) { return leftPos + 44 + col * SLOT_SIZE; }
-    private int slotY(int row) { return topPos + 26 + row * SLOT_SIZE; }
-
-    private void sendTogglePacket(BlockPos pos, String key, boolean value) {
-        //
+    private void sendTogglePacket(BlockPos pos, int slot, String type, boolean value) {
+        boolean isLock = type.equals("lock");
+        PacketDistributor.sendToServer(new SlotTogglePacket(pos, slot, isLock, value));
     }
 
     private void sendRenderModePacket(BlockPos pos, int mode) {
-        PacketDistributor.sendToServer(new DrawerConfigPacket(pos, mode));
+        PacketDistributor.sendToServer(new RenderPacket(pos, mode));
     }
 
 

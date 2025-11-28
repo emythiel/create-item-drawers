@@ -1,7 +1,9 @@
 package dev.emythiel.createitemdrawers.gui.widgets;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
+import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -9,6 +11,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.function.BooleanSupplier;
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 public class ToggleButton extends AbstractWidget {
 
@@ -19,6 +22,8 @@ public class ToggleButton extends AbstractWidget {
 
     private final BooleanSupplier getter;
     private final Consumer<Boolean> setter;
+
+    private Supplier<Component> tooltipSupplier = null;
 
     public ToggleButton(
         int x, int y,
@@ -43,6 +48,12 @@ public class ToggleButton extends AbstractWidget {
         this.setter = setter;
     }
 
+    public ToggleButton withTooltip(Supplier<Component> supplier) {
+        this.tooltipSupplier = supplier;
+        this.setTooltip(Tooltip.create(supplier.get()));
+        return this;
+    }
+
     @Override
     protected void renderWidget(@NotNull GuiGraphics graphics, int mouseX, int mouseY, float partialTicks) {
 
@@ -53,9 +64,9 @@ public class ToggleButton extends AbstractWidget {
 
         graphics.blit(texture, getX(), getY(), u, v, texW, texH);
 
-        /*if (isHovered) {
-            graphics.fill(getX(), getY(), getX() + texW, getY() + texH, 0x40FFFFFF);
-        }*/
+        if (tooltipSupplier != null) {
+            this.setTooltip(Tooltip.create(tooltipSupplier.get()));
+        }
     }
 
     @Override

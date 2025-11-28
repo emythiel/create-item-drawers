@@ -22,5 +22,9 @@
   "gui.create_item_drawers.render_mode": "Render Mode",
   "gui.create_item_drawers.render_all": "Render All",
   "gui.create_item_drawers.render_item": "Render Item Only",
-  "gui.create_item_drawers.render_none": "Disable Rendering"
+  "gui.create_item_drawers.render_none": "Disable Rendering",
+  "gui.create_item_drawers.tooltip.lock_slot": "Lock Slot",
+  "gui.create_item_drawers.tooltip.unlock_slot": "Unlock Slot",
+  "gui.create_item_drawers.tooltip.enable_void": "Enable Void Mode",
+  "gui.create_item_drawers.tooltip.disable_void": "Disable Void Mode"
 }

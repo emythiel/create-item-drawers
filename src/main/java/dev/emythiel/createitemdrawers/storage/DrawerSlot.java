@@ -38,18 +38,18 @@ public class DrawerSlot {
 
     public int getCount() { return count; }
 
-    public boolean isVoidMode() { return voidMode; }
-    public void setVoidMode(boolean v) { this.voidMode = v; }
-
     public boolean isLockMode() { return lockMode; }
-    public void setLockMode(boolean v) { this.lockMode = v;}
+    public void setLockMode(boolean v) {
+        this.lockMode = v;
 
-    public void unlock() {
-        lockMode = false;
-        if (count <= 0) {
+        // if unlocked AND empty -> clear template
+        if (!v && count <= 0) {
             storedItem = ItemStack.EMPTY;
         }
     }
+
+    public boolean isVoidMode() { return voidMode; }
+    public void setVoidMode(boolean v) { this.voidMode = v; }
 
 
     /* Item matching logic */
