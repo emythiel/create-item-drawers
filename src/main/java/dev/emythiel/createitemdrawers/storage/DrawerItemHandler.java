@@ -3,8 +3,9 @@ package dev.emythiel.createitemdrawers.storage;
 import dev.emythiel.createitemdrawers.block.entity.DrawerBlockEntity;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.items.IItemHandler;
+import net.neoforged.neoforge.items.IItemHandlerModifiable;
 
-public class DrawerItemHandler implements IItemHandler {
+public class DrawerItemHandler implements IItemHandlerModifiable {
 
     private final DrawerBlockEntity drawer;
 
@@ -130,5 +131,10 @@ public class DrawerItemHandler implements IItemHandler {
             return false;
 
         return storage().getSlot(slot).canAccept(stack);
+    }
+
+    @Override
+    public void setStackInSlot(int slot, ItemStack stack) {
+
     }
 }

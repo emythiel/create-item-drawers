@@ -14,5 +14,13 @@
 
   "block.create_item_drawers.single_drawer": "Single Item Drawer",
   "block.create_item_drawers.double_drawer": "Double Item Drawer",
-  "block.create_item_drawers.quad_drawer": "Quad Item Drawer"
+  "block.create_item_drawers.quad_drawer": "Quad Item Drawer",
+
+  "gui.create_item_drawers.drawer_1": "Single Item Drawer - Settings",
+  "gui.create_item_drawers.drawer_2": "Double Item Drawer - Settings",
+  "gui.create_item_drawers.drawer_4": "Quad Item Drawer - Settings",
+  "gui.create_item_drawers.render_mode": "Render Mode",
+  "gui.create_item_drawers.render_all": "Render All",
+  "gui.create_item_drawers.render_item": "Render Item Only",
+  "gui.create_item_drawers.render_none": "Disable Rendering"
 }

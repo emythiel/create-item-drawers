@@ -84,7 +84,6 @@ public class DrawerSlot {
         return matches(stack);
     }
 
-
     /* Insertion logic */
 
     /**

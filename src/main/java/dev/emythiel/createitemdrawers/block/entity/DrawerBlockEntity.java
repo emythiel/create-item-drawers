@@ -79,14 +79,32 @@ public class DrawerBlockEntity extends BaseBlockEntity implements MenuProvider {
     public boolean getRenderCounts() { return renderCount; }
     public void setRenderCounts(boolean v) { this.renderCount = v; }
 
+    private int renderMode = 0; // 0 = all, 1 = items only, 2 = none
+    public int getRenderMode() {
+        return renderMode;
+    }
+    public void setRenderMode(int mode) {
+        this.renderMode = mode;
+        setChangedAndSync();
+    }
+    public void applyRenderMode(int mode) {
+        this.renderMode = mode;
+
+        switch (mode) {
+            case 0 -> { renderItem = true; renderCount = true; }
+            case 1 -> { renderItem = true; renderCount = false; }
+            case 2 -> { renderItem = false; renderCount = false; }
+        }
+
+        setChangedAndSync();
+    }
+
 
     @Override
-    protected void saveAdditional(CompoundTag tag, HolderLookup.Provider provider) {
+    protected void saveAdditional(@NotNull CompoundTag tag, HolderLookup.@NotNull Provider provider) {
         super.saveAdditional(tag, provider);
 
-        // save flags
-        tag.putBoolean("RenderItem", renderItem);
-        tag.putBoolean("RenderCount", renderCount);
+        tag.putInt("RenderMode", renderMode);
 
         // save slots
         ListTag list = new ListTag();
@@ -99,14 +117,14 @@ public class DrawerBlockEntity extends BaseBlockEntity implements MenuProvider {
     }
 
     @Override
-    public void loadAdditional(CompoundTag tag, HolderLookup.Provider provider) {
+    public void loadAdditional(@NotNull CompoundTag tag, HolderLookup.@NotNull Provider provider) {
         super.loadAdditional(tag, provider);
 
-        renderItem = tag.getBoolean("RenderItem");
-        renderCount = tag.getBoolean("RenderCount");
+        renderMode = tag.getInt("RenderMode");
+        applyRenderMode(renderMode);
 
+        // load slots
         ListTag list = tag.getList("Slots", Tag.TAG_COMPOUND);
-
         for (int i = 0; i < list.size(); i++) {
             storage.getSlot(i).load(list.getCompound(i), provider);
         }
@@ -125,7 +143,7 @@ public class DrawerBlockEntity extends BaseBlockEntity implements MenuProvider {
 
     @NotNull
     @Override
-    public CompoundTag getUpdateTag(HolderLookup.Provider provider) {
+    public CompoundTag getUpdateTag(HolderLookup.@NotNull Provider provider) {
         CompoundTag tag = new CompoundTag();
         saveAdditional(tag, provider);
         return tag;
@@ -133,13 +151,15 @@ public class DrawerBlockEntity extends BaseBlockEntity implements MenuProvider {
 
     // GUI handling
     @Override
-    public AbstractContainerMenu createMenu(int id, Inventory inv, Player player) {
+    public AbstractContainerMenu createMenu(int id, @NotNull Inventory inv, @NotNull Player player) {
         return DrawerMenu.create(id, inv, this);
     }
 
+    @NotNull
     @Override
     public Component getDisplayName() {
-        return Component.literal("Drawer");
+        int slots = storage.getSlotCount();
+        return Component.translatable("gui.create_item_drawers.drawer_" + slots);
     }
 
     public MenuProvider getMenuProvider() {
