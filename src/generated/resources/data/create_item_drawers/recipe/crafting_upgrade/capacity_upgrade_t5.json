@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "group": "capacity_upgrade",
+  "key": {
+    "N": {
+      "item": "minecraft:netherite_ingot"
+    },
+    "U": {
+      "item": "create_item_drawers:capacity_upgrade_t4"
+    }
+  },
+  "pattern": [
+    "NNN",
+    "U U",
+    "NNN"
+  ],
+  "result": {
+    "count": 1,
+    "id": "create_item_drawers:capacity_upgrade_t5"
+  }
+}

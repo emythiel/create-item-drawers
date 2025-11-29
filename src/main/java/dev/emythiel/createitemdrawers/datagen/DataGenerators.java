@@ -5,6 +5,7 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.loot.LootTableProvider;
+import net.minecraft.data.tags.ItemTagsProvider;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
@@ -32,9 +33,11 @@ public class DataGenerators {
         // Generate recipes
         generator.addProvider(event.includeServer(), new ModRecipeProvider(packOutput, lookupProvider));
 
-        // Generate block tags
+        // Generate block/item tags
         BlockTagsProvider blockTagsProvider = new ModBlockTagProvider(packOutput, lookupProvider, existingFileHelper);
         generator.addProvider(event.includeServer(), blockTagsProvider);
+        ItemTagsProvider itemTagsProvider = new ModItemTagProvider(packOutput, lookupProvider, blockTagsProvider.contentsGetter(), existingFileHelper);
+        generator.addProvider(event.includeServer(), itemTagsProvider);
 
         // Generate block states
         generator.addProvider(event.includeClient(), new ModBlockStateProvider(packOutput, existingFileHelper));

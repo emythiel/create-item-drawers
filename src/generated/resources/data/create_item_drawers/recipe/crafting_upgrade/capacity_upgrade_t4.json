@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "group": "capacity_upgrade",
+  "key": {
+    "D": {
+      "item": "minecraft:diamond"
+    },
+    "U": {
+      "item": "create_item_drawers:capacity_upgrade_t3"
+    }
+  },
+  "pattern": [
+    "DDD",
+    "U U",
+    "DDD"
+  ],
+  "result": {
+    "count": 1,
+    "id": "create_item_drawers:capacity_upgrade_t4"
+  }
+}

@@ -2,6 +2,7 @@ package dev.emythiel.createitemdrawers.datagen;
 
 import dev.emythiel.createitemdrawers.CreateItemDrawers;
 import dev.emythiel.createitemdrawers.registry.ModBlocks;
+import dev.emythiel.createitemdrawers.registry.ModTags;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 import net.minecraft.tags.BlockTags;
@@ -18,6 +19,11 @@ public class ModBlockTagProvider extends BlockTagsProvider {
 
     @Override
     protected void addTags(HolderLookup.@NotNull Provider provider) {
+        tag(ModTags.Blocks.DRAWERS)
+            .add(ModBlocks.SINGLE_DRAWER.get())
+            .add(ModBlocks.DOUBLE_DRAWER.get())
+            .add(ModBlocks.QUAD_DRAWER.get());
+
         tag(BlockTags.MINEABLE_WITH_PICKAXE)
             .add(ModBlocks.SINGLE_DRAWER.get())
             .add(ModBlocks.DOUBLE_DRAWER.get())

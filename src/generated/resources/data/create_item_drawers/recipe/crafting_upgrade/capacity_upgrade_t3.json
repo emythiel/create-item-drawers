@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "group": "capacity_upgrade",
+  "key": {
+    "B": {
+      "item": "create:brass_ingot"
+    },
+    "U": {
+      "item": "create_item_drawers:capacity_upgrade_t2"
+    }
+  },
+  "pattern": [
+    "BBB",
+    "U U",
+    "BBB"
+  ],
+  "result": {
+    "count": 1,
+    "id": "create_item_drawers:capacity_upgrade_t3"
+  }
+}

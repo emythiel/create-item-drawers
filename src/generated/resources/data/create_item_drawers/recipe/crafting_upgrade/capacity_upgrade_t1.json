@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "group": "capacity_upgrade",
+  "key": {
+    "C": {
+      "item": "minecraft:ender_chest"
+    },
+    "I": {
+      "item": "minecraft:iron_ingot"
+    },
+    "P": {
+      "item": "create:precision_mechanism"
+    }
+  },
+  "pattern": [
+    "III",
+    "PCP",
+    "III"
+  ],
+  "result": {
+    "count": 1,
+    "id": "create_item_drawers:capacity_upgrade_t1"
+  }
+}
