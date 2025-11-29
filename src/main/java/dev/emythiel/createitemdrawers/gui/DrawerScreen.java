@@ -10,6 +10,7 @@ import dev.emythiel.createitemdrawers.block.entity.DrawerBlockEntity;
 import dev.emythiel.createitemdrawers.gui.widgets.ToggleButton;
 import dev.emythiel.createitemdrawers.network.RenderPacket;
 import dev.emythiel.createitemdrawers.network.SlotTogglePacket;
+import dev.emythiel.createitemdrawers.storage.DrawerSlot;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.core.BlockPos;
@@ -79,7 +80,7 @@ public class DrawerScreen extends AbstractContainerScreen<DrawerMenu> {
 
         // Upgrade slot title
         {
-            float scale = 0.75f;
+            float scale = 0.70f;
             graphics.pose().pushPose();
             graphics.pose().scale(scale, scale, 1f);
             int drawX = (int)(17 / scale);
@@ -105,6 +106,14 @@ public class DrawerScreen extends AbstractContainerScreen<DrawerMenu> {
     protected void renderSlotContents(GuiGraphics graphics, @NotNull ItemStack stack, Slot slot, String countString) {
         int hash = slot.x + slot.y * this.imageWidth;
 
+        // If drawer slot and empty but locked, show template item
+        if (slot instanceof ReadOnlySlotItemHandler ro) {
+            DrawerBlockEntity be = menu.contentHolder;
+            DrawerSlot drawerSlot = be.getStorage().getSlot(ro.getSlotIndex());
+
+            if (stack.isEmpty() && drawerSlot.isLockMode() && !drawerSlot.getStoredItem().isEmpty())
+                stack = drawerSlot.getStoredItem();
+        }
         graphics.renderItem(stack, slot.x, slot.y, hash);
 
         if (!(slot instanceof ReadOnlySlotItemHandler)) {
