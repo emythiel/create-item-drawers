@@ -17,8 +17,10 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
@@ -28,7 +30,7 @@ public class DrawerScreen extends AbstractContainerScreen<DrawerMenu> {
     private static final int INV_SLOT_WIDGET_X = 238;
     private static final int INV_SLOT_WIDGET_Y = 0;
     private static final int INV_SLOT_WIDGET_SIZE = 18;
-    // Toggle widget (x, y, width, heigh)
+    // Toggle widget (x, y, width, height)
     private static final int TOGGLE_OFF_X = 241;
     private static final int TOGGLE_OFF_Y = 20;
     private static final int TOGGLE_ON_X = 241;
@@ -55,6 +57,13 @@ public class DrawerScreen extends AbstractContainerScreen<DrawerMenu> {
     }
 
     @Override
+    public void render(@NotNull GuiGraphics graphics, int mouseX, int mouseY, float partialTicks) {
+        super.render(graphics, mouseX, mouseY, partialTicks);
+
+        renderTooltip(graphics, mouseX, mouseY);
+    }
+
+    @Override
     protected void renderBg(GuiGraphics graphics, float partialTicks, int mouseX, int mouseY) {
         graphics.blit(TEXTURE, leftPos, topPos, 0, 0, imageWidth, imageHeight);
 
@@ -68,11 +77,69 @@ public class DrawerScreen extends AbstractContainerScreen<DrawerMenu> {
 
         // Player inventory title
         graphics.drawString(this.font, playerInventoryTitle, 8, 119, 0x404040, false);
+
+        // Upgrade slot title
+        {
+            float scale = 0.75f;
+            graphics.pose().pushPose();
+            graphics.pose().scale(scale, scale, 1f);
+            int drawX = (int)(17 / scale);
+            int drawY = (int)(26 / scale);
+            graphics.drawString(
+                this.font,
+                Component.translatable("gui.create_item_drawers.upgrade_slot"),
+                drawX, drawY,
+                0x404040,
+                false
+            );
+
+            graphics.pose().popPose();
+        }
     }
 
     @Override
     protected void renderTooltip(@NotNull GuiGraphics graphics, int mouseX, int mouseY) {
         super.renderTooltip(graphics, mouseX, mouseY);
+    }
+
+    @Override
+    protected void renderSlotContents(GuiGraphics graphics, ItemStack stack, Slot slot, String countString) {
+        int hash = slot.x + slot.y * this.imageWidth;
+
+        graphics.renderItem(stack, slot.x, slot.y, hash);
+
+        if (!(slot instanceof ReadOnlySlotItemHandler)) {
+            graphics.renderItemDecorations(this.font, stack, slot.x, slot.y, countString);
+            return;
+        }
+
+        int count = stack.getCount();
+
+        if (count <= 1) return;
+
+        String s = (count > 9999) ? (count / 1000) + "k" : String.valueOf(count);
+
+        // Position
+        float scale = 0.60f;
+        int centerX = slot.x + 8;
+        int textWidth = this.font.width(s);
+
+        graphics.pose().pushPose();
+
+        graphics.pose().translate(0, 0, 200); // Push text in front of item
+
+        // Re-scale
+        graphics.pose().scale(scale, scale, 1);
+
+        // Convert slot coordinates to scaled space
+        float inv = 1f / scale;
+
+        int drawX = (int)((centerX - textWidth * scale / 2) * inv);
+        int drawY = (int)((slot.y + 16 + 2) * inv);
+
+        graphics.drawString(this.font, s, drawX, drawY, 0xDDDDDD, true);
+
+        graphics.pose().popPose();
     }
 
     @Override
@@ -107,22 +174,29 @@ public class DrawerScreen extends AbstractContainerScreen<DrawerMenu> {
         // Per slot void/lock toggles
         for (Slot slot : this.menu.slots) {
             if (!(slot instanceof ReadOnlySlotItemHandler roSlot)) continue;
+            int slotCount = be.getStorage().getSlotCount();
 
             int slotIndex = roSlot.getSlotIndex();
 
             int sx = leftPos + slot.x;
             int sy = topPos + slot.y;
 
-            int toggleY = sy + INV_SLOT_WIDGET_SIZE + 2;
-            int lockX = sx;
-            int voidX = sx + TOGGLE_W + 3;
+            int toggleX = sx - TOGGLE_W - 2;
+
+            if (slotCount == 4 && slotIndex % 2 == 1) {
+                toggleX = sx + INV_SLOT_WIDGET_SIZE;
+            }
+
+            // Vertical offset - lock top, void bottom
+            int lockY = sy;
+            int voidY = lockY + TOGGLE_H + 1;
 
             // Lock mode
             addRenderableWidget(new ToggleButton(
-                lockX, toggleY,
+                toggleX, lockY,
                 TEXTURE,
-                TOGGLE_OFF_X, TOGGLE_OFF_Y,
                 TOGGLE_ON_X, TOGGLE_ON_Y,
+                TOGGLE_OFF_X, TOGGLE_OFF_Y,
                 TOGGLE_W, TOGGLE_H,
                 () -> be.getStorage().getSlot(slotIndex).isLockMode(),
                 newVal -> {
@@ -137,7 +211,7 @@ public class DrawerScreen extends AbstractContainerScreen<DrawerMenu> {
 
             // Void mode
             addRenderableWidget(new ToggleButton(
-                voidX, toggleY,
+                toggleX, voidY,
                 TEXTURE,
                 TOGGLE_OFF_X, TOGGLE_OFF_Y,
                 TOGGLE_ON_X, TOGGLE_ON_Y,
