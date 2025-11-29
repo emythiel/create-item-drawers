@@ -37,6 +37,19 @@ public class DrawerScreen extends AbstractContainerScreen<DrawerMenu> {
     private static final int TOGGLE_ON_Y = 28;
     private static final int TOGGLE_W = 12;
     private static final int TOGGLE_H = 7;
+    // Lock widget (x, y, width, height)
+    private static final int LOCK_ON_X = 247;
+    private static final int LOCK_ON_Y = 36;
+    private static final int LOCK_OFF_X = 238;
+    private static final int LOCK_OFF_Y = 36;
+    // Void widget (x, y, width, height)
+    private static final int VOID_ON_X = 246;
+    private static final int VOID_ON_Y = 45;
+    private static final int VOID_OFF_X = 237;
+    private static final int VOID_OFF_Y = 45;
+    // Lock/Void widget size (width, height)
+    private static final int LOCK_VOID_W = 8;
+    private static final int LOCK_VOID_H = 8;
     // Render mode text
     private static final Component RENDER_MODE_LABEL =
         Component.translatable("gui.create_item_drawers.render_mode");
@@ -189,7 +202,7 @@ public class DrawerScreen extends AbstractContainerScreen<DrawerMenu> {
             int sx = leftPos + slot.x;
             int sy = topPos + slot.y;
 
-            int toggleX = sx - TOGGLE_W - 2;
+            int toggleX = sx - LOCK_VOID_W - 2;
 
             // If quad drawer, move widgets for slot 1 and 3 to right
             if (slotCount == 4 && slotIndex % 2 == 1) {
@@ -198,15 +211,15 @@ public class DrawerScreen extends AbstractContainerScreen<DrawerMenu> {
 
             // Vertical offset - lock top, void bottom
             int lockY = sy;
-            int voidY = lockY + TOGGLE_H + 1;
+            int voidY = lockY + LOCK_VOID_H + 1;
 
             // Lock mode
             addRenderableWidget(new ToggleButton(
                 toggleX, lockY,
                 TEXTURE,
-                TOGGLE_OFF_X, TOGGLE_OFF_Y,
-                TOGGLE_ON_X, TOGGLE_ON_Y,
-                TOGGLE_W, TOGGLE_H,
+                LOCK_OFF_X, LOCK_OFF_Y,
+                LOCK_ON_X, LOCK_ON_Y,
+                LOCK_VOID_W, LOCK_VOID_H,
                 () -> be.getStorage().getSlot(slotIndex).isLockMode(),
                 newVal -> {
                     be.getStorage().getSlot(slotIndex).setLockMode(newVal);
@@ -222,9 +235,9 @@ public class DrawerScreen extends AbstractContainerScreen<DrawerMenu> {
             addRenderableWidget(new ToggleButton(
                 toggleX, voidY,
                 TEXTURE,
-                TOGGLE_OFF_X, TOGGLE_OFF_Y,
-                TOGGLE_ON_X, TOGGLE_ON_Y,
-                TOGGLE_W, TOGGLE_H,
+                VOID_OFF_X, VOID_OFF_Y,
+                VOID_ON_X, VOID_ON_Y,
+                LOCK_VOID_W, LOCK_VOID_H,
                 () -> be.getStorage().getSlot(slotIndex).isVoidMode(),
                 newVal -> {
                     be.getStorage().getSlot(slotIndex).setVoidMode(newVal);

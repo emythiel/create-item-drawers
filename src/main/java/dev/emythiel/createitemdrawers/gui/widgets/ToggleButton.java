@@ -63,6 +63,10 @@ public class ToggleButton extends AbstractWidget {
 
         graphics.blit(texture, getX(), getY(), u, v, texW, texH);
 
+        if (isHovered) {
+            graphics.fill(getX(), getY(), getX() + texW, getY() + texH, 0x40FFFFFF);
+        }
+
         if (tooltipSupplier != null) {
             this.setTooltip(Tooltip.create(tooltipSupplier.get()));
         }
