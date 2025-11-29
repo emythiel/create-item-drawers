@@ -57,7 +57,7 @@ public class CreateItemDrawers {
         // Register blocks and items
         ModBlocks.register();
         ModBlockEntities.register();
-        ModItems.register(modEventBus);
+        ModItems.register();
 
         // Register creative tab
         ModCreativeModeTab.register(modEventBus);

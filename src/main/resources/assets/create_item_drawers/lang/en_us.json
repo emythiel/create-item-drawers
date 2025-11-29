@@ -16,6 +16,14 @@
   "block.create_item_drawers.double_drawer": "Double Item Drawer",
   "block.create_item_drawers.quad_drawer": "Quad Item Drawer",
 
+  "item.create_item_drawers.capacity_upgrade_t1": "Capacity Upgrade Tier I",
+  "item.create_item_drawers.capacity_upgrade_t2": "Capacity Upgrade Tier II",
+  "item.create_item_drawers.capacity_upgrade_t3": "Capacity Upgrade Tier III",
+  "item.create_item_drawers.capacity_upgrade_t4": "Capacity Upgrade Tier IV",
+  "item.create_item_drawers.capacity_upgrade_t5": "Capacity Upgrade Tier V",
+
+  "tooltip.create_item_drawers.capacity_multiplier": "Multiplier: %sx",
+
   "gui.create_item_drawers.drawer_1": "Single Item Drawer - Settings",
   "gui.create_item_drawers.drawer_2": "Double Item Drawer - Settings",
   "gui.create_item_drawers.drawer_4": "Quad Item Drawer - Settings",

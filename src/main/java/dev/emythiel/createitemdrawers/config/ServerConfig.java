@@ -14,6 +14,12 @@ public class ServerConfig {
     public static ModConfigSpec.IntValue DOUBLE_CAPACITY;
     public static ModConfigSpec.IntValue QUAD_CAPACITY;
 
+    public static ModConfigSpec.IntValue CAPACITY_UPGRADE_T1;
+    public static ModConfigSpec.IntValue CAPACITY_UPGRADE_T2;
+    public static ModConfigSpec.IntValue CAPACITY_UPGRADE_T3;
+    public static ModConfigSpec.IntValue CAPACITY_UPGRADE_T4;
+    public static ModConfigSpec.IntValue CAPACITY_UPGRADE_T5;
+
     public static ModConfigSpec.ConfigValue<List<? extends String>> BLACKLIST;
 
     static {
@@ -30,6 +36,23 @@ public class ServerConfig {
             .comment("Quad slot drawers")
             .defineInRange("quadCapacity", 8, 1, 65536);
         builder.pop();
+
+        builder.comment("Storage upgrade capacity multipliers").push("capacity-upgrades");
+        CAPACITY_UPGRADE_T1 = builder
+            .comment("Tier 1 capacity multiplier")
+            .defineInRange("capacityUpgradeT1", 2, 1, 65536);
+        CAPACITY_UPGRADE_T2 = builder
+            .comment("Tier 2 capacity multiplier")
+            .defineInRange("capacityUpgradeT2", 4, 1, 65536);
+        CAPACITY_UPGRADE_T3 = builder
+            .comment("Tier 3 capacity multiplier")
+            .defineInRange("capacityUpgradeT3", 8, 1, 65536);
+        CAPACITY_UPGRADE_T4 = builder
+            .comment("Tier 4 capacity multiplier")
+            .defineInRange("capacityUpgradeT4", 16, 1, 65536);
+        CAPACITY_UPGRADE_T5 = builder
+            .comment("Tier 5 capacity multiplier")
+            .defineInRange("capacityUpgradeT5", 32, 1, 65536);
 
         BLACKLIST = builder
             .comment(
