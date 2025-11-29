@@ -3,17 +3,17 @@
   "category": "misc",
   "group": "capacity_upgrade",
   "key": {
-    "G": {
-      "item": "minecraft:gold_ingot"
+    "B": {
+      "item": "create:brass_ingot"
     },
     "U": {
       "item": "create_item_drawers:capacity_upgrade_t1"
     }
   },
   "pattern": [
-    "GGG",
+    "BBB",
     "U U",
-    "GGG"
+    "BBB"
   ],
   "result": {
     "count": 1,

@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "create_item_drawers:item/capacity_upgrade_base"
+  }
+}

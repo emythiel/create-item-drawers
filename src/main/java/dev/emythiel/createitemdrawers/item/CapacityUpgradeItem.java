@@ -11,7 +11,7 @@ import java.util.List;
 
 public class CapacityUpgradeItem extends Item {
 
-    private final int tier; // 1-5
+    private final int tier; // 0-5
 
     public CapacityUpgradeItem(Properties properties, int tier) {
         super(properties);

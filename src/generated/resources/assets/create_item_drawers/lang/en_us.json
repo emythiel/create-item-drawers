@@ -2,6 +2,7 @@
   "block.create_item_drawers.double_drawer": "Double Drawer",
   "block.create_item_drawers.quad_drawer": "Quad Drawer",
   "block.create_item_drawers.single_drawer": "Single Drawer",
+  "item.create_item_drawers.capacity_upgrade_base": "Capacity Upgrade Base",
   "item.create_item_drawers.capacity_upgrade_t1": "Capacity Upgrade T1",
   "item.create_item_drawers.capacity_upgrade_t2": "Capacity Upgrade T2",
   "item.create_item_drawers.capacity_upgrade_t3": "Capacity Upgrade T3",

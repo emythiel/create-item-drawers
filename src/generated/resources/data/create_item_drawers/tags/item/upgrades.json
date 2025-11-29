@@ -1,5 +1,6 @@
 {
   "values": [
+    "create_item_drawers:capacity_upgrade_base",
     "create_item_drawers:capacity_upgrade_t1",
     "create_item_drawers:capacity_upgrade_t2",
     "create_item_drawers:capacity_upgrade_t3",

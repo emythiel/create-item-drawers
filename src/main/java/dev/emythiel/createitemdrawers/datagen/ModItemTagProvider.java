@@ -28,6 +28,7 @@ public class ModItemTagProvider extends ItemTagsProvider {
             .add(ModBlocks.QUAD_DRAWER.get().asItem());
 
         tag(ModTags.Items.UPGRADES)
+            .add(ModItems.CAPACITY_UPGRADE_BASE.get())
             .add(ModItems.CAPACITY_UPGRADE_T1.get())
             .add(ModItems.CAPACITY_UPGRADE_T2.get())
             .add(ModItems.CAPACITY_UPGRADE_T3.get())

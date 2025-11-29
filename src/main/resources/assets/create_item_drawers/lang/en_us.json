@@ -16,6 +16,7 @@
   "block.create_item_drawers.double_drawer": "Double Item Drawer",
   "block.create_item_drawers.quad_drawer": "Quad Item Drawer",
 
+  "item.create_item_drawers.capacity_upgrade_base": "Capacity Upgrade Base",
   "item.create_item_drawers.capacity_upgrade_t1": "Capacity Upgrade Tier I",
   "item.create_item_drawers.capacity_upgrade_t2": "Capacity Upgrade Tier II",
   "item.create_item_drawers.capacity_upgrade_t3": "Capacity Upgrade Tier III",

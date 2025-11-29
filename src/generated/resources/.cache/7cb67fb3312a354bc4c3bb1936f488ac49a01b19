@@ -1,6 +1,7 @@
-// 1.21.1	2025-11-29T21:00:18.6531806	Registrate Provider for create_item_drawers [Registries, Data Maps, Recipes, Advancements, Loot Tables, Tags (enchantments), Tags (blocks), Tags (items), Tags (fluids), Tags (entity_types), generic_server_provider, Blockstates, Item models, Lang (en_us/en_ud), generic_client_provider]
-487151b55a1d96ae0e8771244c4fc27ee38a068e assets/create_item_drawers/lang/en_ud.json
-10ac36161e6a287fb74347ce46af9542e73da1c8 assets/create_item_drawers/lang/en_us.json
+// 1.21.1	2025-11-30T00:44:03.8875899	Registrate Provider for create_item_drawers [Registries, Data Maps, Recipes, Advancements, Loot Tables, Tags (enchantments), Tags (blocks), Tags (items), Tags (fluids), Tags (entity_types), generic_server_provider, Blockstates, Item models, Lang (en_us/en_ud), generic_client_provider]
+2552c2226b60fb167af999bf8b7854fb34ff9788 assets/create_item_drawers/lang/en_ud.json
+3386c2427815fc0f5d1f1c826121b3673223c0e0 assets/create_item_drawers/lang/en_us.json
+370ae93d24d0483c2164c2972ab02ef3223fa378 assets/create_item_drawers/models/item/capacity_upgrade_base.json
 ecbf10819a034e0e71b1d7b85c0eda74efeba40a assets/create_item_drawers/models/item/capacity_upgrade_t1.json
 145875727b35e9021fdc0970451586cc4266eb2e assets/create_item_drawers/models/item/capacity_upgrade_t2.json
 3d6d818bcc0cd248e9bcde30882f56d90faa81ea assets/create_item_drawers/models/item/capacity_upgrade_t3.json
@@ -9,6 +10,7 @@ f002297c724c58ee4684efd55ed33c05c830904d assets/create_item_drawers/models/item/
 35ed3bf4f8e98310c19ad3bfb218abe7757f87f9 assets/create_item_drawers/models/item/double_drawer.json
 7ca7c934c665dd581bbeef97413eac9e3e732fac assets/create_item_drawers/models/item/quad_drawer.json
 9c03e464d9e143400aed8c9650573d8e9a9d4873 assets/create_item_drawers/models/item/single_drawer.json
+78642ca32c3533add612ebe0133fbc530eeeeb22 data/create_item_drawers/advancement/recipes/misc/crafting_upgrade/capacity_upgrade_base.json
 07a8744df00d9a420def30338e89de3a75a9ac9b data/create_item_drawers/advancement/recipes/misc/crafting_upgrade/capacity_upgrade_t1.json
 1c52a40128eaa391e46a36735aa144cd1345c357 data/create_item_drawers/advancement/recipes/misc/crafting_upgrade/capacity_upgrade_t2.json
 ae2480a6ae001aeb78c4e4f72c88abec8fb17ae1 data/create_item_drawers/advancement/recipes/misc/crafting_upgrade/capacity_upgrade_t3.json
@@ -17,8 +19,9 @@ c26d1b0f6a7397ad53cb064df0e614e72f304c8c data/create_item_drawers/advancement/re
 98feca8b43207f21fad9920f6069006f4f51f3c7 data/create_item_drawers/loot_table/blocks/double_drawer.json
 6681de1cb9e931d7d78f09acfd35781d7f2cf044 data/create_item_drawers/loot_table/blocks/quad_drawer.json
 7b737acf261041526341edcf0895cf7c37f4710f data/create_item_drawers/loot_table/blocks/single_drawer.json
-d79cbfdce5c90a741ac285da28b1242485f5b43f data/create_item_drawers/recipe/crafting_upgrade/capacity_upgrade_t1.json
-26bcde2f9254740f7aba3fc33ffb698e1d56bb0a data/create_item_drawers/recipe/crafting_upgrade/capacity_upgrade_t2.json
-57312f7012879bf05d6e3866582fe077dd03be0e data/create_item_drawers/recipe/crafting_upgrade/capacity_upgrade_t3.json
-07aaa950ae60acdb0177be04eaf04d3e67dba693 data/create_item_drawers/recipe/crafting_upgrade/capacity_upgrade_t4.json
-de4803a73e8049a9e5cd3c4379e24a3f6b8ae5ed data/create_item_drawers/recipe/crafting_upgrade/capacity_upgrade_t5.json
+1ed0bb65874f6f9481af17d33a7717d42e2c2f38 data/create_item_drawers/recipe/crafting_upgrade/capacity_upgrade_base.json
+cae5ada9090b794d2b36f9a1edc51a76ba228cc6 data/create_item_drawers/recipe/crafting_upgrade/capacity_upgrade_t1.json
+6b271a65fd4e8dace2d45a736ad432a1074c1020 data/create_item_drawers/recipe/crafting_upgrade/capacity_upgrade_t2.json
+0d6ff3d2e5e0608275cd35cade1639ce91da192e data/create_item_drawers/recipe/crafting_upgrade/capacity_upgrade_t3.json
+67b22ca46bcb17574a92c702bf62a9df6077bc5c data/create_item_drawers/recipe/crafting_upgrade/capacity_upgrade_t4.json
+a28f52212884c6185fbed248ae2f6442a6745bcd data/create_item_drawers/recipe/crafting_upgrade/capacity_upgrade_t5.json

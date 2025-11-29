@@ -3,17 +3,20 @@
   "category": "misc",
   "group": "capacity_upgrade",
   "key": {
-    "D": {
-      "item": "minecraft:diamond"
+    "N": {
+      "item": "minecraft:netherite_ingot"
+    },
+    "S": {
+      "item": "create:sturdy_sheet"
     },
     "U": {
       "item": "create_item_drawers:capacity_upgrade_t3"
     }
   },
   "pattern": [
-    "DDD",
-    "U U",
-    "DDD"
+    "NNN",
+    "USU",
+    "NNN"
   ],
   "result": {
     "count": 1,

@@ -1,10 +1,12 @@
 package dev.emythiel.createitemdrawers.registry;
 
+import com.simibubi.create.AllBlocks;
 import com.simibubi.create.AllItems;
 import com.simibubi.create.foundation.data.CreateRegistrate;
 import com.tterrag.registrate.providers.RegistrateRecipeProvider;
 import com.tterrag.registrate.util.entry.ItemEntry;
 import dev.emythiel.createitemdrawers.CreateItemDrawers;
+import dev.emythiel.createitemdrawers.item.CapacityUpgradeBase;
 import dev.emythiel.createitemdrawers.item.CapacityUpgradeItem;
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.ShapedRecipeBuilder;
@@ -15,17 +17,32 @@ public class ModItems {
     private static final CreateRegistrate REGISTRATE =
         CreateItemDrawersRegistrate.REGISTRATE;
 
+    public static final ItemEntry<CapacityUpgradeBase> CAPACITY_UPGRADE_BASE =
+        REGISTRATE.item("capacity_upgrade_base",
+                p -> new CapacityUpgradeBase(p.stacksTo(16)))
+            .recipe((ctx, prov) -> ShapedRecipeBuilder
+                .shaped(RecipeCategory.MISC, ctx.get(), 1)
+                .define('Z', AllItems.ZINC_INGOT)
+                .define('E', Items.ENDER_PEARL)
+                .pattern("ZZZ")
+                .pattern(" E ")
+                .pattern("ZZZ")
+                .group("capacity_upgrade")
+                .unlockedBy("has_item_drawer", RegistrateRecipeProvider.has(ModTags.Items.DRAWERS))
+                .save(prov, ResourceLocation.fromNamespaceAndPath(CreateItemDrawers.MODID, "crafting_upgrade/" + ctx.getName()))
+            )
+            .register();
+
     public static final ItemEntry<CapacityUpgradeItem> CAPACITY_UPGRADE_T1 =
         REGISTRATE.item("capacity_upgrade_t1",
             p -> new CapacityUpgradeItem(p.stacksTo(16), 1))
             .recipe((ctx, prov) -> ShapedRecipeBuilder
                 .shaped(RecipeCategory.MISC, ctx.get(), 1)
-                .define('I', Items.IRON_INGOT)
-                .define('P', AllItems.PRECISION_MECHANISM)
-                .define('C', Items.ENDER_CHEST)
-                .pattern("III")
-                .pattern("PCP")
-                .pattern("III")
+                .define('A', AllItems.ANDESITE_ALLOY)
+                .define('U', ModItems.CAPACITY_UPGRADE_BASE)
+                .pattern("AAA")
+                .pattern("U U")
+                .pattern("AAA")
                 .group("capacity_upgrade")
                 .unlockedBy("has_item_drawer", RegistrateRecipeProvider.has(ModTags.Items.DRAWERS))
                 .save(prov, ResourceLocation.fromNamespaceAndPath(CreateItemDrawers.MODID, "crafting_upgrade/" + ctx.getName()))
@@ -37,11 +54,11 @@ public class ModItems {
             p -> new CapacityUpgradeItem(p.stacksTo(16), 2))
             .recipe((ctx, prov) -> ShapedRecipeBuilder
                 .shaped(RecipeCategory.MISC, ctx.get(), 1)
-                .define('G', Items.GOLD_INGOT)
+                .define('B', AllItems.BRASS_INGOT)
                 .define('U', ModItems.CAPACITY_UPGRADE_T1)
-                .pattern("GGG")
+                .pattern("BBB")
                 .pattern("U U")
-                .pattern("GGG")
+                .pattern("BBB")
                 .group("capacity_upgrade")
                 .unlockedBy("has_item_drawer", RegistrateRecipeProvider.has(ModTags.Items.DRAWERS))
                 .save(prov, ResourceLocation.fromNamespaceAndPath(CreateItemDrawers.MODID, "crafting_upgrade/" + ctx.getName()))
@@ -53,11 +70,12 @@ public class ModItems {
             p -> new CapacityUpgradeItem(p.stacksTo(16), 3))
             .recipe((ctx, prov) -> ShapedRecipeBuilder
                 .shaped(RecipeCategory.MISC, ctx.get(), 1)
-                .define('B', AllItems.BRASS_INGOT)
+                .define('D', Items.DIAMOND)
                 .define('U', ModItems.CAPACITY_UPGRADE_T2)
-                .pattern("BBB")
-                .pattern("U U")
-                .pattern("BBB")
+                .define('P', AllItems.PRECISION_MECHANISM)
+                .pattern("DDD")
+                .pattern("UPU")
+                .pattern("DDD")
                 .group("capacity_upgrade")
                 .unlockedBy("has_item_drawer", RegistrateRecipeProvider.has(ModTags.Items.DRAWERS))
                 .save(prov, ResourceLocation.fromNamespaceAndPath(CreateItemDrawers.MODID, "crafting_upgrade/" + ctx.getName()))
@@ -69,11 +87,12 @@ public class ModItems {
             p -> new CapacityUpgradeItem(p.stacksTo(16), 4))
             .recipe((ctx, prov) -> ShapedRecipeBuilder
                 .shaped(RecipeCategory.MISC, ctx.get(), 1)
-                .define('D', Items.DIAMOND)
+                .define('N', Items.NETHERITE_INGOT)
                 .define('U', ModItems.CAPACITY_UPGRADE_T3)
-                .pattern("DDD")
-                .pattern("U U")
-                .pattern("DDD")
+                .define('S', AllItems.STURDY_SHEET)
+                .pattern("NNN")
+                .pattern("USU")
+                .pattern("NNN")
                 .group("capacity_upgrade")
                 .unlockedBy("has_item_drawer", RegistrateRecipeProvider.has(ModTags.Items.DRAWERS))
                 .save(prov, ResourceLocation.fromNamespaceAndPath(CreateItemDrawers.MODID, "crafting_upgrade/" + ctx.getName()))
@@ -85,11 +104,12 @@ public class ModItems {
             p -> new CapacityUpgradeItem(p.stacksTo(16), 5))
             .recipe((ctx, prov) -> ShapedRecipeBuilder
                 .shaped(RecipeCategory.MISC, ctx.get(), 1)
-                .define('N', Items.NETHERITE_INGOT)
+                .define('S', Items.SHULKER_SHELL)
                 .define('U', ModItems.CAPACITY_UPGRADE_T4)
-                .pattern("NNN")
-                .pattern("U U")
-                .pattern("NNN")
+                .define('E', AllBlocks.EXPERIENCE_BLOCK)
+                .pattern("SSS")
+                .pattern("UEU")
+                .pattern("SSS")
                 .group("capacity_upgrade")
                 .unlockedBy("has_item_drawer", RegistrateRecipeProvider.has(ModTags.Items.DRAWERS))
                 .save(prov, ResourceLocation.fromNamespaceAndPath(CreateItemDrawers.MODID, "crafting_upgrade/" + ctx.getName()))

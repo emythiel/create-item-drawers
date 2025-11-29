@@ -3,17 +3,20 @@
   "category": "misc",
   "group": "capacity_upgrade",
   "key": {
-    "N": {
-      "item": "minecraft:netherite_ingot"
+    "E": {
+      "item": "create:experience_block"
+    },
+    "S": {
+      "item": "minecraft:shulker_shell"
     },
     "U": {
       "item": "create_item_drawers:capacity_upgrade_t4"
     }
   },
   "pattern": [
-    "NNN",
-    "U U",
-    "NNN"
+    "SSS",
+    "UEU",
+    "SSS"
   ],
   "result": {
     "count": 1,
