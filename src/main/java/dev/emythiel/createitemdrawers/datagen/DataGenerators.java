@@ -38,8 +38,5 @@ public class DataGenerators {
 
         // Generate block states
         generator.addProvider(event.includeClient(), new ModBlockStateProvider(packOutput, existingFileHelper));
-
-        // Generate item models
-        generator.addProvider(event.includeClient(), new ModItemModelProvider(packOutput, existingFileHelper));
     }
 }
