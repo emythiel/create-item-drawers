@@ -35,5 +35,9 @@
   "gui.create_item_drawers.tooltip.lock_slot": "Lock Slot",
   "gui.create_item_drawers.tooltip.unlock_slot": "Unlock Slot",
   "gui.create_item_drawers.tooltip.enable_void": "Enable Void Mode",
-  "gui.create_item_drawers.tooltip.disable_void": "Disable Void Mode"
+  "gui.create_item_drawers.tooltip.disable_void": "Disable Void Mode",
+
+  "tag.item.create_item_drawers.drawers": "Item Drawers",
+  "tag.block.create_item_drawers.drawers": "Item Drawers",
+  "tag.item.create_item_drawers.upgrades": "Item Drawer Upgrades"
 }
