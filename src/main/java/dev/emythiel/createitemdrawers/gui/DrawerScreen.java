@@ -20,7 +20,6 @@ import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
@@ -103,7 +102,7 @@ public class DrawerScreen extends AbstractContainerScreen<DrawerMenu> {
     }
 
     @Override
-    protected void renderSlotContents(GuiGraphics graphics, ItemStack stack, Slot slot, String countString) {
+    protected void renderSlotContents(GuiGraphics graphics, @NotNull ItemStack stack, Slot slot, String countString) {
         int hash = slot.x + slot.y * this.imageWidth;
 
         graphics.renderItem(stack, slot.x, slot.y, hash);
@@ -183,6 +182,7 @@ public class DrawerScreen extends AbstractContainerScreen<DrawerMenu> {
 
             int toggleX = sx - TOGGLE_W - 2;
 
+            // If quad drawer, move widgets for slot 1 and 3 to right
             if (slotCount == 4 && slotIndex % 2 == 1) {
                 toggleX = sx + INV_SLOT_WIDGET_SIZE;
             }
@@ -195,8 +195,8 @@ public class DrawerScreen extends AbstractContainerScreen<DrawerMenu> {
             addRenderableWidget(new ToggleButton(
                 toggleX, lockY,
                 TEXTURE,
-                TOGGLE_ON_X, TOGGLE_ON_Y,
                 TOGGLE_OFF_X, TOGGLE_OFF_Y,
+                TOGGLE_ON_X, TOGGLE_ON_Y,
                 TOGGLE_W, TOGGLE_H,
                 () -> be.getStorage().getSlot(slotIndex).isLockMode(),
                 newVal -> {

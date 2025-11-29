@@ -54,18 +54,6 @@ public class DrawerBlockEntity extends BaseBlockEntity implements MenuProvider {
         this.itemHandler = new DrawerItemHandler(this);
     }
 
-    /*public void openMenu(Player player) {
-        if (level == null || level.isClientSide)
-            return;
-
-        MenuProvider provider = new SimpleMenuProvider(
-            (id, inv, ply) -> new DrawerMenu(id, inv, this),
-            Component.literal("Drawer Settings")
-        );
-
-        NetworkHooks.openScreen((ServerPlayer) player, provider, worldPosition);
-    }*/
-
     public DrawerStorage getStorage() {
         return storage;
     }
