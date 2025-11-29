@@ -6,6 +6,7 @@ import dev.emythiel.createitemdrawers.registry.ModMenus;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.MenuType;
@@ -80,6 +81,9 @@ public class DrawerMenu extends MenuBase<DrawerBlockEntity> {
             this.addSlot(new ReadOnlySlotItemHandler(be.getItemHandler(null), 2, 98, 51));
             this.addSlot(new ReadOnlySlotItemHandler(be.getItemHandler(null), 3, 122, 51));
         }
+
+        // Upgrade slot
+        this.addSlot(new UpgradeSlot(be, 24, 39));
     }
 
     @Override
@@ -89,6 +93,6 @@ public class DrawerMenu extends MenuBase<DrawerBlockEntity> {
 
     @Override
     public ItemStack quickMoveStack(Player player, int i) {
-        return null;
+        return ItemStack.EMPTY;
     }
 }

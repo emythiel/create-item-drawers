@@ -1,6 +1,7 @@
 package dev.emythiel.createitemdrawers.block.entity;
 
 import dev.emythiel.createitemdrawers.block.DrawerBlock;
+import dev.emythiel.createitemdrawers.item.CapacityUpgradeItem;
 import dev.emythiel.createitemdrawers.storage.DrawerItemHandler;
 import dev.emythiel.createitemdrawers.storage.DrawerStorage;
 import dev.emythiel.createitemdrawers.gui.DrawerMenu;
@@ -19,6 +20,7 @@ import net.minecraft.world.SimpleMenuProvider;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
@@ -38,6 +40,7 @@ public class DrawerBlockEntity extends BaseBlockEntity implements MenuProvider {
     private final DrawerStorage storage;
     private final DrawerItemHandler itemHandler;
 
+    private ItemStack upgrade = ItemStack.EMPTY;
     private boolean renderItem = true;
     private boolean renderCount = true;
 
@@ -61,6 +64,21 @@ public class DrawerBlockEntity extends BaseBlockEntity implements MenuProvider {
     public IItemHandler getItemHandler(@Nullable Direction side) {
         return itemHandler;
     }
+
+    public ItemStack getUpgrade() { return upgrade; }
+    public void setUpgrade(ItemStack stack) {
+        this.upgrade = stack.copy();
+
+        int multiplier = 1;
+
+        if (!upgrade.isEmpty() && upgrade.getItem() instanceof CapacityUpgradeItem item) {
+            multiplier = item.getTierMultiplier();
+        }
+
+        storage.setUpgradeMultiplier(multiplier);
+        setChangedAndSync();
+    }
+
 
     public boolean getRenderItems() { return renderItem; }
     public void setRenderItems(boolean v) { this.renderItem = v; }
@@ -92,6 +110,10 @@ public class DrawerBlockEntity extends BaseBlockEntity implements MenuProvider {
     protected void saveAdditional(@NotNull CompoundTag tag, HolderLookup.@NotNull Provider provider) {
         super.saveAdditional(tag, provider);
 
+        if (!upgrade.isEmpty()) {
+            tag.put("Upgrade", upgrade.save(provider));
+        }
+
         tag.putInt("RenderMode", renderMode);
 
         // save slots
@@ -107,6 +129,14 @@ public class DrawerBlockEntity extends BaseBlockEntity implements MenuProvider {
     @Override
     public void loadAdditional(@NotNull CompoundTag tag, HolderLookup.@NotNull Provider provider) {
         super.loadAdditional(tag, provider);
+
+        if (tag.contains("Upgrade")) {
+            upgrade = ItemStack.parseOptional(provider, tag.getCompound("Upgrade"));
+            setUpgrade(upgrade);
+        } else {
+            upgrade = ItemStack.EMPTY;
+            setUpgrade(ItemStack.EMPTY);
+        }
 
         renderMode = tag.getInt("RenderMode");
         applyRenderMode(renderMode);

@@ -30,7 +30,7 @@ public class CapacityUpgradeItem extends Item {
         ).withStyle(ChatFormatting.DARK_GREEN));
     }
 
-    private int getTierMultiplier() {
+    public int getTierMultiplier() {
         return switch (tier) {
             case 1 -> ServerConfig.CAPACITY_UPGRADE_T1.get();
             case 2 -> ServerConfig.CAPACITY_UPGRADE_T2.get();
