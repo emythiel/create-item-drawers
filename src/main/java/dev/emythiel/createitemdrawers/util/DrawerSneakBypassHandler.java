@@ -13,7 +13,7 @@ import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 public class DrawerSneakBypassHandler {
 
     @SubscribeEvent(priority = EventPriority.LOW)
-    public static void useOnDrawerSlotIgnoresSleep(PlayerInteractEvent.RightClickBlock event) {
+    public static void useOnDrawerSlotIgnoresSneak(PlayerInteractEvent.RightClickBlock event) {
         if (event.getUseItem() != TriState.DEFAULT)
             return;
 
