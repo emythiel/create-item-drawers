@@ -31,25 +31,25 @@ public class DrawerScreen extends AbstractContainerScreen<DrawerMenu> {
     private static final int INV_SLOT_WIDGET_Y = 0;
     private static final int INV_SLOT_WIDGET_SIZE = 18;
     // Toggle widget (x, y, width, height)
-    private static final int TOGGLE_OFF_X = 241;
-    private static final int TOGGLE_OFF_Y = 20;
-    private static final int TOGGLE_ON_X = 241;
-    private static final int TOGGLE_ON_Y = 28;
+    private static final int TOGGLE_OFF_X = 244;
+    private static final int TOGGLE_OFF_Y = 36;
+    private static final int TOGGLE_ON_X = 244;
+    private static final int TOGGLE_ON_Y = 43;
     private static final int TOGGLE_W = 12;
     private static final int TOGGLE_H = 7;
     // Lock widget (x, y, width, height)
     private static final int LOCK_ON_X = 247;
-    private static final int LOCK_ON_Y = 36;
+    private static final int LOCK_ON_Y = 27;
     private static final int LOCK_OFF_X = 238;
-    private static final int LOCK_OFF_Y = 36;
+    private static final int LOCK_OFF_Y = 27;
     // Void widget (x, y, width, height)
-    private static final int VOID_ON_X = 246;
-    private static final int VOID_ON_Y = 45;
-    private static final int VOID_OFF_X = 237;
-    private static final int VOID_OFF_Y = 45;
+    private static final int VOID_ON_X = 247;
+    private static final int VOID_ON_Y = 18;
+    private static final int VOID_OFF_X = 238;
+    private static final int VOID_OFF_Y = 18;
     // Lock/Void widget size (width, height)
-    private static final int LOCK_VOID_W = 8;
-    private static final int LOCK_VOID_H = 8;
+    private static final int LOCK_VOID_W = 9;
+    private static final int LOCK_VOID_H = 9;
     // Render mode text
     private static final Component RENDER_MODE_LABEL =
         Component.translatable("gui.create_item_drawers.render_mode");
@@ -202,16 +202,16 @@ public class DrawerScreen extends AbstractContainerScreen<DrawerMenu> {
             int sx = leftPos + slot.x;
             int sy = topPos + slot.y;
 
-            int toggleX = sx - LOCK_VOID_W - 2;
+            int toggleX = sx - LOCK_VOID_W - 1;
 
             // If quad drawer, move widgets for slot 1 and 3 to right
             if (slotCount == 4 && slotIndex % 2 == 1) {
-                toggleX = sx + INV_SLOT_WIDGET_SIZE;
+                toggleX = sx + INV_SLOT_WIDGET_SIZE - 1;
             }
 
             // Vertical offset - lock top, void bottom
-            int lockY = sy;
-            int voidY = lockY + LOCK_VOID_H + 1;
+            int lockY = sy - 1;
+            int voidY = lockY + LOCK_VOID_H;
 
             // Lock mode
             addRenderableWidget(new ToggleButton(
