@@ -8,6 +8,11 @@
   "create_item_drawers.configuration.singleCapacity": "Single Drawer Stacks",
   "create_item_drawers.configuration.doubleCapacity": "Double Drawer Stacks",
   "create_item_drawers.configuration.quadCapacity": "Quad Drawer Stacks",
+  "create_item_drawers.configuration.capacityUpgradeT1": "Tier I Upgrade Multiplier",
+  "create_item_drawers.configuration.capacityUpgradeT2": "Tier II Upgrade Multiplier",
+  "create_item_drawers.configuration.capacityUpgradeT3": "Tier III Upgrade Multiplier",
+  "create_item_drawers.configuration.capacityUpgradeT4": "Tier IV Upgrade Multiplier",
+  "create_item_drawers.configuration.capacityUpgradeT5": "Tier V Upgrade Multiplier",
   "create_item_drawers.configuration.blacklist": "Blacklisted Items",
 
   "creativetab.create_item_drawers": "Create: Item Drawers",

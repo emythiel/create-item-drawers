@@ -1,5 +1,6 @@
 package dev.emythiel.createitemdrawers.config;
 
+import dev.emythiel.createitemdrawers.registry.ModBlocks;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.neoforge.common.ModConfigSpec;
@@ -25,7 +26,10 @@ public class ServerConfig {
     static {
         ModConfigSpec.Builder builder = new ModConfigSpec.Builder();
 
-        builder.comment("Storage capacity (in stacks) for the drawers").push("storage-settings");
+        builder.comment(
+            "Storage capacity is based on stacks per slot.",
+            "Upgrades multiplies the base capacity stacks."
+        ).push("storage-settings");
         SINGLE_CAPACITY = builder
             .comment("Single slot drawers")
             .defineInRange("singleCapacity", 32, 1, 65536);
@@ -35,9 +39,7 @@ public class ServerConfig {
         QUAD_CAPACITY = builder
             .comment("Quad slot drawers")
             .defineInRange("quadCapacity", 8, 1, 65536);
-        builder.pop();
 
-        builder.comment("Storage upgrade capacity multipliers").push("capacity-upgrades");
         CAPACITY_UPGRADE_T1 = builder
             .comment("Tier 1 capacity multiplier")
             .defineInRange("capacityUpgradeT1", 2, 1, 65536);
@@ -53,6 +55,7 @@ public class ServerConfig {
         CAPACITY_UPGRADE_T5 = builder
             .comment("Tier 5 capacity multiplier")
             .defineInRange("capacityUpgradeT5", 32, 1, 65536);
+        builder.pop();
 
         BLACKLIST = builder
             .comment(
@@ -61,8 +64,10 @@ public class ServerConfig {
             )
             .defineListAllowEmpty(
                 "blacklist",
-                List.of(),
-                () -> "",
+                List.of("create_item_drawers:single_drawer",
+                        "create_item_drawers:double_drawer",
+                        "create_item_drawers:quad_drawer"
+                ), () -> "",
                 ServerConfig::validateItemName);
 
         SPEC = builder.build();
