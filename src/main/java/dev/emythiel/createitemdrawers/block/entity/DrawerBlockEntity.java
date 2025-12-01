@@ -1,10 +1,16 @@
 package dev.emythiel.createitemdrawers.block.entity;
 
+import com.simibubi.create.AllItems;
+import com.simibubi.create.foundation.blockEntity.SmartBlockEntity;
+import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
+import com.simibubi.create.foundation.blockEntity.behaviour.edgeInteraction.EdgeInteractionBehaviour;
 import dev.emythiel.createitemdrawers.block.DrawerBlock;
 import dev.emythiel.createitemdrawers.item.CapacityUpgradeItem;
 import dev.emythiel.createitemdrawers.storage.DrawerItemHandler;
 import dev.emythiel.createitemdrawers.storage.DrawerStorage;
 import dev.emythiel.createitemdrawers.gui.DrawerMenu;
+import dev.emythiel.createitemdrawers.util.connection.ConnectedGroup;
+import dev.emythiel.createitemdrawers.util.connection.DrawerConnections;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
@@ -12,9 +18,6 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.protocol.Packet;
-import net.minecraft.network.protocol.game.ClientGamePacketListener;
-import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.SimpleMenuProvider;
 import net.minecraft.world.entity.player.Inventory;
@@ -28,6 +31,8 @@ import net.neoforged.neoforge.items.IItemHandler;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.List;
+
 /**
  * DrawerBlockEntity represents a placed drawer block in the world.
  * Responsibilities:
@@ -36,13 +41,18 @@ import org.jetbrains.annotations.Nullable;
  *   ✔ Save and load all storage + settings to NBT
  *   ✔ Provide block update sync to clients
  */
-public class DrawerBlockEntity extends BaseBlockEntity implements MenuProvider {
+public class DrawerBlockEntity extends SmartBlockEntity implements MenuProvider {
     private final DrawerStorage storage;
     private final DrawerItemHandler itemHandler;
+
+    public ConnectedGroup group = new ConnectedGroup();
+    private IItemHandler combinedHandler;
+    protected boolean reRender;
 
     private ItemStack upgrade = ItemStack.EMPTY;
     private boolean renderItem = true;
     private boolean renderCount = true;
+    private int renderMode = 0; // 0 = all, 1 = items only, 2 = none
 
     public DrawerBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
         super(type, pos, state);
@@ -61,11 +71,22 @@ public class DrawerBlockEntity extends BaseBlockEntity implements MenuProvider {
         return storage;
     }
 
-    public IItemHandler getItemHandler(@Nullable Direction side) {
+    public DrawerItemHandler getLocalHandler() {
         return itemHandler;
     }
 
+    public IItemHandler getItemHandler(@Nullable Direction side) {
+        if (combinedHandler == null) {
+            combinedHandler = DrawerConnections.buildCombinedHandler(this);
+            if (combinedHandler == null) {
+                combinedHandler = itemHandler;
+            }
+        }
+        return combinedHandler;
+    }
+
     public ItemStack getUpgrade() { return upgrade; }
+
     public void setUpgrade(ItemStack stack) {
         this.upgrade = stack.copy();
 
@@ -79,20 +100,20 @@ public class DrawerBlockEntity extends BaseBlockEntity implements MenuProvider {
         setChangedAndSync();
     }
 
+    public ConnectedGroup getGroup() { return group; }
 
     public boolean getRenderItems() { return renderItem; }
     public void setRenderItems(boolean v) { this.renderItem = v; }
     public boolean getRenderCounts() { return renderCount; }
     public void setRenderCounts(boolean v) { this.renderCount = v; }
 
-    private int renderMode = 0; // 0 = all, 1 = items only, 2 = none
-    public int getRenderMode() {
-        return renderMode;
-    }
+    public int getRenderMode() { return renderMode; }
+
     public void setRenderMode(int mode) {
         this.renderMode = mode;
         setChangedAndSync();
     }
+
     public void applyRenderMode(int mode) {
         this.renderMode = mode;
 
@@ -105,10 +126,23 @@ public class DrawerBlockEntity extends BaseBlockEntity implements MenuProvider {
         setChangedAndSync();
     }
 
+    public void setChangedAndSync() {
+        setChanged();
+        if (level != null && !level.isClientSide())
+            level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), Block.UPDATE_ALL);
+    }
+
+    @NotNull
+    @Override
+    public CompoundTag getUpdateTag(HolderLookup.@NotNull Provider provider) {
+        CompoundTag tag = new CompoundTag();
+        saveAdditional(tag, provider);
+        return tag;
+    }
 
     @Override
-    protected void saveAdditional(@NotNull CompoundTag tag, HolderLookup.@NotNull Provider provider) {
-        super.saveAdditional(tag, provider);
+    protected void write(@NotNull CompoundTag tag, HolderLookup.@NotNull Provider provider, boolean clientPacket) {
+        super.write(tag, provider, clientPacket);
 
         if (!upgrade.isEmpty()) {
             tag.put("Upgrade", upgrade.save(provider));
@@ -124,11 +158,15 @@ public class DrawerBlockEntity extends BaseBlockEntity implements MenuProvider {
             list.add(slotTag);
         }
         tag.put("Slots", list);
+
+        CompoundTag g = new CompoundTag();
+        group.write(g);
+        tag.put("ConnectedGroup", g);
     }
 
     @Override
-    public void loadAdditional(@NotNull CompoundTag tag, HolderLookup.@NotNull Provider provider) {
-        super.loadAdditional(tag, provider);
+    protected void read(@NotNull CompoundTag tag, HolderLookup.@NotNull Provider provider, boolean clientPacket) {
+        super.read(tag, provider, clientPacket);
 
         if (tag.contains("Upgrade")) {
             upgrade = ItemStack.parseOptional(provider, tag.getCompound("Upgrade"));
@@ -146,25 +184,8 @@ public class DrawerBlockEntity extends BaseBlockEntity implements MenuProvider {
         for (int i = 0; i < list.size(); i++) {
             storage.getSlot(i).load(list.getCompound(i), provider);
         }
-    }
 
-    public void setChangedAndSync() {
-        setChanged();
-        if (level != null && !level.isClientSide())
-            level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), Block.UPDATE_ALL);
-    }
-
-    @Override
-    public Packet<ClientGamePacketListener> getUpdatePacket() {
-        return ClientboundBlockEntityDataPacket.create(this);
-    }
-
-    @NotNull
-    @Override
-    public CompoundTag getUpdateTag(HolderLookup.@NotNull Provider provider) {
-        CompoundTag tag = new CompoundTag();
-        saveAdditional(tag, provider);
-        return tag;
+        group.read(tag.getCompound("ConnectedGroup"));
     }
 
     // GUI handling
@@ -187,5 +208,27 @@ public class DrawerBlockEntity extends BaseBlockEntity implements MenuProvider {
         );
     }
 
+    @Override
+    public void addBehaviours(List<BlockEntityBehaviour> behaviours) {
+        behaviours.add(
+            new EdgeInteractionBehaviour(
+                this,
+                (level, pos, pos2) -> {
+                    DrawerConnections.toggleConnection(level, pos, pos2);
+                    combinedHandler = null;
+                    invalidateCapabilities();;
+                    setChangedAndSync();
+                }
+            )
+                .require(AllItems.WRENCH.get())
+                .connectivity(DrawerConnections::shouldConnect)
+        );
+    }
 
+    public void connectivityChanged() {
+        reRender = true;
+        sendData();
+        combinedHandler = null;
+        invalidateCapabilities();
+    }
 }

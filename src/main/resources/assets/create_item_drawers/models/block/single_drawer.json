@@ -1,7 +1,7 @@
 {
 	"format_version": "1.9.0",
 	"credit": "Made with Blockbench",
-	"parent": "block/block",
+  "parent": "block/block",
 	"textures": {
 		"particle": "create_item_drawers:block/side",
 		"side": "create_item_drawers:block/side",
