@@ -1,6 +1,8 @@
 package dev.emythiel.createitemdrawers.block.entity;
 
 import com.simibubi.create.AllItems;
+import com.simibubi.create.api.contraption.transformable.TransformableBlockEntity;
+import com.simibubi.create.content.contraptions.StructureTransform;
 import com.simibubi.create.foundation.blockEntity.SmartBlockEntity;
 import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
 import com.simibubi.create.foundation.blockEntity.behaviour.edgeInteraction.EdgeInteractionBehaviour;
@@ -25,6 +27,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.items.IItemHandler;
@@ -41,7 +44,7 @@ import java.util.List;
  *   ✔ Save and load all storage + settings to NBT
  *   ✔ Provide block update sync to clients
  */
-public class DrawerBlockEntity extends SmartBlockEntity implements MenuProvider {
+public class DrawerBlockEntity extends SmartBlockEntity implements MenuProvider, TransformableBlockEntity {
     private final DrawerStorage storage;
     private final DrawerItemHandler itemHandler;
 
@@ -162,6 +165,11 @@ public class DrawerBlockEntity extends SmartBlockEntity implements MenuProvider 
         CompoundTag g = new CompoundTag();
         group.write(g);
         tag.put("ConnectedGroup", g);
+
+        if (clientPacket && reRender) {
+            tag.putBoolean("Redraw", true);
+            reRender = false;
+        }
     }
 
     @Override
@@ -186,6 +194,11 @@ public class DrawerBlockEntity extends SmartBlockEntity implements MenuProvider 
         }
 
         group.read(tag.getCompound("ConnectedGroup"));
+
+        if (!clientPacket)
+            return;
+        if (tag.contains("Redraw"))
+            level.sendBlockUpdated(getBlockPos(), getBlockState(), getBlockState(), 16);
     }
 
     // GUI handling
@@ -230,5 +243,11 @@ public class DrawerBlockEntity extends SmartBlockEntity implements MenuProvider 
         sendData();
         combinedHandler = null;
         invalidateCapabilities();
+    }
+
+    @Override
+    public void transform(BlockEntity be, StructureTransform transform) {
+        group.offsets.replaceAll(transform::applyWithoutOffset);
+        notifyUpdate();
     }
 }

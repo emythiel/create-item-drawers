@@ -1,6 +1,5 @@
 package dev.emythiel.createitemdrawers.util.connection;
 
-import com.simibubi.create.Create;
 import com.simibubi.create.foundation.block.connected.AllCTTypes;
 import com.simibubi.create.foundation.block.connected.CTSpriteShiftEntry;
 import com.simibubi.create.foundation.block.connected.CTSpriteShifter;
@@ -9,7 +8,8 @@ import dev.emythiel.createitemdrawers.CreateItemDrawers;
 
 public class DrawerSpriteShifts {
 
-    public static final CTSpriteShiftEntry DRAWER_BACK = omni("back"),
+    public static final CTSpriteShiftEntry
+        DRAWER_BACK = omni("back"),
         DRAWER_SIDE = vertical("side"),
         DRAWER_OTHERSIDE = horizontal("side");
 

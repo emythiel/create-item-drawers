@@ -6,7 +6,7 @@ import net.createmod.catnip.data.Iterate;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.HorizontalDirectionalBlock;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.items.IItemHandler;
@@ -94,7 +94,7 @@ public class DrawerConnections {
 
         connectControllers(world, drawer1, drawer2);
 
-        world.setBlock(drawer1.getBlockPos(), drawer1.getBlockState(), HorizontalDirectionalBlock.UPDATE_ALL);
+        world.setBlock(drawer1.getBlockPos(), drawer1.getBlockState(), Block.UPDATE_ALL);
 
         drawer1.setChangedAndSync();
         drawer1.connectivityChanged();

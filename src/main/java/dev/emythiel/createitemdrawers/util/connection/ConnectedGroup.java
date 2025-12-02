@@ -10,7 +10,7 @@ import java.util.*;
 
 public class ConnectedGroup {
     public boolean isController;
-    List<BlockPos> offsets = Collections.synchronizedList(new ArrayList<>());
+    public List<BlockPos> offsets = Collections.synchronizedList(new ArrayList<>());
 
     public ConnectedGroup() {
         isController = true;
@@ -35,6 +35,7 @@ public class ConnectedGroup {
             data.putInt("X", pos.getX());
             data.putInt("Y", pos.getY());
             data.putInt("Z", pos.getZ());
+            list.add(data);
         });
         tag.put("Offsets", list);
     }
