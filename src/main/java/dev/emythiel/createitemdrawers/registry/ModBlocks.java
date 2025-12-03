@@ -1,17 +1,19 @@
 package dev.emythiel.createitemdrawers.registry;
 
+import com.simibubi.create.foundation.data.BlockStateGen;
 import com.simibubi.create.foundation.data.CreateRegistrate;
 import com.tterrag.registrate.util.entry.BlockEntry;
+import dev.emythiel.createitemdrawers.CreateItemDrawers;
 import dev.emythiel.createitemdrawers.block.DrawerBlock;
 import dev.emythiel.createitemdrawers.util.connection.DrawerCTBehaviour;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.material.MapColor;
 
 import static com.simibubi.create.foundation.data.ModelGen.customItemModel;
 
 public class ModBlocks {
-    private static final CreateRegistrate REGISTRATE =
-        CreateItemDrawersRegistrate.REGISTRATE;
+    private static final CreateRegistrate REGISTRATE = CreateItemDrawers.registrate();
 
     public static final BlockEntry<DrawerBlock> SINGLE_DRAWER =
         REGISTRATE.block("single_drawer", p -> new DrawerBlock(p, 1))

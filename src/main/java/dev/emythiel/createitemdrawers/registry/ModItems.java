@@ -14,8 +14,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Items;
 
 public class ModItems {
-    private static final CreateRegistrate REGISTRATE =
-        CreateItemDrawersRegistrate.REGISTRATE;
+    private static final CreateRegistrate REGISTRATE = CreateItemDrawers.registrate();
 
     public static final ItemEntry<CapacityUpgradeBase> CAPACITY_UPGRADE_BASE =
         REGISTRATE.item("capacity_upgrade_base",

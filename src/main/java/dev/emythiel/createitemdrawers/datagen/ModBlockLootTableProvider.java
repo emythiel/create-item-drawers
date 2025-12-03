@@ -1,8 +1,8 @@
 package dev.emythiel.createitemdrawers.datagen;
 
+import com.simibubi.create.foundation.data.CreateRegistrate;
 import com.tterrag.registrate.util.entry.RegistryEntry;
 import dev.emythiel.createitemdrawers.CreateItemDrawers;
-import dev.emythiel.createitemdrawers.registry.CreateItemDrawersRegistrate;
 import dev.emythiel.createitemdrawers.registry.ModBlocks;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
@@ -14,6 +14,9 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Set;
 
 public class ModBlockLootTableProvider extends BlockLootSubProvider {
+
+    private static final CreateRegistrate REGISTRATE = CreateItemDrawers.registrate();
+
     protected ModBlockLootTableProvider(HolderLookup.Provider registries) {
         super(Set.of(), FeatureFlags.REGISTRY.allFlags(), registries);
     }
@@ -28,7 +31,7 @@ public class ModBlockLootTableProvider extends BlockLootSubProvider {
     @NotNull
     @Override
     protected Iterable<Block> getKnownBlocks() {
-        return CreateItemDrawersRegistrate.REGISTRATE
+        return REGISTRATE
             .getAll(Registries.BLOCK)
             .stream()
             .filter(e -> e.getId().getNamespace().equals(CreateItemDrawers.MODID))

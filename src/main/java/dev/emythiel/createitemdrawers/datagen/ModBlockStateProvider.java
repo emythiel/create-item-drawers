@@ -1,15 +1,18 @@
 package dev.emythiel.createitemdrawers.datagen;
 
+import com.simibubi.create.foundation.data.CreateRegistrate;
 import com.tterrag.registrate.providers.RegistrateBlockstateProvider;
 import com.tterrag.registrate.util.entry.BlockEntry;
-import dev.emythiel.createitemdrawers.registry.CreateItemDrawersRegistrate;
+import dev.emythiel.createitemdrawers.CreateItemDrawers;
 import dev.emythiel.createitemdrawers.registry.ModBlocks;
 import net.minecraft.data.PackOutput;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
 
 public class ModBlockStateProvider extends RegistrateBlockstateProvider {
+    private static final CreateRegistrate REGISTRATE = CreateItemDrawers.registrate();
+
     public ModBlockStateProvider(PackOutput output, ExistingFileHelper existingFileHelper) {
-        super(CreateItemDrawersRegistrate.REGISTRATE, output, existingFileHelper);
+        super(REGISTRATE, output, existingFileHelper);
     }
 
     @Override
