@@ -6,11 +6,12 @@ import dev.emythiel.createitemdrawers.block.entity.DrawerBlockEntity;
 import dev.emythiel.createitemdrawers.config.ClientConfig;
 import dev.emythiel.createitemdrawers.config.ServerConfig;
 import dev.emythiel.createitemdrawers.registry.*;
+import dev.emythiel.createitemdrawers.util.connection.DrawerSpriteShifts;
 import net.createmod.catnip.lang.FontHelper;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.CreativeModeTab;
-import net.neoforged.neoforge.capabilities.Capabilities;
+import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.client.gui.ConfigurationScreen;
 import net.neoforged.neoforge.client.gui.IConfigScreenFactory;
@@ -41,6 +42,9 @@ public class CreateItemDrawers {
         // Register Create Registrate
         REGISTRATE.registerEventListeners(modEventBus);
 
+        // Client setup
+        modEventBus.addListener(this::onClientSetup);
+
         // Register mod configuration files
         modContainer.registerConfig(ModConfig.Type.CLIENT, ClientConfig.SPEC);
         modContainer.registerConfig(ModConfig.Type.SERVER, ServerConfig.SPEC);
@@ -50,23 +54,30 @@ public class CreateItemDrawers {
         modEventBus.register(ModPackets.class);
         modEventBus.addListener(this::registerCapabilities);
 
+
         ModBlocks.register();
         ModBlockEntities.register();
         ModItems.register();
         ModMenus.register();
         ModTabs.register(modEventBus);
+
+
+    }
+    static {
+        DrawerSpriteShifts.init();
     }
 
     private void commonSetup(FMLCommonSetupEvent event) {
 
     }
 
+    private void onClientSetup(FMLClientSetupEvent event) {
+        // Otherwise textures don't load properly on start grr
+        event.enqueueWork(DrawerSpriteShifts::init);
+    }
+
     private void registerCapabilities(RegisterCapabilitiesEvent event) {
-        event.registerBlockEntity(
-            Capabilities.ItemHandler.BLOCK,
-            ModBlockEntities.DRAWER_BLOCK_ENTITY.get(),
-            DrawerBlockEntity::getItemHandler
-        );
+        DrawerBlockEntity.registerCapabilities(event);
     }
 
     // You can use SubscribeEvent and let the Event Bus discover methods to call

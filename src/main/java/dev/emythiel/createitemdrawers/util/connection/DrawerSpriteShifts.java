@@ -13,6 +13,8 @@ public class DrawerSpriteShifts {
         DRAWER_SIDE = vertical("side"),
         DRAWER_OTHERSIDE = horizontal("side");
 
+
+
     private static CTSpriteShiftEntry omni(String name) {
         return getCT(AllCTTypes.OMNIDIRECTIONAL, name);
     }
@@ -33,4 +35,6 @@ public class DrawerSpriteShifts {
     private static CTSpriteShiftEntry getCT(CTType type, String blockTextureName) {
         return getCT(type, blockTextureName, blockTextureName);
     }
+
+    public static void init() {}
 }

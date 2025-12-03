@@ -2,6 +2,7 @@ package dev.emythiel.createitemdrawers.util.connection;
 
 import com.simibubi.create.foundation.block.connected.CTSpriteShiftEntry;
 import com.simibubi.create.foundation.block.connected.ConnectedTextureBehaviour;
+import dev.emythiel.createitemdrawers.block.DrawerBlock;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -18,12 +19,14 @@ public class DrawerCTBehaviour extends ConnectedTextureBehaviour.Base {
     @Override
     public boolean connectsTo(BlockState state, BlockState other, BlockAndTintGetter reader,
                               BlockPos pos, BlockPos otherPos, Direction face) {
-        if (state.getBlock() != other.getBlock())
+        /*if (state.getBlock() != other.getBlock())
+            return false;*/
+        if (!(state.getBlock() instanceof DrawerBlock) || !(other.getBlock() instanceof DrawerBlock))
             return false;
         if (state.getValue(HORIZONTAL_FACING) != other.getValue(HORIZONTAL_FACING))
             return false;
 
-        return DrawerConnectionHelper.areDrawersConnected(reader, pos, otherPos);
+        return DrawerHelper.areDrawersConnected(reader, pos, otherPos);
     }
 
     @Override
@@ -40,7 +43,6 @@ public class DrawerCTBehaviour extends ConnectedTextureBehaviour.Base {
         return isNegative;
     }
 
-    @Nullable
     @Override
     public CTSpriteShiftEntry getShift(BlockState state, Direction direction, @Nullable TextureAtlasSprite sprite) {
         Direction facing = state.getValue(HORIZONTAL_FACING);

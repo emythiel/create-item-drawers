@@ -3,10 +3,13 @@ package dev.emythiel.createitemdrawers.util.connection;
 import dev.emythiel.createitemdrawers.block.DrawerBlock;
 import dev.emythiel.createitemdrawers.block.entity.DrawerBlockEntity;
 import net.createmod.catnip.data.Iterate;
+import net.createmod.catnip.nbt.NBTHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.items.IItemHandler;
@@ -18,9 +21,8 @@ import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 import static dev.emythiel.createitemdrawers.block.base.BaseBlock.HORIZONTAL_FACING;
-import static dev.emythiel.createitemdrawers.util.connection.DrawerConnectionHelper.getDrawer;
 
-public class DrawerConnections {
+public class ConnectedGroupHandler {
 
     public static boolean shouldConnect(Level world, BlockPos pos, Direction face, Direction direction) {
         BlockState refState = world.getBlockState(pos);
@@ -40,20 +42,19 @@ public class DrawerConnections {
     }
 
     public static void toggleConnection(Level world, BlockPos pos, BlockPos pos2) {
-        DrawerBlockEntity drawer1 = getDrawer(world, pos);
-        DrawerBlockEntity drawer2 = getDrawer(world, pos2);
+        DrawerBlockEntity drawer1 = DrawerHelper.getDrawer(world, pos);
+        DrawerBlockEntity drawer2 = DrawerHelper.getDrawer(world, pos2);
 
         if (drawer1 == null || drawer2 == null)
             return;
 
-        // Get each drawer's controller world position
         BlockPos controllerPos1 = drawer1.getBlockPos()
             .offset(drawer1.group.offsets.get(0));
         BlockPos controllerPos2 = drawer2.getBlockPos()
             .offset(drawer2.group.offsets.get(0));
 
         if (controllerPos1.equals(controllerPos2)) {
-            DrawerBlockEntity controller = getDrawer(world, controllerPos1);
+            DrawerBlockEntity controller = DrawerHelper.getDrawer(world, controllerPos1);
 
             Set<BlockPos> positions = controller.group.offsets.stream()
                 .map(controllerPos1::offset)
@@ -78,25 +79,27 @@ public class DrawerConnections {
             initAndAddAll(world, drawer1, positions);
             initAndAddAll(world, drawer2, splitGroup);
 
-            drawer1.setChangedAndSync();
+            drawer1.setChanged();
             drawer1.connectivityChanged();
-            drawer2.setChangedAndSync();
+            drawer2.setChanged();
             drawer2.connectivityChanged();
             return;
         }
 
         if (!drawer1.group.isController)
-            drawer1 = getDrawer(world, controllerPos1);
+            drawer1 = DrawerHelper.getDrawer(world, controllerPos1);
         if (!drawer2.group.isController)
-            drawer2 = getDrawer(world, controllerPos2);
+            drawer2 = DrawerHelper.getDrawer(world, controllerPos2);
         if (drawer1 == null || drawer2 == null)
             return;
 
         connectControllers(world, drawer1, drawer2);
 
-        drawer1.setChangedAndSync();
+        world.setBlock(drawer1.getBlockPos(), drawer1.getBlockState(), DrawerBlock.UPDATE_ALL);
+
+        drawer1.setChanged();
         drawer1.connectivityChanged();
-        drawer2.setChangedAndSync();
+        drawer2.setChanged();
         drawer2.connectivityChanged();
     }
 
@@ -140,8 +143,52 @@ public class DrawerConnections {
             return;
 
         callback.accept(drawer.group);
-        drawer.setChangedAndSync();
+        drawer.setChanged();
         drawer.connectivityChanged();
+    }
+
+    public static class ConnectedGroup {
+        public boolean isController;
+        public List<BlockPos> offsets = Collections.synchronizedList(new ArrayList<>());
+
+        public ConnectedGroup() {
+            isController = true;
+            offsets.add(BlockPos.ZERO);
+        }
+
+        public void attachTo(BlockPos controllerPos, BlockPos myPos) {
+            isController = false;
+            offsets.clear();
+            offsets.add(controllerPos.subtract(myPos));
+        }
+
+        public BlockPos getController(BlockPos myPos) {
+            return myPos.offset(offsets.get(0));
+        }
+
+        public void write(CompoundTag tag) {
+            tag.putBoolean("Controller", isController);
+            ListTag list = new ListTag();
+            offsets.forEach(pos -> {
+                CompoundTag data = new CompoundTag();
+                data.putInt("X", pos.getX());
+                data.putInt("Y", pos.getY());
+                data.putInt("Z", pos.getZ());
+                list.add(data);
+            });
+            tag.put("Offsets", list);
+        }
+
+        public void read(CompoundTag tag) {
+            isController = tag.getBoolean("Controller");
+            offsets = NBTHelper.readCompoundList(tag.getList("Offsets", Tag.TAG_COMPOUND),
+                c -> new BlockPos(c.getInt("X"), c.getInt("Y"), c.getInt("Z")));
+
+            if (offsets.isEmpty()) {
+                isController = true;
+                offsets.add(BlockPos.ZERO);
+            }
+        }
     }
 
     public static IItemHandler buildCombinedHandler(DrawerBlockEntity anyMember) {
@@ -162,7 +209,7 @@ public class DrawerConnections {
 
         for (BlockPos offset : group.offsets) {
             BlockPos abs = controller.getBlockPos().offset(offset);
-            DrawerBlockEntity be = getDrawer(controller.getLevel(), abs);
+            DrawerBlockEntity be = DrawerHelper.getDrawer(controller.getLevel(), abs);
             if (be != null) {
                 handlers.add(be.getLocalHandler());
             }
@@ -181,6 +228,6 @@ public class DrawerConnections {
             return be;
 
         BlockPos controllerPos = group.getController(be.getBlockPos());
-        return getDrawer(be.getLevel(), controllerPos);
+        return DrawerHelper.getDrawer(be.getLevel(), controllerPos);
     }
 }

@@ -6,13 +6,15 @@ import com.simibubi.create.content.contraptions.StructureTransform;
 import com.simibubi.create.foundation.blockEntity.SmartBlockEntity;
 import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
 import com.simibubi.create.foundation.blockEntity.behaviour.edgeInteraction.EdgeInteractionBehaviour;
+import dev.emythiel.createitemdrawers.CreateItemDrawers;
 import dev.emythiel.createitemdrawers.block.DrawerBlock;
 import dev.emythiel.createitemdrawers.item.CapacityUpgradeItem;
+import dev.emythiel.createitemdrawers.registry.ModBlockEntities;
 import dev.emythiel.createitemdrawers.storage.DrawerItemHandler;
 import dev.emythiel.createitemdrawers.storage.DrawerStorage;
 import dev.emythiel.createitemdrawers.gui.DrawerMenu;
-import dev.emythiel.createitemdrawers.util.connection.ConnectedGroup;
-import dev.emythiel.createitemdrawers.util.connection.DrawerConnections;
+import dev.emythiel.createitemdrawers.util.connection.ConnectedGroupHandler;
+import dev.emythiel.createitemdrawers.util.connection.ConnectedGroupHandler.ConnectedGroup;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
@@ -30,6 +32,8 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.neoforged.neoforge.capabilities.Capabilities;
+import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.items.IItemHandler;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -51,6 +55,7 @@ public class DrawerBlockEntity extends SmartBlockEntity implements MenuProvider,
     public ConnectedGroup group = new ConnectedGroup();
     private IItemHandler combinedHandler;
     protected boolean reRender;
+    private EdgeInteractionBehaviour connectivity;
 
     private ItemStack upgrade = ItemStack.EMPTY;
     private boolean renderItem = true;
@@ -70,6 +75,14 @@ public class DrawerBlockEntity extends SmartBlockEntity implements MenuProvider,
         this.itemHandler = new DrawerItemHandler(this);
     }
 
+    public static void registerCapabilities(RegisterCapabilitiesEvent event) {
+        event.registerBlockEntity(
+            Capabilities.ItemHandler.BLOCK,
+            ModBlockEntities.DRAWER_BLOCK_ENTITY.get(),
+            DrawerBlockEntity::getItemHandler
+        );
+    }
+
     public DrawerStorage getStorage() {
         return storage;
     }
@@ -80,7 +93,7 @@ public class DrawerBlockEntity extends SmartBlockEntity implements MenuProvider,
 
     public IItemHandler getItemHandler(@Nullable Direction side) {
         if (combinedHandler == null) {
-            combinedHandler = DrawerConnections.buildCombinedHandler(this);
+            combinedHandler = ConnectedGroupHandler.buildCombinedHandler(this);
             if (combinedHandler == null) {
                 combinedHandler = itemHandler;
             }
@@ -135,17 +148,19 @@ public class DrawerBlockEntity extends SmartBlockEntity implements MenuProvider,
             level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), Block.UPDATE_ALL);
     }
 
-    @NotNull
     @Override
-    public CompoundTag getUpdateTag(HolderLookup.@NotNull Provider provider) {
-        CompoundTag tag = new CompoundTag();
-        saveAdditional(tag, provider);
-        return tag;
+    public void writeSafe(CompoundTag tag, HolderLookup.Provider provider) {
+        super.writeSafe(tag, provider);
+        if (group == null)
+            return;
+
+        CompoundTag groupTag = new CompoundTag();
+        group.write(groupTag);
+        tag.put("ConnectedGroup", groupTag);
     }
 
     @Override
     protected void write(@NotNull CompoundTag tag, HolderLookup.@NotNull Provider provider, boolean clientPacket) {
-        super.write(tag, provider, clientPacket);
 
         if (!upgrade.isEmpty()) {
             tag.put("Upgrade", upgrade.save(provider));
@@ -162,9 +177,11 @@ public class DrawerBlockEntity extends SmartBlockEntity implements MenuProvider,
         }
         tag.put("Slots", list);
 
-        CompoundTag g = new CompoundTag();
-        group.write(g);
-        tag.put("ConnectedGroup", g);
+        CompoundTag groupTag = new CompoundTag();
+        group.write(groupTag);
+        tag.put("ConnectedGroup", groupTag);
+
+        super.write(tag, provider, clientPacket);
 
         if (clientPacket && reRender) {
             tag.putBoolean("Redraw", true);
@@ -174,7 +191,6 @@ public class DrawerBlockEntity extends SmartBlockEntity implements MenuProvider,
 
     @Override
     protected void read(@NotNull CompoundTag tag, HolderLookup.@NotNull Provider provider, boolean clientPacket) {
-        super.read(tag, provider, clientPacket);
 
         if (tag.contains("Upgrade")) {
             upgrade = ItemStack.parseOptional(provider, tag.getCompound("Upgrade"));
@@ -195,10 +211,14 @@ public class DrawerBlockEntity extends SmartBlockEntity implements MenuProvider,
 
         group.read(tag.getCompound("ConnectedGroup"));
 
+        super.read(tag, provider, clientPacket);
+
+
         if (!clientPacket)
             return;
-        if (tag.contains("Redraw"))
+        if (tag.contains("Redraw")) {
             level.sendBlockUpdated(getBlockPos(), getBlockState(), getBlockState(), 16);
+        }
     }
 
     // GUI handling
@@ -223,19 +243,10 @@ public class DrawerBlockEntity extends SmartBlockEntity implements MenuProvider,
 
     @Override
     public void addBehaviours(List<BlockEntityBehaviour> behaviours) {
-        behaviours.add(
-            new EdgeInteractionBehaviour(
-                this,
-                (level, pos, pos2) -> {
-                    DrawerConnections.toggleConnection(level, pos, pos2);
-                    combinedHandler = null;
-                    invalidateCapabilities();;
-                    setChangedAndSync();
-                }
-            )
-                .require(AllItems.WRENCH.get())
-                .connectivity(DrawerConnections::shouldConnect)
-        );
+        connectivity = new EdgeInteractionBehaviour(this, ConnectedGroupHandler::toggleConnection)
+            .connectivity(ConnectedGroupHandler::shouldConnect)
+            .require(AllItems.WRENCH.get());
+        behaviours.add(connectivity);
     }
 
     public void connectivityChanged() {

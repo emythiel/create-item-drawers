@@ -1,11 +1,12 @@
 package dev.emythiel.createitemdrawers.util.connection;
 
 import dev.emythiel.createitemdrawers.block.entity.DrawerBlockEntity;
+import dev.emythiel.createitemdrawers.util.connection.ConnectedGroupHandler.ConnectedGroup;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
-public class DrawerConnectionHelper {
+public class DrawerHelper {
 
     public static DrawerBlockEntity getDrawer(BlockAndTintGetter reader, BlockPos pos) {
         BlockEntity be = reader.getBlockEntity(pos);

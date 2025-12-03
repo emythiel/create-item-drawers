@@ -15,9 +15,6 @@ public class ModBlockEntities {
                 ModBlocks.DOUBLE_DRAWER,
                 ModBlocks.QUAD_DRAWER
             )
-            // TODO:
-            //.renderer(() -> DrawerRenderer::new)
-            //.visual(() -> DrawerVisual::new)
             .register();
 
     public static void register() {}
