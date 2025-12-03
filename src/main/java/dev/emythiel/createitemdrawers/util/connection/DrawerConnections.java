@@ -94,8 +94,6 @@ public class DrawerConnections {
 
         connectControllers(world, drawer1, drawer2);
 
-        world.setBlock(drawer1.getBlockPos(), drawer1.getBlockState(), Block.UPDATE_ALL);
-
         drawer1.setChangedAndSync();
         drawer1.connectivityChanged();
         drawer2.setChangedAndSync();

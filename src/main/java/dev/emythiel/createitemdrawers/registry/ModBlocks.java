@@ -15,6 +15,10 @@ import static com.simibubi.create.foundation.data.ModelGen.customItemModel;
 public class ModBlocks {
     private static final CreateRegistrate REGISTRATE = CreateItemDrawers.registrate();
 
+    static {
+        REGISTRATE.setCreativeTab(ModTabs.CREATIVE_TAB);
+    }
+
     public static final BlockEntry<DrawerBlock> SINGLE_DRAWER =
         REGISTRATE.block("single_drawer", p -> new DrawerBlock(p, 1))
             .properties(p -> p.mapColor(MapColor.TERRACOTTA_BLUE)

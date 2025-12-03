@@ -16,6 +16,10 @@ import net.minecraft.world.item.Items;
 public class ModItems {
     private static final CreateRegistrate REGISTRATE = CreateItemDrawers.registrate();
 
+    static {
+        REGISTRATE.setCreativeTab(ModTabs.CREATIVE_TAB);
+    }
+
     public static final ItemEntry<CapacityUpgradeBase> CAPACITY_UPGRADE_BASE =
         REGISTRATE.item("capacity_upgrade_base",
                 p -> new CapacityUpgradeBase(p.stacksTo(16)))
