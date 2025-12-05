@@ -30,6 +30,10 @@
 
   "tooltip.create_item_drawers.capacity_multiplier": "Multiplier: %sx",
 
+  "interaction.create_item_drawers.drawer_connected": "Connected Drawers",
+  "interaction.create_item_drawers.click_to_separate": "Click to separate inventories",
+  "interaction.create_item_drawers.click_to_merge": "Click to merge inventories",
+
   "gui.create_item_drawers.drawer_1": "Single Item Drawer - Settings",
   "gui.create_item_drawers.drawer_2": "Double Item Drawer - Settings",
   "gui.create_item_drawers.drawer_4": "Quad Item Drawer - Settings",

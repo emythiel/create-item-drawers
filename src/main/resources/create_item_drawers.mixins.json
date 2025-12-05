@@ -1,0 +1,13 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "dev.emythiel.createitemdrawers.mixins",
+  "compatibilityLevel": "JAVA_17",
+  "mixins": [],
+  "client": [
+    "MixinEdgeInteractionRenderer"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

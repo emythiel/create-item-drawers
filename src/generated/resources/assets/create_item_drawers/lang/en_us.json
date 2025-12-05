@@ -7,5 +7,6 @@
   "item.create_item_drawers.capacity_upgrade_t2": "Capacity Upgrade T2",
   "item.create_item_drawers.capacity_upgrade_t3": "Capacity Upgrade T3",
   "item.create_item_drawers.capacity_upgrade_t4": "Capacity Upgrade T4",
-  "item.create_item_drawers.capacity_upgrade_t5": "Capacity Upgrade T5"
+  "item.create_item_drawers.capacity_upgrade_t5": "Capacity Upgrade T5",
+  "tooltip.create_item_drawers.drawer_connected": "Connected Drawers"
 }
