@@ -13,6 +13,7 @@ import dev.emythiel.createitemdrawers.network.SlotTogglePacket;
 import dev.emythiel.createitemdrawers.storage.DrawerSlot;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -118,26 +119,40 @@ public class DrawerScreen extends AbstractContainerScreen<DrawerMenu> {
     @Override
     protected void renderSlotContents(GuiGraphics graphics, @NotNull ItemStack stack, Slot slot, String countString) {
         int hash = slot.x + slot.y * this.imageWidth;
+        boolean isTemplateItem = false;
 
         // If drawer slot and empty but locked, show template item
         if (slot instanceof ReadOnlySlotItemHandler ro) {
             DrawerBlockEntity be = menu.contentHolder;
             DrawerSlot drawerSlot = be.getStorage().getSlot(ro.getSlotIndex());
 
-            if (stack.isEmpty() && drawerSlot.isLockMode() && !drawerSlot.getStoredItem().isEmpty())
+            if (stack.isEmpty() && drawerSlot.isLockMode() && !drawerSlot.getStoredItem().isEmpty()) {
                 stack = drawerSlot.getStoredItem();
+                isTemplateItem = true;
+            }
         }
         graphics.renderItem(stack, slot.x, slot.y, hash);
+        // If template item is used, gray it out
+        if (isTemplateItem) {
+            graphics.fill(RenderType.guiOverlay(),
+                slot.x, slot.y,
+                slot.x + 16, slot.y + 16,
+                0x80AAAAAA);
+            return;
+        }
 
         if (!(slot instanceof ReadOnlySlotItemHandler)) {
             graphics.renderItemDecorations(this.font, stack, slot.x, slot.y, countString);
             return;
         }
 
+        // Don't render count if empty
+        if (stack.isEmpty())
+            return;
+
         int count = stack.getCount();
 
-        if (count <= 1) return;
-
+        // If above 10.000, show count as 10k etc
         String s = (count > 9999) ? (count / 1000) + "k" : String.valueOf(count);
 
         // Position
