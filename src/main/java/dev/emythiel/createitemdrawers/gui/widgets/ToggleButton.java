@@ -1,5 +1,6 @@
 package dev.emythiel.createitemdrawers.gui.widgets;
 
+import net.createmod.catnip.gui.widget.AbstractSimiWidget;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Tooltip;
@@ -8,11 +9,12 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.List;
 import java.util.function.BooleanSupplier;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
-public class ToggleButton extends AbstractWidget {
+public class ToggleButton extends AbstractSimiWidget {
 
     private final ResourceLocation texture;
     private final int onU, onV;
@@ -22,7 +24,7 @@ public class ToggleButton extends AbstractWidget {
     private final BooleanSupplier getter;
     private final Consumer<Boolean> setter;
 
-    private Supplier<Component> tooltipSupplier = null;
+    private Supplier<List<Component>> tooltipSupplier = null;
 
     public ToggleButton(
         int x, int y,
@@ -47,9 +49,16 @@ public class ToggleButton extends AbstractWidget {
         this.setter = setter;
     }
 
-    public ToggleButton withTooltip(Supplier<Component> supplier) {
+    public ToggleButton withMultiLineTooltip(Supplier<List<Component>> supplier) {
         this.tooltipSupplier = supplier;
-        this.setTooltip(Tooltip.create(supplier.get()));
+        return this;
+    }
+
+    public ToggleButton withTooltip(Supplier<Component> supplier) {
+        this.tooltipSupplier = () -> {
+            Component component = supplier.get();
+            return component == null ? List.of() : List.of(component);
+        };
         return this;
     }
 
@@ -68,7 +77,11 @@ public class ToggleButton extends AbstractWidget {
         }
 
         if (tooltipSupplier != null) {
-            this.setTooltip(Tooltip.create(tooltipSupplier.get()));
+            List<Component> tooltip = tooltipSupplier.get();
+            if (tooltip != null) {
+                this.toolTip.clear();
+                this.toolTip.addAll(tooltip);
+            }
         }
     }
 
@@ -77,10 +90,5 @@ public class ToggleButton extends AbstractWidget {
         if (button == 0) {
             setter.accept(!getter.getAsBoolean());
         }
-    }
-
-    @Override
-    protected void updateWidgetNarration(@NotNull NarrationElementOutput output) {
-        defaultButtonNarrationText(output);
     }
 }

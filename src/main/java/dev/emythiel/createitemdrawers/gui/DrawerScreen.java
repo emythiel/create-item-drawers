@@ -11,6 +11,7 @@ import dev.emythiel.createitemdrawers.gui.widgets.ToggleButton;
 import dev.emythiel.createitemdrawers.network.RenderPacket;
 import dev.emythiel.createitemdrawers.network.SlotTogglePacket;
 import dev.emythiel.createitemdrawers.storage.DrawerSlot;
+import net.createmod.catnip.gui.widget.AbstractSimiWidget;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.renderer.RenderType;
@@ -23,6 +24,7 @@ import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class DrawerScreen extends AbstractContainerScreen<DrawerMenu> {
@@ -240,11 +242,22 @@ public class DrawerScreen extends AbstractContainerScreen<DrawerMenu> {
                     be.getStorage().getSlot(slotIndex).setLockMode(newVal);
                     sendTogglePacket(be.getBlockPos(), slotIndex, "lock", newVal);
                 }
-            ).withTooltip(() ->
-                be.getStorage().getSlot(slotIndex).isLockMode()
-                    ? Component.translatable("gui.create_item_drawers.tooltip.unlock_slot")
-                    : Component.translatable("gui.create_item_drawers.tooltip.lock_slot")
-            ));
+            ).withMultiLineTooltip(() -> {
+                List<Component> tooltip = new ArrayList<>();
+
+                if (be.getStorage().getSlot(slotIndex).isLockMode()) {
+                    tooltip.add(Component.translatable("gui.create_item_drawers.tooltip.lock_disable")
+                        .withStyle(style -> style.withColor(AbstractSimiWidget.HEADER_RGB.getRGB())));
+                } else {
+                    tooltip.add(Component.translatable("gui.create_item_drawers.tooltip.lock_enable")
+                        .withStyle(style -> style.withColor(AbstractSimiWidget.HEADER_RGB.getRGB())));
+                }
+
+                tooltip.add(Component.translatable("gui.create_item_drawers.tooltip.lock_description")
+                    .withStyle(style -> style.withColor(AbstractSimiWidget.HINT_RGB.getRGB())));
+
+                return tooltip;
+            }));
 
             // Void mode
             addRenderableWidget(new ToggleButton(
@@ -258,11 +271,22 @@ public class DrawerScreen extends AbstractContainerScreen<DrawerMenu> {
                     be.getStorage().getSlot(slotIndex).setVoidMode(newVal);
                     sendTogglePacket(be.getBlockPos(), slotIndex, "void", newVal);
                 }
-            ).withTooltip(() ->
-                be.getStorage().getSlot(slotIndex).isVoidMode()
-                    ? Component.translatable("gui.create_item_drawers.tooltip.disable_void")
-                    : Component.translatable("gui.create_item_drawers.tooltip.enable_void")
-            ));
+            ).withMultiLineTooltip(() -> {
+                List<Component> tooltip = new ArrayList<>();
+
+                if (be.getStorage().getSlot(slotIndex).isVoidMode()) {
+                    tooltip.add(Component.translatable("gui.create_item_drawers.tooltip.void_disable")
+                        .withStyle(style -> style.withColor(AbstractSimiWidget.HEADER_RGB.getRGB())));
+                } else {
+                    tooltip.add(Component.translatable("gui.create_item_drawers.tooltip.void_enable")
+                        .withStyle(style -> style.withColor(AbstractSimiWidget.HEADER_RGB.getRGB())));
+                }
+
+                tooltip.add(Component.translatable("gui.create_item_drawers.tooltip.void_description")
+                    .withStyle(style -> style.withColor(AbstractSimiWidget.HINT_RGB.getRGB())));
+
+                return tooltip;
+            }));
         }
     }
 
