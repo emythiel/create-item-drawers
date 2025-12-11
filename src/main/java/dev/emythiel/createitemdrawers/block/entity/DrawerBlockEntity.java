@@ -127,18 +127,15 @@ public class DrawerBlockEntity extends SmartBlockEntity implements MenuProvider,
 
     public void setRenderMode(int mode) {
         this.renderMode = mode;
-        setChangedAndSync();
-    }
-
-    public void applyRenderMode(int mode) {
-        this.renderMode = mode;
-
         switch (mode) {
             case 0 -> { renderItem = true; renderCount = true; }
             case 1 -> { renderItem = true; renderCount = false; }
             case 2 -> { renderItem = false; renderCount = false; }
         }
+    }
 
+    public void applyRenderMode(int mode) {
+        setRenderMode(mode);
         setChangedAndSync();
     }
 
@@ -194,14 +191,18 @@ public class DrawerBlockEntity extends SmartBlockEntity implements MenuProvider,
 
         if (tag.contains("Upgrade")) {
             upgrade = ItemStack.parseOptional(provider, tag.getCompound("Upgrade"));
-            setUpgrade(upgrade);
+            int multiplier = 1;
+            if (!upgrade.isEmpty() && upgrade.getItem() instanceof CapacityUpgradeItem item) {
+                multiplier = item.getTierMultiplier();
+            }
+            storage.setUpgradeMultiplier(multiplier);
         } else {
             upgrade = ItemStack.EMPTY;
-            setUpgrade(ItemStack.EMPTY);
+            storage.setUpgradeMultiplier(1);
         }
 
         renderMode = tag.getInt("RenderMode");
-        applyRenderMode(renderMode);
+        setRenderMode(renderMode);
 
         // load slots
         ListTag list = tag.getList("Slots", Tag.TAG_COMPOUND);
