@@ -7,7 +7,12 @@ import dev.emythiel.createitemdrawers.block.entity.DrawerBlockEntity;
 import dev.emythiel.createitemdrawers.registry.ModBlockEntities;
 import dev.emythiel.createitemdrawers.storage.DrawerSlot;
 import dev.emythiel.createitemdrawers.util.DrawerInteractionHelper;
+import dev.emythiel.createitemdrawers.util.connection.ConnectedGroupHandler;
+import dev.emythiel.createitemdrawers.util.connection.ConnectedGroupHandler.ConnectedGroup;
+import dev.emythiel.createitemdrawers.util.connection.DrawerHelper;
+import net.createmod.catnip.data.Iterate;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -26,15 +31,6 @@ public class DrawerBlock extends BaseBlock implements IBE<DrawerBlockEntity> {
     public DrawerBlock(Properties properties, int slotCount) {
         super(properties);
         this.slotCount = slotCount;
-    }
-
-    @Override
-    public void neighborChanged(BlockState state, Level level, BlockPos pos, Block block, BlockPos fromPos, boolean isMoving) {
-        BlockEntity be = level.getBlockEntity(pos);
-        if (be instanceof DrawerBlockEntity drawer) {
-            drawer.connectivityChanged();
-        }
-        super.neighborChanged(state, level, pos, block, fromPos, isMoving);
     }
 
     @Override
@@ -110,5 +106,41 @@ public class DrawerBlock extends BaseBlock implements IBE<DrawerBlockEntity> {
         }
 
         return ItemInteractionResult.SUCCESS;
+    }
+
+    @Override
+    public void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean isMoving) {
+        if (state.hasBlockEntity() && !state.is(newState.getBlock())) {
+            DrawerBlockEntity drawer = DrawerHelper.getDrawer(level, pos);
+
+            for (Direction direction : Iterate.directions) {
+                if (direction.getAxis() == state.getValue(HORIZONTAL_FACING)
+                    .getAxis())
+                    continue;
+
+                BlockPos otherPos = pos.relative(direction);
+                ConnectedGroup thisGroup = DrawerHelper.getInput(level, pos);
+                ConnectedGroup otherGroup = DrawerHelper.getInput(level, otherPos);
+
+                if (thisGroup == null || otherGroup == null)
+                    continue;
+                if (!pos.offset(thisGroup.offsets.get(0))
+                    .equals(otherPos.offset(otherGroup.offsets.get(0))))
+                    continue;
+
+                ConnectedGroupHandler.toggleConnection(level, pos, otherPos);
+            }
+        }
+
+        super.onRemove(state, level, pos, newState, isMoving);
+    }
+
+    @Override
+    public void neighborChanged(BlockState state, Level level, BlockPos pos, Block block, BlockPos fromPos, boolean isMoving) {
+        BlockEntity be = level.getBlockEntity(pos);
+        if (be instanceof DrawerBlockEntity drawer) {
+            drawer.connectivityChanged();
+        }
+        super.neighborChanged(state, level, pos, block, fromPos, isMoving);
     }
 }
