@@ -45,7 +45,7 @@
   "item.create_item_drawers.capacity_upgrade_t4": "Capacity Upgrade Tier IV",
   "item.create_item_drawers.capacity_upgrade_t5": "Capacity Upgrade Tier V",
 
-  "tooltip.create_item_drawers.capacity_multiplier": "Multiplier: %sx",
+  "tooltip.create_item_drawers.capacity_multiplier": "Multiplier: _%sx_",
 
   "interaction.create_item_drawers.drawer_connected": "Connected Drawers",
   "interaction.create_item_drawers.click_to_separate": "Click to separate inventories",

@@ -1,8 +1,10 @@
 package dev.emythiel.createitemdrawers.item;
 
 import dev.emythiel.createitemdrawers.config.ServerConfig;
+import net.createmod.catnip.lang.FontHelper;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextColor;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
@@ -25,9 +27,17 @@ public class CapacityUpgradeItem extends Item {
     @Override
     public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltip, TooltipFlag flag) {
 
-        tooltip.add(Component.translatable(
-            "tooltip.create_item_drawers.capacity_multiplier", getTierMultiplier()
-        ).withStyle(ChatFormatting.DARK_GREEN));
+        Component translated = Component.translatable(
+            "tooltip.create_item_drawers.capacity_multiplier",
+            getTierMultiplier()
+        );
+
+        List<Component> formattedLines = FontHelper.cutTextComponent(
+            translated,
+            FontHelper.Palette.STANDARD_CREATE
+        );
+
+        tooltip.addAll(formattedLines);
     }
 
     public int getTierMultiplier() {
