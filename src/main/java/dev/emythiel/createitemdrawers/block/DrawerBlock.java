@@ -162,9 +162,11 @@ public class DrawerBlock extends BaseBlock implements IBE<DrawerBlockEntity> {
             }
 
             connectionGroupCleanup(state, level, pos);
+            IBE.onRemove(state, level, pos, newState);
+            return;
         }
 
-        IBE.onRemove(state, level, pos, newState);
+        super.onRemove(state, level, pos, newState, isMoving);
     }
 
     private void connectionGroupCleanup(BlockState state, Level level, BlockPos pos) {
@@ -191,7 +193,8 @@ public class DrawerBlock extends BaseBlock implements IBE<DrawerBlockEntity> {
     public void neighborChanged(BlockState state, Level level, BlockPos pos, Block block, BlockPos fromPos, boolean isMoving) {
         BlockEntity be = level.getBlockEntity(pos);
         if (be instanceof DrawerBlockEntity drawer) {
-            drawer.connectivityChanged();
+            connectionGroupCleanup(state, level, pos);
+            //drawer.connectivityChanged();
         }
         super.neighborChanged(state, level, pos, block, fromPos, isMoving);
     }

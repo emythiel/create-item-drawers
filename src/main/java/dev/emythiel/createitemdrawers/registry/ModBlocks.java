@@ -4,9 +4,12 @@ import com.simibubi.create.foundation.data.CreateRegistrate;
 import com.tterrag.registrate.util.entry.BlockEntry;
 import dev.emythiel.createitemdrawers.CreateItemDrawers;
 import dev.emythiel.createitemdrawers.block.DrawerBlock;
+import dev.emythiel.createitemdrawers.block.DrawerBlockItem;
 import dev.emythiel.createitemdrawers.util.connection.DrawerCTBehaviour;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.material.MapColor;
+
+import static com.simibubi.create.foundation.data.TagGen.pickaxeOnly;
 
 public class ModBlocks {
     private static final CreateRegistrate REGISTRATE = CreateItemDrawers.registrate();
@@ -22,9 +25,13 @@ public class ModBlocks {
                 .requiresCorrectToolForDrops()
                 .sound(SoundType.NETHERITE_BLOCK)
                 .explosionResistance(1200))
+            .transform(pickaxeOnly())
             .blockstate((ctx, prov) -> { }) // Disable auto model gen
             .onRegister(CreateRegistrate.connectedTextures(DrawerCTBehaviour::new))
-            .simpleItem()
+            .tag(ModTags.Blocks.DRAWERS)
+            .item(DrawerBlockItem::new)
+            .tag(ModTags.Items.DRAWERS)
+            .build()
             .register();
 
     public static final BlockEntry<DrawerBlock> DOUBLE_DRAWER = REGISTRATE
@@ -34,9 +41,13 @@ public class ModBlocks {
                 .requiresCorrectToolForDrops()
                 .sound(SoundType.NETHERITE_BLOCK)
                 .explosionResistance(1200))
+            .transform(pickaxeOnly())
             .blockstate((ctx, prov) -> { }) // Disable auto model gen
             .onRegister(CreateRegistrate.connectedTextures(DrawerCTBehaviour::new))
-            .simpleItem()
+            .tag(ModTags.Blocks.DRAWERS)
+            .item(DrawerBlockItem::new)
+            .tag(ModTags.Items.DRAWERS)
+            .build()
             .register();
 
     public static final BlockEntry<DrawerBlock> QUAD_DRAWER = REGISTRATE
@@ -46,9 +57,13 @@ public class ModBlocks {
                 .requiresCorrectToolForDrops()
                 .sound(SoundType.NETHERITE_BLOCK)
                 .explosionResistance(1200))
+            .transform(pickaxeOnly())
             .blockstate((ctx, prov) -> { }) // Disable auto model gen
             .onRegister(CreateRegistrate.connectedTextures(DrawerCTBehaviour::new))
-            .simpleItem()
+            .tag(ModTags.Blocks.DRAWERS)
+            .item(DrawerBlockItem::new)
+            .tag(ModTags.Items.DRAWERS)
+            .build()
             .register();
 
     public static void register() {}

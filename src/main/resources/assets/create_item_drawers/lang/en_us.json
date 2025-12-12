@@ -18,8 +18,25 @@
   "creativetab.create_item_drawers": "Create: Item Drawers",
 
   "block.create_item_drawers.single_drawer": "Single Item Drawer",
+  "block.create_item_drawers.single_drawer.tooltip.summary": "Stores a _single item_ in large amounts",
+  "block.create_item_drawers.single_drawer.tooltip.condition1": "When R-Clicked",
+  "block.create_item_drawers.single_drawer.tooltip.behaviour1": "_Deposits_ your _held item_ into the drawer. _Sneak-click_ to deposit all matching items from your inventory.",
+  "block.create_item_drawers.single_drawer.tooltip.condition2": "When L-Clicked",
+  "block.create_item_drawers.single_drawer.tooltip.behaviour2": "_Withdraws_ a single item from the drawer. _Sneak-click_ to withdraw an entire stack.",
   "block.create_item_drawers.double_drawer": "Double Item Drawer",
+  "block.create_item_drawers.double_drawer.tooltip.summary": "Stores up to _two items_ in large amounts",
+  "block.create_item_drawers.double_drawer.tooltip.condition1": "When R-Clicked",
+  "block.create_item_drawers.double_drawer.tooltip.behaviour1": "_Deposits_ your _held item_ into the drawer. _Sneak-click_ to deposit all matching items from your inventory.",
+  "block.create_item_drawers.double_drawer.tooltip.condition2": "When L-Clicked",
+  "block.create_item_drawers.double_drawer.tooltip.behaviour2": "_Withdraws_ a single item from the drawer. _Sneak-click_ to withdraw an entire stack.",
   "block.create_item_drawers.quad_drawer": "Quad Item Drawer",
+  "block.create_item_drawers.quad_drawer.tooltip.summary": "Stores up to _four items_ in large amounts",
+  "block.create_item_drawers.quad_drawer.tooltip.condition1": "When R-Clicked",
+  "block.create_item_drawers.quad_drawer.tooltip.behaviour1": "_Deposits_ your _held item_ into the drawer. _Sneak-click_ to deposit all matching items from your inventory.",
+  "block.create_item_drawers.quad_drawer.tooltip.condition2": "When L-Clicked",
+  "block.create_item_drawers.quad_drawer.tooltip.behaviour2": "_Withdraws_ a single item from the drawer. _Sneak-click_ to withdraw an entire stack.",
+
+
 
   "item.create_item_drawers.capacity_upgrade_base": "Capacity Upgrade Base",
   "item.create_item_drawers.capacity_upgrade_t1": "Capacity Upgrade Tier I",

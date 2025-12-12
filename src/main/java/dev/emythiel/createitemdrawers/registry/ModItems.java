@@ -34,6 +34,7 @@ public class ModItems {
                 .unlockedBy("has_item_drawer", RegistrateRecipeProvider.has(ModTags.Items.DRAWERS))
                 .save(prov, ResourceLocation.fromNamespaceAndPath(CreateItemDrawers.MODID, "crafting_upgrade/" + ctx.getName()))
             )
+            .tag(ModTags.Items.UPGRADES)
             .register();
 
     public static final ItemEntry<CapacityUpgradeItem> CAPACITY_UPGRADE_T1 =
@@ -50,6 +51,7 @@ public class ModItems {
                 .unlockedBy("has_item_drawer", RegistrateRecipeProvider.has(ModTags.Items.DRAWERS))
                 .save(prov, ResourceLocation.fromNamespaceAndPath(CreateItemDrawers.MODID, "crafting_upgrade/" + ctx.getName()))
             )
+            .tag(ModTags.Items.UPGRADES)
             .register();
 
     public static final ItemEntry<CapacityUpgradeItem> CAPACITY_UPGRADE_T2 =
@@ -66,6 +68,7 @@ public class ModItems {
                 .unlockedBy("has_item_drawer", RegistrateRecipeProvider.has(ModTags.Items.DRAWERS))
                 .save(prov, ResourceLocation.fromNamespaceAndPath(CreateItemDrawers.MODID, "crafting_upgrade/" + ctx.getName()))
             )
+            .tag(ModTags.Items.UPGRADES)
             .register();
 
     public static final ItemEntry<CapacityUpgradeItem> CAPACITY_UPGRADE_T3 =
@@ -83,6 +86,7 @@ public class ModItems {
                 .unlockedBy("has_item_drawer", RegistrateRecipeProvider.has(ModTags.Items.DRAWERS))
                 .save(prov, ResourceLocation.fromNamespaceAndPath(CreateItemDrawers.MODID, "crafting_upgrade/" + ctx.getName()))
             )
+            .tag(ModTags.Items.UPGRADES)
             .register();
 
     public static final ItemEntry<CapacityUpgradeItem> CAPACITY_UPGRADE_T4 =
@@ -100,6 +104,7 @@ public class ModItems {
                 .unlockedBy("has_item_drawer", RegistrateRecipeProvider.has(ModTags.Items.DRAWERS))
                 .save(prov, ResourceLocation.fromNamespaceAndPath(CreateItemDrawers.MODID, "crafting_upgrade/" + ctx.getName()))
             )
+            .tag(ModTags.Items.UPGRADES)
             .register();
 
     public static final ItemEntry<CapacityUpgradeItem> CAPACITY_UPGRADE_T5 =
@@ -117,6 +122,7 @@ public class ModItems {
                 .unlockedBy("has_item_drawer", RegistrateRecipeProvider.has(ModTags.Items.DRAWERS))
                 .save(prov, ResourceLocation.fromNamespaceAndPath(CreateItemDrawers.MODID, "crafting_upgrade/" + ctx.getName()))
             )
+            .tag(ModTags.Items.UPGRADES)
             .register();
 
 
