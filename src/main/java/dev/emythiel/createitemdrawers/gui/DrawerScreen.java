@@ -12,6 +12,8 @@ import dev.emythiel.createitemdrawers.network.RenderPacket;
 import dev.emythiel.createitemdrawers.network.SlotTogglePacket;
 import dev.emythiel.createitemdrawers.storage.DrawerSlot;
 import net.createmod.catnip.gui.widget.AbstractSimiWidget;
+import net.createmod.catnip.lang.FontHelper;
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.renderer.RenderType;
@@ -26,6 +28,8 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static net.createmod.catnip.lang.FontHelper.styleFromColor;
 
 public class DrawerScreen extends AbstractContainerScreen<DrawerMenu> {
 
@@ -243,20 +247,10 @@ public class DrawerScreen extends AbstractContainerScreen<DrawerMenu> {
                     sendTogglePacket(be.getBlockPos(), slotIndex, "lock", newVal);
                 }
             ).withMultiLineTooltip(() -> {
-                List<Component> tooltip = new ArrayList<>();
-
-                if (be.getStorage().getSlot(slotIndex).isLockMode()) {
-                    tooltip.add(Component.translatable("gui.create_item_drawers.tooltip.lock_disable")
-                        .withStyle(style -> style.withColor(AbstractSimiWidget.HEADER_RGB.getRGB())));
-                } else {
-                    tooltip.add(Component.translatable("gui.create_item_drawers.tooltip.lock_enable")
-                        .withStyle(style -> style.withColor(AbstractSimiWidget.HEADER_RGB.getRGB())));
-                }
-
-                tooltip.add(Component.translatable("gui.create_item_drawers.tooltip.lock_description")
-                    .withStyle(style -> style.withColor(AbstractSimiWidget.HINT_RGB.getRGB())));
-
-                return tooltip;
+                String headerKey = be.getStorage().getSlot(slotIndex).isLockMode()
+                    ? "gui.create_item_drawers.tooltip.lock_disable"
+                    : "gui.create_item_drawers.tooltip.lock_enable";
+                return createFormattedTooltip(headerKey, "gui.create_item_drawers.tooltip.lock_description");
             }));
 
             // Void mode
@@ -272,22 +266,35 @@ public class DrawerScreen extends AbstractContainerScreen<DrawerMenu> {
                     sendTogglePacket(be.getBlockPos(), slotIndex, "void", newVal);
                 }
             ).withMultiLineTooltip(() -> {
-                List<Component> tooltip = new ArrayList<>();
-
-                if (be.getStorage().getSlot(slotIndex).isVoidMode()) {
-                    tooltip.add(Component.translatable("gui.create_item_drawers.tooltip.void_disable")
-                        .withStyle(style -> style.withColor(AbstractSimiWidget.HEADER_RGB.getRGB())));
-                } else {
-                    tooltip.add(Component.translatable("gui.create_item_drawers.tooltip.void_enable")
-                        .withStyle(style -> style.withColor(AbstractSimiWidget.HEADER_RGB.getRGB())));
-                }
-
-                tooltip.add(Component.translatable("gui.create_item_drawers.tooltip.void_description")
-                    .withStyle(style -> style.withColor(AbstractSimiWidget.HINT_RGB.getRGB())));
-
-                return tooltip;
+                String headerKey = be.getStorage().getSlot(slotIndex).isVoidMode()
+                    ? "gui.create_item_drawers.tooltip.void_disable"
+                    : "gui.create_item_drawers.tooltip.void_enable";
+                return createFormattedTooltip(headerKey, "gui.create_item_drawers.tooltip.void_description");
             }));
         }
+    }
+
+    private List<Component> createFormattedTooltip(String headerKey, String descriptionKey) {
+        FontHelper.Palette HEADER_PALETTE = new FontHelper.Palette(styleFromColor(0x5391e1), styleFromColor(0x5391e1));
+        FontHelper.Palette DESCRIPTION_PALETTE = new FontHelper.Palette(styleFromColor(0x6B9AD6), styleFromColor(0xBFD7F5));
+
+        List<Component> tooltip = new ArrayList<>();
+
+        Component header = Component.translatable(headerKey);
+        List<Component> headerLines = FontHelper.cutTextComponent(
+            header,
+            HEADER_PALETTE
+        );
+        tooltip.addAll(headerLines);
+
+        Component description = Component.translatable(descriptionKey);
+        List<Component> descriptionLines = FontHelper.cutTextComponent(
+            description,
+            DESCRIPTION_PALETTE
+        );
+        tooltip.addAll(descriptionLines);
+
+        return tooltip;
     }
 
     private void drawSlotBackgrounds(GuiGraphics graphics) {
@@ -314,6 +321,4 @@ public class DrawerScreen extends AbstractContainerScreen<DrawerMenu> {
     private void sendRenderModePacket(BlockPos pos, int mode) {
         PacketDistributor.sendToServer(new RenderPacket(pos, mode));
     }
-
-
 }
