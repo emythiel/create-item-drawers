@@ -36,8 +36,6 @@
   "block.create_item_drawers.quad_drawer.tooltip.condition2": "When L-Clicked",
   "block.create_item_drawers.quad_drawer.tooltip.behaviour2": "_Withdraws_ a single item from the drawer. _Sneak-click_ to withdraw an entire stack.",
 
-
-
   "item.create_item_drawers.capacity_upgrade_base": "Capacity Upgrade Base",
   "item.create_item_drawers.capacity_upgrade_t1": "Capacity Upgrade Tier I",
   "item.create_item_drawers.capacity_upgrade_t2": "Capacity Upgrade Tier II",
@@ -46,6 +44,9 @@
   "item.create_item_drawers.capacity_upgrade_t5": "Capacity Upgrade Tier V",
 
   "tooltip.create_item_drawers.capacity_multiplier": "Multiplier: _%sx_",
+  "tooltip.create_item_drawers.storage": "Storage:",
+  "tooltip.create_item_drawers.upgrade": "Upgrade:",
+  "tooltip.create_item_drawers.empty": "Empty",
 
   "interaction.create_item_drawers.drawer_connected": "Connected Drawers",
   "interaction.create_item_drawers.click_to_separate": "Click to separate inventories",
