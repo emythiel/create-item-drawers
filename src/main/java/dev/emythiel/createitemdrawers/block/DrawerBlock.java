@@ -1,11 +1,14 @@
 package dev.emythiel.createitemdrawers.block;
 
 import com.simibubi.create.AllItems;
+import com.simibubi.create.AllSoundEvents;
 import com.simibubi.create.foundation.block.IBE;
+import com.simibubi.create.foundation.utility.CreateLang;
 import dev.emythiel.createitemdrawers.block.base.BaseBlock;
 import dev.emythiel.createitemdrawers.block.entity.DrawerBlockEntity;
 import dev.emythiel.createitemdrawers.registry.ModBlockEntities;
 import dev.emythiel.createitemdrawers.storage.DrawerSlot;
+import dev.emythiel.createitemdrawers.util.CreateItemDrawerLang;
 import dev.emythiel.createitemdrawers.util.DrawerInteractionHelper;
 import dev.emythiel.createitemdrawers.util.connection.ConnectedGroupHandler;
 import dev.emythiel.createitemdrawers.util.connection.ConnectedGroupHandler.ConnectedGroup;
@@ -14,6 +17,7 @@ import net.createmod.catnip.data.Iterate;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.item.ItemEntity;
@@ -29,6 +33,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.loot.LootParams;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.phys.BlockHitResult;
+import net.createmod.catnip.lang.LangBuilder;
 
 import java.util.Collections;
 import java.util.List;
@@ -77,6 +82,7 @@ public class DrawerBlock extends BaseBlock implements IBE<DrawerBlockEntity> {
             return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
 
         boolean sneaking = player.isShiftKeyDown();
+        boolean anyInserted = false;
         DrawerSlot drawerSlot = be.getStorage().getSlot(slot);
 
 
@@ -84,15 +90,18 @@ public class DrawerBlock extends BaseBlock implements IBE<DrawerBlockEntity> {
         if (!held.isEmpty()) {
             int before = held.getCount();
             ItemStack leftover = be.getStorage().insert(slot, held, false);
-            boolean inserted = leftover.getCount() < before;
+            anyInserted = leftover.getCount() < before;
 
             player.setItemInHand(hand, leftover);
 
-            if (inserted) {
+            if (anyInserted) {
                 be.setChangedAndSync();
 
-                if (!sneaking)
+                if (!sneaking) {
+                    CreateItemDrawerLang.translate("interaction.insert_held_stack").sendStatus(player);
+                    AllSoundEvents.ITEM_HATCH.playOnServer(level, pos);
                     return ItemInteractionResult.SUCCESS;
+                }
             }
         }
 
@@ -107,10 +116,15 @@ public class DrawerBlock extends BaseBlock implements IBE<DrawerBlockEntity> {
                 if (!ItemStack.isSameItemSameComponents(inv, stored))
                     continue;
 
+                anyInserted = true;
                 ItemStack leftover = be.getStorage().insert(slot, inv, false);
                 player.getInventory().setItem(i, leftover);
             }
             be.setChangedAndSync();
+            if (anyInserted) {
+                CreateItemDrawerLang.translate("interaction.insert_matching_stacks").sendStatus(player);
+                AllSoundEvents.ITEM_HATCH.playOnServer(level, pos);
+            }
             return ItemInteractionResult.SUCCESS;
         }
 

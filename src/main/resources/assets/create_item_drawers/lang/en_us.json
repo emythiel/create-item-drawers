@@ -52,6 +52,9 @@
   "interaction.create_item_drawers.click_to_separate": "Click to separate inventories",
   "interaction.create_item_drawers.click_to_merge": "Click to merge inventories",
 
+  "create_item_drawers.interaction.insert_held_stack": "Held item deposited",
+  "create_item_drawers.interaction.insert_matching_stacks": "Matching items from inventory deposited",
+
   "gui.create_item_drawers.drawer_1": "Single Item Drawer - Settings",
   "gui.create_item_drawers.drawer_2": "Double Item Drawer - Settings",
   "gui.create_item_drawers.drawer_4": "Quad Item Drawer - Settings",
