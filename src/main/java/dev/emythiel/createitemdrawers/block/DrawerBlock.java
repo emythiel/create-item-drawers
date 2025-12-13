@@ -2,6 +2,7 @@ package dev.emythiel.createitemdrawers.block;
 
 import com.simibubi.create.AllItems;
 import com.simibubi.create.AllSoundEvents;
+import com.simibubi.create.content.equipment.wrench.IWrenchable;
 import com.simibubi.create.foundation.block.IBE;
 import dev.emythiel.createitemdrawers.block.base.BaseBlock;
 import dev.emythiel.createitemdrawers.block.entity.DrawerBlockEntity;
@@ -16,9 +17,11 @@ import net.createmod.catnip.data.Iterate;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -31,7 +34,7 @@ import net.minecraft.world.phys.BlockHitResult;
 import java.util.Collections;
 import java.util.List;
 
-public class DrawerBlock extends BaseBlock implements IBE<DrawerBlockEntity> {
+public class DrawerBlock extends BaseBlock implements IWrenchable, IBE<DrawerBlockEntity> {
 
     private final int slotCount;
 
@@ -62,19 +65,22 @@ public class DrawerBlock extends BaseBlock implements IBE<DrawerBlockEntity> {
         if (!isFrontFace(state, hit.getDirection()))
             return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
 
+        boolean sneaking = player.isShiftKeyDown();
+
         // Open GUI if front face is right-clicked with Create Wrench
-        if (held.is(AllItems.WRENCH.get())) {
+        if (held.is(AllItems.WRENCH.get()) && !sneaking) {
             if (!level.isClientSide) {
                 player.openMenu(be, buf -> buf.writeBlockPos(pos));
             }
             return ItemInteractionResult.SUCCESS;
+        } else if (held.is(AllItems.WRENCH.get()) && sneaking) {
+            return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
         }
 
         int slot = DrawerInteractionHelper.getHitSlot(be, hit.getLocation());
         if (slot < 0)
             return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
 
-        boolean sneaking = player.isShiftKeyDown();
         boolean anyInserted = false;
         DrawerSlot drawerSlot = be.getStorage().getSlot(slot);
 
@@ -91,7 +97,7 @@ public class DrawerBlock extends BaseBlock implements IBE<DrawerBlockEntity> {
                 be.setChangedAndSync();
 
                 if (!sneaking) {
-                    CreateItemDrawerLang.translate("interaction.insert_held_stack").sendStatus(player);
+                    //CreateItemDrawerLang.translate("interaction.insert_held_stack").sendStatus(player);
                     AllSoundEvents.ITEM_HATCH.playOnServer(level, pos);
                     return ItemInteractionResult.SUCCESS;
                 }
@@ -115,7 +121,7 @@ public class DrawerBlock extends BaseBlock implements IBE<DrawerBlockEntity> {
             }
             be.setChangedAndSync();
             if (anyInserted) {
-                CreateItemDrawerLang.translate("interaction.insert_matching_stacks").sendStatus(player);
+                //CreateItemDrawerLang.translate("interaction.insert_matching_stacks").sendStatus(player);
                 AllSoundEvents.ITEM_HATCH.playOnServer(level, pos);
             }
             return ItemInteractionResult.SUCCESS;
@@ -143,6 +149,12 @@ public class DrawerBlock extends BaseBlock implements IBE<DrawerBlockEntity> {
         }
 
         return super.getDrops(state, builder);
+    }
+
+    @Override
+    public InteractionResult onWrenched(BlockState state, UseOnContext context) {
+        // TODO: Break connection if relevant
+        return IWrenchable.super.onWrenched(state, context);
     }
 
     @Override

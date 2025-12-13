@@ -267,6 +267,8 @@ public class DrawerBlockEntity extends SmartBlockEntity implements MenuProvider,
 
     @Override
     public boolean addToGoggleTooltip(List<Component> tooltip, boolean isPlayerSneaking) {
+        if (!isPlayerSneaking)
+            return false;
         if (storage.getSlotCount() <= 0)
             return false;
 

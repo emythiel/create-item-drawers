@@ -55,6 +55,8 @@
   "create_item_drawers.interaction.insert_matching_stacks": "Matching items from inventory deposited",
   "create_item_drawers.interaction.extract_one": "Withdrew item",
   "create_item_drawers.interaction.extract_stack": "Withdrew stack",
+  "create_item_drawers.interaction.settings": "Settings",
+  "create_item_drawers.interaction.open_settings": "Click to open drawer settings",
 
   "create_item_drawers.gui.goggles.drawer_info": "Drawer Info",
   "create_item_drawers.gui.goggles.upgrade": "Upgrade:",
