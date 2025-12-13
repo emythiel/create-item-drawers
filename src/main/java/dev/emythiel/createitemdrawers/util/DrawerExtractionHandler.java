@@ -2,9 +2,13 @@ package dev.emythiel.createitemdrawers.util;
 
 import dev.emythiel.createitemdrawers.CreateItemDrawers;
 import dev.emythiel.createitemdrawers.block.entity.DrawerBlockEntity;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.HorizontalDirectionalBlock;
 import net.minecraft.world.phys.BlockHitResult;
 import net.neoforged.bus.api.EventPriority;
@@ -46,10 +50,10 @@ public class DrawerExtractionHandler {
         if (slot < 0)
             return;
 
-        extractFromSlot(drawer, slot, player, sneaking);
+        extractFromSlot(drawer, slot, player, sneaking, level, pos);
     }
 
-    private static void extractFromSlot(DrawerBlockEntity drawer, int slot, Player player, boolean sneaking) {
+    private static void extractFromSlot(DrawerBlockEntity drawer, int slot, Player player, boolean sneaking, Level level, BlockPos pos) {
         var storage = drawer.getStorage();
         var drawerSlot = storage.getSlot(slot);
 
@@ -64,6 +68,9 @@ public class DrawerExtractionHandler {
 
         player.getInventory().placeItemBackInInventory(extracted);
 
+        CreateItemDrawerLang.translate(sneaking ? "interaction.extract_stack" : "interaction.extract_one")
+            .sendStatus(player);
+        level.playSound(null, pos, SoundEvents.ITEM_PICKUP, SoundSource.BLOCKS, 0.2f, 0.2f);
         drawer.setChangedAndSync();
     }
 }

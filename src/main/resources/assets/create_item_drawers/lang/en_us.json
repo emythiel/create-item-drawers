@@ -54,6 +54,8 @@
 
   "create_item_drawers.interaction.insert_held_stack": "Held item deposited",
   "create_item_drawers.interaction.insert_matching_stacks": "Matching items from inventory deposited",
+  "create_item_drawers.interaction.extract_one": "Withdrew item",
+  "create_item_drawers.interaction.extract_stack": "Withdrew stack",
 
   "gui.create_item_drawers.drawer_1": "Single Item Drawer - Settings",
   "gui.create_item_drawers.drawer_2": "Double Item Drawer - Settings",
