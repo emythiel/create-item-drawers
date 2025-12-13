@@ -56,6 +56,12 @@
   "create_item_drawers.interaction.extract_one": "Withdrew item",
   "create_item_drawers.interaction.extract_stack": "Withdrew stack",
 
+  "create_item_drawers.gui.goggles.drawer_info": "Drawer Info",
+  "create_item_drawers.gui.goggles.upgrade": "Upgrade:",
+  "create_item_drawers.gui.goggles.storage": "Storage:",
+  "create_item_drawers.gui.goggles.lock": "Locked ",
+  "create_item_drawers.gui.goggles.void": " Voiding",
+  "create_item_drawers.gui.goggles.empty": "Empty",
   "gui.create_item_drawers.drawer_1": "Single Item Drawer - Settings",
   "gui.create_item_drawers.drawer_2": "Double Item Drawer - Settings",
   "gui.create_item_drawers.drawer_4": "Quad Item Drawer - Settings",

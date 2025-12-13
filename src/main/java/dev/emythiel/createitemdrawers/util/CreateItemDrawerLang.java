@@ -13,4 +13,8 @@ public class CreateItemDrawerLang extends CreateLang {
     public static LangBuilder translate(String langKey, Object... args) {
         return builder().translate(langKey, args);
     }
+
+    public static LangBuilder translateEmptyLine(Object... args) {
+        return new LangBuilder("");
+    }
 }

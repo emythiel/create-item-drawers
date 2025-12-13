@@ -2,6 +2,7 @@ package dev.emythiel.createitemdrawers.block.entity;
 
 import com.simibubi.create.AllItems;
 import com.simibubi.create.api.contraption.transformable.TransformableBlockEntity;
+import com.simibubi.create.api.equipment.goggles.IHaveGoggleInformation;
 import com.simibubi.create.content.contraptions.StructureTransform;
 import com.simibubi.create.foundation.blockEntity.SmartBlockEntity;
 import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
@@ -13,8 +14,10 @@ import dev.emythiel.createitemdrawers.registry.ModBlockEntities;
 import dev.emythiel.createitemdrawers.storage.DrawerItemHandler;
 import dev.emythiel.createitemdrawers.storage.DrawerStorage;
 import dev.emythiel.createitemdrawers.gui.DrawerMenu;
+import dev.emythiel.createitemdrawers.util.CreateItemDrawerLang;
 import dev.emythiel.createitemdrawers.util.connection.ConnectedGroupHandler;
 import dev.emythiel.createitemdrawers.util.connection.ConnectedGroupHandler.ConnectedGroup;
+import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
@@ -48,7 +51,7 @@ import java.util.List;
  *   ✔ Save and load all storage + settings to NBT
  *   ✔ Provide block update sync to clients
  */
-public class DrawerBlockEntity extends SmartBlockEntity implements MenuProvider, TransformableBlockEntity {
+public class DrawerBlockEntity extends SmartBlockEntity implements MenuProvider, TransformableBlockEntity, IHaveGoggleInformation {
     private final DrawerStorage storage;
     private final DrawerItemHandler itemHandler;
 
@@ -261,5 +264,62 @@ public class DrawerBlockEntity extends SmartBlockEntity implements MenuProvider,
     public void transform(BlockEntity be, StructureTransform transform) {
         group.offsets.replaceAll(transform::applyWithoutOffset);
         notifyUpdate();
+    }
+
+    @Override
+    public boolean addToGoggleTooltip(List<Component> tooltip, boolean isPlayerSneaking) {
+        if (storage.getSlotCount() <= 0)
+            return false;
+
+        CreateItemDrawerLang.translate("gui.goggles.drawer_info")
+            .forGoggles(tooltip);
+
+        CreateItemDrawerLang.translate("gui.goggles.upgrade")
+            .style(ChatFormatting.GRAY)
+            .forGoggles(tooltip);
+
+        if (!upgrade.isEmpty()) {
+            CreateItemDrawerLang.translateEmptyLine()
+                .add(upgrade.getHoverName())
+                .style(ChatFormatting.AQUA)
+                .forGoggles(tooltip, 1);
+        } else {
+            CreateItemDrawerLang.translate("gui.goggles.empty")
+                .style(ChatFormatting.DARK_GRAY)
+                .forGoggles(tooltip, 1);
+        }
+
+        CreateItemDrawerLang.translate("gui.goggles.storage")
+            .style(ChatFormatting.GRAY)
+            .forGoggles(tooltip);
+
+        for (int i = 0; i < storage.getSlotCount(); i++) {
+            if (!storage.getSlot(i).getStoredItem().isEmpty()) {
+                Component item = storage.getSlot(i).getStoredItem().getHoverName();
+                int count = storage.getSlot(i).getCount();
+
+                CreateItemDrawerLang.translateEmptyLine()
+                    .add(item)
+                    .style(ChatFormatting.AQUA)
+                    .add(Component.nullToEmpty(" x" + count))
+                    .forGoggles(tooltip, 1);
+            } else {
+                CreateItemDrawerLang.translate("gui.goggles.empty")
+                    .style(ChatFormatting.DARK_GRAY)
+                    .forGoggles(tooltip, 1);
+            }
+
+            CreateItemDrawerLang.translateEmptyLine()
+                .add(Component.literal("⤷[").withStyle(ChatFormatting.DARK_GRAY))
+                .add(CreateItemDrawerLang.translate("gui.goggles.lock")
+                    .style(storage.getSlot(i).isLockMode() ? ChatFormatting.AQUA : ChatFormatting.DARK_GRAY))
+                .add(Component.literal("|").withStyle(ChatFormatting.DARK_GRAY))
+                .add(CreateItemDrawerLang.translate("gui.goggles.void")
+                    .style(storage.getSlot(i).isVoidMode() ? ChatFormatting.AQUA : ChatFormatting.DARK_GRAY))
+                .add(Component.literal("]").withStyle(ChatFormatting.DARK_GRAY))
+                .forGoggles(tooltip, 2);
+        }
+
+        return true;
     }
 }
