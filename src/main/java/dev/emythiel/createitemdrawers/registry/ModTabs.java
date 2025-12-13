@@ -4,6 +4,7 @@ import com.simibubi.create.AllCreativeModeTabs;
 import com.simibubi.create.foundation.data.CreateRegistrate;
 import com.tterrag.registrate.util.entry.RegistryEntry;
 import dev.emythiel.createitemdrawers.CreateItemDrawers;
+import dev.emythiel.createitemdrawers.util.CreateItemDrawerLang;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.*;
@@ -22,7 +23,7 @@ public class ModTabs {
 
     public static final DeferredHolder<CreativeModeTab, CreativeModeTab> CREATIVE_TAB =
         REGISTER.register("creative_mode_tab", () -> CreativeModeTab.builder()
-            .title(Component.translatable("creativetab.create_item_drawers"))
+            .title(CreateItemDrawerLang.translate("creative_tab").component())
             .icon(ModBlocks.DOUBLE_DRAWER::asStack)
             .withTabsBefore(AllCreativeModeTabs.PALETTES_CREATIVE_TAB.getId())
             .displayItems(new RegistrateDisplayItemGenerator())

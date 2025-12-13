@@ -6,6 +6,7 @@ import com.simibubi.create.foundation.blockEntity.behaviour.edgeInteraction.Edge
 import com.simibubi.create.foundation.blockEntity.behaviour.edgeInteraction.EdgeInteractionHandler;
 import com.simibubi.create.foundation.blockEntity.behaviour.edgeInteraction.EdgeInteractionRenderer;
 import dev.emythiel.createitemdrawers.block.DrawerBlock;
+import dev.emythiel.createitemdrawers.util.CreateItemDrawerLang;
 import dev.emythiel.createitemdrawers.util.connection.DrawerHelper;
 import net.createmod.catnip.math.VecHelper;
 import net.minecraft.client.Minecraft;
@@ -57,11 +58,11 @@ public class MixinEdgeInteractionRenderer {
         boolean connected = DrawerHelper.areDrawersConnected(mc.level, pos, pos.relative(closestEdge));
 
         List<MutableComponent> tip = new ArrayList<>();
-        tip.add(Component.translatable("interaction.create_item_drawers.drawer_connected"));
-        tip.add(Component.translatable(connected
-                ? "interaction.create_item_drawers.click_to_separate"
-                : "interaction.create_item_drawers.click_to_merge"
-        ));
+        tip.add(CreateItemDrawerLang.translate("interaction.drawer_connected").component());
+        tip.add(CreateItemDrawerLang.translate(connected
+                ? "interaction.click_to_separate"
+                : "interaction.click_to_merge"
+        ).component());
 
         CreateClient.VALUE_SETTINGS_HANDLER.showHoverTip(tip);
 

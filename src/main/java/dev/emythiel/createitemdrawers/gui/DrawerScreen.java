@@ -11,6 +11,7 @@ import dev.emythiel.createitemdrawers.gui.widgets.ToggleButton;
 import dev.emythiel.createitemdrawers.network.RenderPacket;
 import dev.emythiel.createitemdrawers.network.SlotTogglePacket;
 import dev.emythiel.createitemdrawers.storage.DrawerSlot;
+import dev.emythiel.createitemdrawers.util.CreateItemDrawerLang;
 import net.createmod.catnip.gui.widget.AbstractSimiWidget;
 import net.createmod.catnip.lang.FontHelper;
 import net.minecraft.ChatFormatting;
@@ -59,11 +60,11 @@ public class DrawerScreen extends AbstractContainerScreen<DrawerMenu> {
     private static final int LOCK_VOID_H = 9;
     // Render mode text
     private static final Component RENDER_MODE_LABEL =
-        Component.translatable("gui.create_item_drawers.render_mode");
+        CreateItemDrawerLang.translate("gui.render_mode").component();
     private static final Component[] RENDER_OPTIONS = new Component[] {
-        Component.translatable("gui.create_item_drawers.render_all"),
-        Component.translatable("gui.create_item_drawers.render_item"),
-        Component.translatable("gui.create_item_drawers.render_none")
+        CreateItemDrawerLang.translate("gui.render_all").component(),
+        CreateItemDrawerLang.translate("gui.render_item").component(),
+        CreateItemDrawerLang.translate("gui.render_none").component()
     };
 
     private static final ResourceLocation TEXTURE =
@@ -107,7 +108,7 @@ public class DrawerScreen extends AbstractContainerScreen<DrawerMenu> {
             int drawY = (int)(26 / scale);
             graphics.drawString(
                 this.font,
-                Component.translatable("gui.create_item_drawers.upgrade_slot"),
+                CreateItemDrawerLang.translate("gui.upgrade_slot").component(),
                 drawX, drawY,
                 0x404040,
                 false
@@ -248,9 +249,9 @@ public class DrawerScreen extends AbstractContainerScreen<DrawerMenu> {
                 }
             ).withMultiLineTooltip(() -> {
                 String headerKey = be.getStorage().getSlot(slotIndex).isLockMode()
-                    ? "gui.create_item_drawers.tooltip.lock_disable"
-                    : "gui.create_item_drawers.tooltip.lock_enable";
-                return createFormattedTooltip(headerKey, "gui.create_item_drawers.tooltip.lock_description");
+                    ? "gui.tooltip.lock_disable"
+                    : "gui.tooltip.lock_enable";
+                return createFormattedTooltip(headerKey, "gui.tooltip.lock_description");
             }));
 
             // Void mode
@@ -267,9 +268,9 @@ public class DrawerScreen extends AbstractContainerScreen<DrawerMenu> {
                 }
             ).withMultiLineTooltip(() -> {
                 String headerKey = be.getStorage().getSlot(slotIndex).isVoidMode()
-                    ? "gui.create_item_drawers.tooltip.void_disable"
-                    : "gui.create_item_drawers.tooltip.void_enable";
-                return createFormattedTooltip(headerKey, "gui.create_item_drawers.tooltip.void_description");
+                    ? "gui.tooltip.void_disable"
+                    : "gui.tooltip.void_enable";
+                return createFormattedTooltip(headerKey, "gui.tooltip.void_description");
             }));
         }
     }
@@ -280,14 +281,14 @@ public class DrawerScreen extends AbstractContainerScreen<DrawerMenu> {
 
         List<Component> tooltip = new ArrayList<>();
 
-        Component header = Component.translatable(headerKey);
+        Component header = CreateItemDrawerLang.translate(headerKey).component();
         List<Component> headerLines = FontHelper.cutTextComponent(
             header,
             HEADER_PALETTE
         );
         tooltip.addAll(headerLines);
 
-        Component description = Component.translatable(descriptionKey);
+        Component description = CreateItemDrawerLang.translate(descriptionKey).component();
         List<Component> descriptionLines = FontHelper.cutTextComponent(
             description,
             DESCRIPTION_PALETTE

@@ -1,5 +1,6 @@
 package dev.emythiel.createitemdrawers.block;
 
+import dev.emythiel.createitemdrawers.util.CreateItemDrawerLang;
 import net.createmod.catnip.lang.FontHelper;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.component.DataComponents;
@@ -41,7 +42,7 @@ public class DrawerBlockItem extends BlockItem {
             ListTag slots = beTag.getList("Slots", ListTag.TAG_COMPOUND);
 
             tooltipComponents.add(Component.literal(""));
-            tooltipComponents.add(Component.translatable("tooltip.create_item_drawers.storage")
+            tooltipComponents.add(CreateItemDrawerLang.translate("tooltip.storage").component()
                 .withStyle(FontHelper.styleFromColor(0x5391e1)));
 
             for (int i = 0; i < slots.size(); i++) {
@@ -59,13 +60,13 @@ public class DrawerBlockItem extends BlockItem {
                     tooltipComponents.add(slotLine.withStyle(FontHelper.styleFromColor(0x96b7e0)));
                 } else {
                     // If slot is empty
-                    slotLine = slotLine.append(Component.translatable("tooltip.create_item_drawers.empty"));
+                    slotLine = slotLine.append(CreateItemDrawerLang.translate("tooltip.empty").component());
                     tooltipComponents.add(slotLine.withStyle(ChatFormatting.DARK_GRAY));
                 }
             }
 
             if (beTag.contains("Upgrade")) {
-                tooltipComponents.add(Component.translatable("tooltip.create_item_drawers.upgrade")
+                tooltipComponents.add(CreateItemDrawerLang.translate("tooltip.upgrade").component()
                     .withStyle(FontHelper.styleFromColor(0x5391e1)));
 
                 ItemStack upgradeItem = ItemStack.parseOptional(Objects.requireNonNull(context.registries()), beTag.getCompound("Upgrade"));
@@ -78,7 +79,7 @@ public class DrawerBlockItem extends BlockItem {
                     tooltipComponents.add(upgradeLine.withStyle(FontHelper.styleFromColor(0x96b7e0)));
                 } else {
                     // If upgrade is empty (shouldn't get here, but just in case)
-                    upgradeLine = upgradeLine.append(Component.translatable("tooltip.create_item_drawers.empty"));
+                    upgradeLine = upgradeLine.append(CreateItemDrawerLang.translate("tooltip.empty").component());
                     tooltipComponents.add(upgradeLine.withStyle(ChatFormatting.DARK_GRAY));
                 }
             }
