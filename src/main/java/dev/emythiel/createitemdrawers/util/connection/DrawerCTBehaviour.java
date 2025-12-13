@@ -19,8 +19,6 @@ public class DrawerCTBehaviour extends ConnectedTextureBehaviour.Base {
     @Override
     public boolean connectsTo(BlockState state, BlockState other, BlockAndTintGetter reader,
                               BlockPos pos, BlockPos otherPos, Direction face) {
-        /*if (state.getBlock() != other.getBlock())
-            return false;*/
         if (!(state.getBlock() instanceof DrawerBlock) || !(other.getBlock() instanceof DrawerBlock))
             return false;
         if (state.getValue(HORIZONTAL_FACING) != other.getValue(HORIZONTAL_FACING))

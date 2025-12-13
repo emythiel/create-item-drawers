@@ -1,6 +1,5 @@
 package dev.emythiel.createitemdrawers.config;
 
-import dev.emythiel.createitemdrawers.registry.ModBlocks;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.neoforge.common.ModConfigSpec;

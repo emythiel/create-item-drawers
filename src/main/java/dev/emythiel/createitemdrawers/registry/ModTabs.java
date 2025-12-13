@@ -6,7 +6,6 @@ import com.tterrag.registrate.util.entry.RegistryEntry;
 import dev.emythiel.createitemdrawers.CreateItemDrawers;
 import dev.emythiel.createitemdrawers.util.CreateItemDrawerLang;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.*;
 import net.minecraft.world.item.CreativeModeTab.DisplayItemsGenerator;
 import net.neoforged.bus.api.IEventBus;
