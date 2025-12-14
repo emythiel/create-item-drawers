@@ -1,6 +1,7 @@
 package dev.emythiel.createitemdrawers.client.renderer;
 
 import com.simibubi.create.AllItems;
+import com.simibubi.create.AllSpecialTextures;
 import com.simibubi.create.CreateClient;
 import dev.emythiel.createitemdrawers.block.entity.DrawerBlockEntity;
 import dev.emythiel.createitemdrawers.util.CreateItemDrawerLang;
@@ -35,11 +36,17 @@ public class DrawerSlotHighlighter {
 
         AABB box = DrawerInteractionHelper.getSlotAABB(be, slot);
 
+        // See if we're over capacity (render red warning instead)
+        int capacity = be.getStorage().getCapacity(slot, be.getStorage().getSlot(slot).getStoredItem());
+        boolean overCapacity = capacity >= be.getStorage().getSlot(slot).getCount();
+
         Outliner.getInstance()
             .showAABB("drawer_slot_" + be.getBlockPos() + "_" + slot, box)
-            .colored(0xFFFFFF)
+            .colored(overCapacity ? 0xFFFFFF : 0xFF0000)
+            .withFaceTexture(overCapacity ? null : AllSpecialTextures.SELECTION)
             .lineWidth(0.02f);
 
+        // Render Wrench text when looking at front
         Player player = Minecraft.getInstance().player;
         boolean holdingWrench = player.getMainHandItem().is(AllItems.WRENCH.get());
         if (holdingWrench) {

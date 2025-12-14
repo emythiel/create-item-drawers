@@ -92,6 +92,8 @@ public class DrawerStorage {
         DrawerSlot slot = slots[slotIndex];
 
         int capacity = getCapacity(slotIndex, stack);
+        if (capacity < slot.getCount())
+            return stack;
 
         return slot.insert(stack, capacity, simulate);
     }
@@ -101,6 +103,12 @@ public class DrawerStorage {
      * Delegates to DrawerSlot.extract().
      */
     public ItemStack extract(int slotIndex, int amount, boolean simulate) {
+        DrawerSlot slot = slots[slotIndex];
+
+        int capacity = getCapacity(slotIndex, slot.getStoredItem());
+        if (capacity < slot.getCount())
+            return ItemStack.EMPTY;
+
         return slots[slotIndex].extract(amount, simulate);
     }
 }
