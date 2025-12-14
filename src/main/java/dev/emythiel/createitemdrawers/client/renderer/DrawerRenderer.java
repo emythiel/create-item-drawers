@@ -1,13 +1,14 @@
 package dev.emythiel.createitemdrawers.client.renderer;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.simibubi.create.content.contraptions.ContraptionWorld;
+import com.simibubi.create.foundation.blockEntity.renderer.SafeBlockEntityRenderer;
 import dev.emythiel.createitemdrawers.block.entity.DrawerBlockEntity;
 import dev.emythiel.createitemdrawers.config.ClientConfig;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -16,13 +17,12 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.HorizontalDirectionalBlock;
 import net.minecraft.world.phys.Vec3;
 
-public class DrawerRenderer implements BlockEntityRenderer<DrawerBlockEntity> {
+public class DrawerRenderer extends SafeBlockEntityRenderer<DrawerBlockEntity> {
     public DrawerRenderer(BlockEntityRendererProvider.Context ctx) {}
 
     @Override
-    public void render(DrawerBlockEntity be, float partialTicks,
-                       PoseStack ms, MultiBufferSource buffer, int packedLight, int overlay) {
-
+    protected void renderSafe(DrawerBlockEntity be, float partialTicks,
+                              PoseStack ms, MultiBufferSource buffer, int packedLight, int overlay) {
         Level level = be.getLevel();
         BlockPos facePos = be.getBlockPos().relative(be.getBlockState().getValue(HorizontalDirectionalBlock.FACING));
         int light = level != null ? LevelRenderer.getLightColor(level, facePos) : LightTexture.pack(15, 15);
