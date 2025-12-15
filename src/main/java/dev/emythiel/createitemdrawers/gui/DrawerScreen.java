@@ -194,23 +194,58 @@ public class DrawerScreen extends AbstractContainerScreen<DrawerMenu> {
         closeMenuBtn.withCallback(this::onClose);
         addRenderableWidget(closeMenuBtn);
 
-        // Render scroll widget
-        Label renderLabel = new Label(leftPos + 25, topPos + 90, Component.empty()).withShadow();
-
-        ScrollInput renderScroll = new SelectionScrollInput(
-            leftPos + 17, topPos + 85, 109, 18
-        )
-            .forOptions(List.of(RENDER_OPTIONS))
-            .titled(RENDER_MODE_LABEL.plainCopy())
-            .setState(be.getRenderMode())
-            .writingTo(renderLabel)
-            .calling(i -> {
-                be.applyRenderMode(i);
-                sendRenderModePacket(be.getBlockPos(), i);
-            });
-
-        addRenderableWidget(renderLabel);
-        addRenderableWidget(renderScroll);
+        // Render settings
+        addRenderableWidget(new ToggleButton(
+            leftPos + 126, topPos + 82,
+            TEXTURE,
+            TOGGLE_OFF_X, TOGGLE_OFF_Y,
+            TOGGLE_ON_X, TOGGLE_ON_Y,
+            TOGGLE_W, TOGGLE_H,
+            be::getRenderItems,
+            newVal -> {
+                be.setRenderItems(newVal);
+                sendTogglePacket(be.getBlockPos(), 0, "items", newVal);
+            }
+        ).withMultiLineTooltip(() -> {
+            String headerKey = be.getRenderItems()
+                ? "gui.tooltip.items_hide"
+                : "gui.tooltip.items_show";
+            return createFormattedTooltip(headerKey, "gui.tooltip.items_description");
+        }));
+        addRenderableWidget(new ToggleButton(
+            leftPos + 126, topPos + 90,
+            TEXTURE,
+            TOGGLE_OFF_X, TOGGLE_OFF_Y,
+            TOGGLE_ON_X, TOGGLE_ON_Y,
+            TOGGLE_W, TOGGLE_H,
+            be::getRenderCounts,
+            newVal -> {
+                be.setRenderCounts(newVal);
+                sendTogglePacket(be.getBlockPos(), 0, "counts", newVal);
+            }
+        ).withMultiLineTooltip(() -> {
+            String headerKey = be.getRenderCounts()
+                ? "gui.tooltip.counts_hide"
+                : "gui.tooltip.counts_show";
+            return createFormattedTooltip(headerKey, "gui.tooltip.counts_description");
+        }));
+        addRenderableWidget(new ToggleButton(
+            leftPos + 126, topPos + 98,
+            TEXTURE,
+            TOGGLE_OFF_X, TOGGLE_OFF_Y,
+            TOGGLE_ON_X, TOGGLE_ON_Y,
+            TOGGLE_W, TOGGLE_H,
+            be::getRenderSettings,
+            newVal -> {
+                be.setRenderSettings(newVal);
+                sendTogglePacket(be.getBlockPos(), 0, "settings", newVal);
+            }
+        ).withMultiLineTooltip(() -> {
+            String headerKey = be.getRenderSettings()
+                ? "gui.tooltip.settings_hide"
+                : "gui.tooltip.settings_show";
+            return createFormattedTooltip(headerKey, "gui.tooltip.settings_description");
+        }));
 
         // Per slot void/lock toggles
         for (Slot slot : this.menu.slots) {
@@ -313,11 +348,6 @@ public class DrawerScreen extends AbstractContainerScreen<DrawerMenu> {
     }
 
     private void sendTogglePacket(BlockPos pos, int slot, String type, boolean value) {
-        boolean isLock = type.equals("lock");
-        PacketDistributor.sendToServer(new SlotTogglePacket(pos, slot, isLock, value));
-    }
-
-    private void sendRenderModePacket(BlockPos pos, int mode) {
-        PacketDistributor.sendToServer(new RenderPacket(pos, mode));
+        PacketDistributor.sendToServer(new SlotTogglePacket(pos, slot, type, value));
     }
 }

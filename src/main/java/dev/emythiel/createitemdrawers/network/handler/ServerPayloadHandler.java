@@ -6,6 +6,8 @@ import dev.emythiel.createitemdrawers.network.SlotTogglePacket;
 import net.minecraft.server.level.ServerPlayer;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
+import java.util.Objects;
+
 public class ServerPayloadHandler {
 
     private static final ServerPayloadHandler INSTANCE = new ServerPayloadHandler();
@@ -22,7 +24,9 @@ public class ServerPayloadHandler {
             var be = level.getBlockEntity(packet.pos());
 
             if (be instanceof DrawerBlockEntity drawer) {
-                drawer.applyRenderMode(packet.renderMode());
+                drawer.setRenderItems(packet.renderMode());
+                drawer.setRenderCounts(packet.renderMode());
+                drawer.setRenderSettings(packet.renderMode());
             }
         });
     }
@@ -36,10 +40,12 @@ public class ServerPayloadHandler {
             if (be instanceof DrawerBlockEntity drawer) {
                 var slot = drawer.getStorage().getSlot(packet.slot());
 
-                if (packet.lock()) {
-                    slot.setLockMode(packet.value());
-                } else {
-                    slot.setVoidMode(packet.value());
+                switch (packet.mode()) {
+                    case "lock" -> slot.setLockMode(packet.value());
+                    case "void" -> slot.setVoidMode(packet.value());
+                    case "items" -> drawer.setRenderItems(packet.value());
+                    case "counts" -> drawer.setRenderCounts(packet.value());
+                    case "settings" -> drawer.setRenderSettings(packet.value());
                 }
 
                 drawer.setChangedAndSync();

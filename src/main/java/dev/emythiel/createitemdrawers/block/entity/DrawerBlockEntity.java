@@ -62,7 +62,7 @@ public class DrawerBlockEntity extends SmartBlockEntity implements MenuProvider,
     private ItemStack upgrade = ItemStack.EMPTY;
     private boolean renderItem = true;
     private boolean renderCount = true;
-    private int renderMode = 0; // 0 = all, 1 = items only, 2 = none
+    private boolean renderSettings = true;
 
     public DrawerBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
         super(type, pos, state);
@@ -124,22 +124,8 @@ public class DrawerBlockEntity extends SmartBlockEntity implements MenuProvider,
     public void setRenderItems(boolean v) { this.renderItem = v; }
     public boolean getRenderCounts() { return renderCount; }
     public void setRenderCounts(boolean v) { this.renderCount = v; }
-
-    public int getRenderMode() { return renderMode; }
-
-    public void setRenderMode(int mode) {
-        this.renderMode = mode;
-        switch (mode) {
-            case 0 -> { renderItem = true; renderCount = true; }
-            case 1 -> { renderItem = true; renderCount = false; }
-            case 2 -> { renderItem = false; renderCount = false; }
-        }
-    }
-
-    public void applyRenderMode(int mode) {
-        setRenderMode(mode);
-        setChangedAndSync();
-    }
+    public boolean getRenderSettings() { return renderSettings; }
+    public void setRenderSettings(boolean v) { this.renderSettings = v; }
 
     public void setChangedAndSync() {
         setChanged();
@@ -165,7 +151,9 @@ public class DrawerBlockEntity extends SmartBlockEntity implements MenuProvider,
             tag.put("Upgrade", upgrade.save(provider));
         }
 
-        tag.putInt("RenderMode", renderMode);
+        tag.putBoolean("RenderItem", renderItem);
+        tag.putBoolean("RenderCount", renderCount);
+        tag.putBoolean("RenderSettings", renderSettings);
 
         // save slots
         ListTag list = new ListTag();
@@ -203,8 +191,9 @@ public class DrawerBlockEntity extends SmartBlockEntity implements MenuProvider,
             storage.setUpgradeMultiplier(1);
         }
 
-        renderMode = tag.getInt("RenderMode");
-        setRenderMode(renderMode);
+        renderItem = tag.getBoolean("RenderItem");
+        renderCount = tag.getBoolean("RenderCount");
+        renderSettings = tag.getBoolean("RenderSettings");
 
         // load slots
         ListTag list = tag.getList("Slots", Tag.TAG_COMPOUND);

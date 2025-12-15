@@ -9,7 +9,7 @@ import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
 
-public record SlotTogglePacket(BlockPos pos, int slot, boolean lock, boolean value) implements CustomPacketPayload {
+public record SlotTogglePacket(BlockPos pos, int slot, String mode, boolean value) implements CustomPacketPayload {
 
     public static final Type<SlotTogglePacket> TYPE =
         new Type<>(ResourceLocation.fromNamespaceAndPath(CreateItemDrawers.MODID, "slot_toggle"));
@@ -18,7 +18,7 @@ public record SlotTogglePacket(BlockPos pos, int slot, boolean lock, boolean val
         StreamCodec.composite(
             BlockPos.STREAM_CODEC, SlotTogglePacket::pos,
             ByteBufCodecs.INT, SlotTogglePacket::slot,
-            ByteBufCodecs.BOOL, SlotTogglePacket::lock,
+            ByteBufCodecs.STRING_UTF8, SlotTogglePacket::mode,
             ByteBufCodecs.BOOL, SlotTogglePacket::value,
             SlotTogglePacket::new
         );
