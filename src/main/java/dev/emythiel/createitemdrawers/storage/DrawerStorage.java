@@ -34,18 +34,14 @@ public class DrawerStorage {
     public DrawerSlot getSlot(int i) {
         return slots[i];
     }
-
     public int getSlotCount() {
         return slots.length;
     }
 
-
     /* Upgrades */
-
     public void setUpgradeMultiplier(int mult) {
         this.upgradeMultiplier = Math.max(1, mult);
     }
-
 
     /* Capacity calculation */
 

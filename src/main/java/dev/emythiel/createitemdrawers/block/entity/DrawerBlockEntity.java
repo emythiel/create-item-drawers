@@ -54,15 +54,16 @@ public class DrawerBlockEntity extends SmartBlockEntity implements MenuProvider,
     private final DrawerStorage storage;
     private final DrawerItemHandler itemHandler;
 
+    private ItemStack upgrade = ItemStack.EMPTY;
+    private boolean renderItem = true;
+    private boolean renderCount = true;
+    private boolean renderSettings = true;
+
     public ConnectedGroup group = new ConnectedGroup();
     private IItemHandler combinedHandler;
     protected boolean reRender;
     private EdgeInteractionBehaviour connectivity;
 
-    private ItemStack upgrade = ItemStack.EMPTY;
-    private boolean renderItem = true;
-    private boolean renderCount = true;
-    private boolean renderSettings = true;
 
     public DrawerBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
         super(type, pos, state);

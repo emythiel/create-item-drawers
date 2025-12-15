@@ -57,12 +57,12 @@ public class CreateItemDrawers {
 
         ModBlocks.register();
         ModBlockEntities.register();
+        ModMountedStorageTypes.register();
         ModItems.register();
         ModMenus.register();
         ModTabs.register(modEventBus);
-
-
     }
+
     static {
         DrawerSpriteShifts.init();
     }

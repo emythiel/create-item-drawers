@@ -9,6 +9,7 @@ import dev.emythiel.createitemdrawers.util.connection.DrawerCTBehaviour;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.material.MapColor;
 
+import static com.simibubi.create.api.contraption.storage.item.MountedItemStorageType.mountedItemStorage;
 import static com.simibubi.create.foundation.data.TagGen.pickaxeOnly;
 
 public class ModBlocks {
@@ -29,6 +30,8 @@ public class ModBlocks {
             .blockstate((ctx, prov) -> { }) // Disable auto model gen
             .onRegister(CreateRegistrate.connectedTextures(DrawerCTBehaviour::new))
             .tag(ModTags.Blocks.DRAWERS)
+            .transform(mountedItemStorage(ModMountedStorageTypes.MOUNTED_DRAWER))
+            //.onRegister(movementBehaviour(new MountedMovementBehaviour()))
             .item(DrawerBlockItem::new)
             .tag(ModTags.Items.DRAWERS)
             .build()
@@ -45,6 +48,8 @@ public class ModBlocks {
             .blockstate((ctx, prov) -> { }) // Disable auto model gen
             .onRegister(CreateRegistrate.connectedTextures(DrawerCTBehaviour::new))
             .tag(ModTags.Blocks.DRAWERS)
+            .transform(mountedItemStorage(ModMountedStorageTypes.MOUNTED_DRAWER))
+            //.onRegister(movementBehaviour(new MountedMovementBehaviour()))
             .item(DrawerBlockItem::new)
             .tag(ModTags.Items.DRAWERS)
             .build()
@@ -61,6 +66,8 @@ public class ModBlocks {
             .blockstate((ctx, prov) -> { }) // Disable auto model gen
             .onRegister(CreateRegistrate.connectedTextures(DrawerCTBehaviour::new))
             .tag(ModTags.Blocks.DRAWERS)
+            .transform(mountedItemStorage(ModMountedStorageTypes.MOUNTED_DRAWER))
+            //.onRegister(movementBehaviour(new MountedMovementBehaviour()))
             .item(DrawerBlockItem::new)
             .tag(ModTags.Items.DRAWERS)
             .build()

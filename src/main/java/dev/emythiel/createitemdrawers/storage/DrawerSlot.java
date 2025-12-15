@@ -35,8 +35,10 @@ public class DrawerSlot {
     /* Getters and Setters */
 
     public ItemStack getStoredItem() { return storedItem; }
+    public void setStoredItem(ItemStack stack) { storedItem = stack; }
 
     public int getCount() { return count; }
+    public void setCount(int c) { count = c; }
 
     public boolean isLockMode() { return lockMode; }
     public void setLockMode(boolean v) {

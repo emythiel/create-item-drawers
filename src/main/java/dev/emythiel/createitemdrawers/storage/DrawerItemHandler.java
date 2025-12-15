@@ -2,10 +2,10 @@ package dev.emythiel.createitemdrawers.storage;
 
 import dev.emythiel.createitemdrawers.block.entity.DrawerBlockEntity;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.items.IItemHandlerModifiable;
+import net.neoforged.neoforge.items.ItemStackHandler;
 import org.jetbrains.annotations.NotNull;
 
-public class DrawerItemHandler implements IItemHandlerModifiable {
+public class DrawerItemHandler extends ItemStackHandler {
 
     private final DrawerBlockEntity drawer;
 
@@ -45,6 +45,9 @@ public class DrawerItemHandler implements IItemHandlerModifiable {
     @Override
     public ItemStack insertItem(int slot, ItemStack stack, boolean simulate) {
         if (stack.isEmpty())
+            return ItemStack.EMPTY;
+
+        if (slot > 3)
             return ItemStack.EMPTY;
 
         ItemStack remaining = stack;
@@ -121,8 +124,19 @@ public class DrawerItemHandler implements IItemHandlerModifiable {
     }
 
     @Override
+    public int getStackLimit(int slot, ItemStack stack) {
+        if (slot >= 0 && slot < 4) {
+            return drawer.getStorage().getCapacity(slot, stack);
+        }
+        return super.getStackLimit(slot, stack);
+    }
+
+    @Override
     public int getSlotLimit(int slot) {
-        return 64;
+        if (slot >= 0 && slot < 4) {
+            return drawer.getStorage().getCapacity(slot, ItemStack.EMPTY);
+        }
+        return super.getSlotLimit(slot);
     }
 
     @Override
