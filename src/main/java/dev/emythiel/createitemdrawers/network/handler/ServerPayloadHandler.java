@@ -41,11 +41,13 @@ public class ServerPayloadHandler {
                 var slot = drawer.getStorage().getSlot(packet.slot());
 
                 switch (packet.mode()) {
-                    case "lock" -> slot.setLockMode(packet.value());
-                    case "void" -> slot.setVoidMode(packet.value());
-                    case "items" -> drawer.setRenderItems(packet.value());
-                    case "counts" -> drawer.setRenderCounts(packet.value());
-                    case "settings" -> drawer.setRenderSettings(packet.value());
+                    case LOCK -> slot.setLockMode(packet.value());
+                    case VOID -> slot.setVoidMode(packet.value());
+                    case ITEMS -> drawer.setRenderItems(packet.value());
+                    case COUNTS -> drawer.setRenderCounts(packet.value());
+                    case SETTINGS -> drawer.setRenderSettings(packet.value());
+
+                    //default -> throw new IllegalArgumentException("Unexpected toggle mode: " + packet.mode());
                 }
 
                 drawer.setChangedAndSync();

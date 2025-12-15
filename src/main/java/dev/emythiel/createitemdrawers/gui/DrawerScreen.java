@@ -28,6 +28,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
+import static dev.emythiel.createitemdrawers.network.SlotTogglePacket.ToggleMode.*;
 import static net.createmod.catnip.lang.FontHelper.styleFromColor;
 
 public class DrawerScreen extends AbstractContainerScreen<DrawerMenu> {
@@ -204,7 +205,7 @@ public class DrawerScreen extends AbstractContainerScreen<DrawerMenu> {
             be::getRenderItems,
             newVal -> {
                 be.setRenderItems(newVal);
-                sendTogglePacket(be.getBlockPos(), 0, "items", newVal);
+                sendTogglePacket(be.getBlockPos(), 0, ITEMS, newVal);
             }
         ).withMultiLineTooltip(() -> {
             String headerKey = be.getRenderItems()
@@ -221,7 +222,7 @@ public class DrawerScreen extends AbstractContainerScreen<DrawerMenu> {
             be::getRenderCounts,
             newVal -> {
                 be.setRenderCounts(newVal);
-                sendTogglePacket(be.getBlockPos(), 0, "counts", newVal);
+                sendTogglePacket(be.getBlockPos(), 0, COUNTS, newVal);
             }
         ).withMultiLineTooltip(() -> {
             String headerKey = be.getRenderCounts()
@@ -238,7 +239,7 @@ public class DrawerScreen extends AbstractContainerScreen<DrawerMenu> {
             be::getRenderSettings,
             newVal -> {
                 be.setRenderSettings(newVal);
-                sendTogglePacket(be.getBlockPos(), 0, "settings", newVal);
+                sendTogglePacket(be.getBlockPos(), 0, SETTINGS, newVal);
             }
         ).withMultiLineTooltip(() -> {
             String headerKey = be.getRenderSettings()
@@ -278,7 +279,7 @@ public class DrawerScreen extends AbstractContainerScreen<DrawerMenu> {
                 () -> be.getStorage().getSlot(slotIndex).isLockMode(),
                 newVal -> {
                     be.getStorage().getSlot(slotIndex).setLockMode(newVal);
-                    sendTogglePacket(be.getBlockPos(), slotIndex, "lock", newVal);
+                    sendTogglePacket(be.getBlockPos(), slotIndex, LOCK, newVal);
                 }
             ).withMultiLineTooltip(() -> {
                 String headerKey = be.getStorage().getSlot(slotIndex).isLockMode()
@@ -297,7 +298,7 @@ public class DrawerScreen extends AbstractContainerScreen<DrawerMenu> {
                 () -> be.getStorage().getSlot(slotIndex).isVoidMode(),
                 newVal -> {
                     be.getStorage().getSlot(slotIndex).setVoidMode(newVal);
-                    sendTogglePacket(be.getBlockPos(), slotIndex, "void", newVal);
+                    sendTogglePacket(be.getBlockPos(), slotIndex, VOID, newVal);
                 }
             ).withMultiLineTooltip(() -> {
                 String headerKey = be.getStorage().getSlot(slotIndex).isVoidMode()
@@ -347,7 +348,7 @@ public class DrawerScreen extends AbstractContainerScreen<DrawerMenu> {
         }
     }
 
-    private void sendTogglePacket(BlockPos pos, int slot, String type, boolean value) {
+    private void sendTogglePacket(BlockPos pos, int slot, SlotTogglePacket.ToggleMode type, boolean value) {
         PacketDistributor.sendToServer(new SlotTogglePacket(pos, slot, type, value));
     }
 }
