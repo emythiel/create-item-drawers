@@ -115,16 +115,21 @@ public class DrawerBlock extends BaseBlock implements IWrenchable, IBE<DrawerBlo
                 if (!ItemStack.isSameItemSameComponents(inv, stored))
                     continue;
 
-                anyInserted = true;
+                int before = inv.getCount();
                 ItemStack leftover = be.getStorage().insert(slot, inv, false);
-                player.getInventory().setItem(i, leftover);
+                int after = leftover.getCount();
+
+                if (after < before) {
+                    anyInserted = true;
+                    player.getInventory().setItem(i, leftover);
+                }
             }
-            be.setChangedAndSync();
             if (anyInserted) {
+                be.setChangedAndSync();
                 //CreateItemDrawerLang.translate("interaction.insert_matching_stacks").sendStatus(player);
                 AllSoundEvents.ITEM_HATCH.playOnServer(level, pos);
+                return ItemInteractionResult.SUCCESS;
             }
-            return ItemInteractionResult.SUCCESS;
         }
 
         return ItemInteractionResult.SUCCESS;
