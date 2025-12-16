@@ -69,7 +69,7 @@ public class MountedStorage extends WrapperMountedItemStorage<ItemStackHandler> 
         metaData.putInt("SlotCount", slotCount);
         metaData.putBoolean("RenderItem", be.getRenderItems());
         metaData.putBoolean("RenderCount", be.getRenderCounts());
-        metaData.putBoolean("RenderSettings", be.getRenderSettings());
+        metaData.putBoolean("RenderAdditional", be.getRenderAdditional());
 
         metadata.set(DataComponents.CUSTOM_DATA, CustomData.of(metaData));
 
@@ -120,7 +120,7 @@ public class MountedStorage extends WrapperMountedItemStorage<ItemStackHandler> 
                 CompoundTag metaData = metaCustomData.copyTag();
                 drawer.setRenderItems(metaData.getBoolean("RenderItem"));
                 drawer.setRenderCounts(metaData.getBoolean("RenderCount"));
-                drawer.setRenderSettings(metaData.getBoolean("RenderSettings"));
+                drawer.setRenderAdditional(metaData.getBoolean("RenderAdditional"));
             }
 
             drawer.setChangedAndSync();

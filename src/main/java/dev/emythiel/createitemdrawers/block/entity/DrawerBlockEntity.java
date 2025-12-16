@@ -57,7 +57,7 @@ public class DrawerBlockEntity extends SmartBlockEntity implements MenuProvider,
     private ItemStack upgrade = ItemStack.EMPTY;
     private boolean renderItem = true;
     private boolean renderCount = true;
-    private boolean renderSettings = true;
+    private boolean renderAdditional = true;
 
     public ConnectedGroup group = new ConnectedGroup();
     private IItemHandler combinedHandler;
@@ -125,8 +125,8 @@ public class DrawerBlockEntity extends SmartBlockEntity implements MenuProvider,
     public void setRenderItems(boolean v) { this.renderItem = v; }
     public boolean getRenderCounts() { return renderCount; }
     public void setRenderCounts(boolean v) { this.renderCount = v; }
-    public boolean getRenderSettings() { return renderSettings; }
-    public void setRenderSettings(boolean v) { this.renderSettings = v; }
+    public boolean getRenderAdditional() { return renderAdditional; }
+    public void setRenderAdditional(boolean v) { this.renderAdditional = v; }
 
     public void setChangedAndSync() {
         setChanged();
@@ -154,7 +154,7 @@ public class DrawerBlockEntity extends SmartBlockEntity implements MenuProvider,
 
         tag.putBoolean("RenderItem", renderItem);
         tag.putBoolean("RenderCount", renderCount);
-        tag.putBoolean("RenderSettings", renderSettings);
+        tag.putBoolean("RenderAdditional", renderAdditional);
 
         // save slots
         ListTag list = new ListTag();
@@ -194,7 +194,7 @@ public class DrawerBlockEntity extends SmartBlockEntity implements MenuProvider,
 
         renderItem = tag.getBoolean("RenderItem");
         renderCount = tag.getBoolean("RenderCount");
-        renderSettings = tag.getBoolean("RenderSettings");
+        renderAdditional = tag.getBoolean("RenderAdditional");
 
         // load slots
         ListTag list = tag.getList("Slots", Tag.TAG_COMPOUND);

@@ -26,7 +26,7 @@ public class ServerPayloadHandler {
             if (be instanceof DrawerBlockEntity drawer) {
                 drawer.setRenderItems(packet.renderMode());
                 drawer.setRenderCounts(packet.renderMode());
-                drawer.setRenderSettings(packet.renderMode());
+                drawer.setRenderAdditional(packet.renderMode());
             }
         });
     }
@@ -45,7 +45,7 @@ public class ServerPayloadHandler {
                     case VOID -> slot.setVoidMode(packet.value());
                     case ITEMS -> drawer.setRenderItems(packet.value());
                     case COUNTS -> drawer.setRenderCounts(packet.value());
-                    case SETTINGS -> drawer.setRenderSettings(packet.value());
+                    case SETTINGS -> drawer.setRenderAdditional(packet.value());
 
                     //default -> throw new IllegalArgumentException("Unexpected toggle mode: " + packet.mode());
                 }
