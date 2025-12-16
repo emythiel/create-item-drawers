@@ -1,10 +1,8 @@
 package dev.emythiel.createitemdrawers.client.renderer;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
-import com.simibubi.create.content.contraptions.ContraptionWorld;
-import com.simibubi.create.content.contraptions.behaviour.MovementContext;
-import com.simibubi.create.content.contraptions.render.ContraptionMatrices;
 import com.simibubi.create.foundation.blockEntity.renderer.SafeBlockEntityRenderer;
 import dev.emythiel.createitemdrawers.CreateItemDrawers;
 import dev.emythiel.createitemdrawers.block.entity.DrawerBlockEntity;
@@ -13,30 +11,37 @@ import dev.emythiel.createitemdrawers.util.DrawerInteractionHelper;
 import dev.emythiel.createitemdrawers.util.RenderHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.LightLayer;
 import net.minecraft.world.level.block.HorizontalDirectionalBlock;
 import net.minecraft.world.phys.Vec3;
+import org.joml.Matrix3f;
+import org.joml.Matrix4f;
+import org.joml.Vector3f;
+
+import static dev.emythiel.createitemdrawers.block.base.BaseBlock.HORIZONTAL_FACING;
 
 public class DrawerRenderer extends SafeBlockEntityRenderer<DrawerBlockEntity> {
     public DrawerRenderer(BlockEntityRendererProvider.Context ctx) {}
 
     private static int itemDist = ClientConfig.ITEM_RENDER_DISTANCE.get();
     private static int textDist = ClientConfig.TEXT_RENDER_DISTANCE.get();
+    private static final int additionalDist = ClientConfig.ADDITIONAL_RENDER_DISTANCE.get();
+
+    private static ResourceLocation LOCK_TEXTURE = CreateItemDrawers.asResource("textures/sprite/lock_icon.png");
+    private static ResourceLocation VOID_TEXTURE = CreateItemDrawers.asResource("textures/sprite/void_icon.png");
 
     @Override
     protected void renderSafe(DrawerBlockEntity be, float partialTicks,
@@ -58,8 +63,9 @@ public class DrawerRenderer extends SafeBlockEntityRenderer<DrawerBlockEntity> {
 
         boolean items = be.getRenderItems() && distSq <= itemDist * itemDist;
         boolean texts = be.getRenderCounts() && distSq <= textDist * textDist;
+        boolean additionals = be.getRenderAdditional() && distSq <= additionalDist * additionalDist;
 
-        if (!items && !texts)
+        if (!items && !texts && !additionals)
             return;
 
         // Check if player is in front of block (don't render if behind)
@@ -85,6 +91,12 @@ public class DrawerRenderer extends SafeBlockEntityRenderer<DrawerBlockEntity> {
                 renderSlotItem(be, slot, ms, buffer, light, overlay);
             if (texts)
                 renderSlotText(be, slot, ms, buffer, light);
+            if (additionals) {
+                if (be.getStorage().getSlot(slot).isLockMode())
+                    renderSlotLock(be, slot, ms, buffer, light, overlay);
+                if (be.getStorage().getSlot(slot).isVoidMode())
+                    renderSlotVoid(be, slot, ms, buffer, light, overlay);
+            }
         }
     }
 
@@ -149,6 +161,60 @@ public class DrawerRenderer extends SafeBlockEntityRenderer<DrawerBlockEntity> {
             formattedText, xOffset, 0f, 0xFFFFFF, false,
             ms.last().pose(), buffer, Font.DisplayMode.NORMAL, 0, light
         );
+
+        ms.popPose();
+    }
+
+    private static void renderSlotLock(DrawerBlockEntity be, int slot, PoseStack ms,
+                                       MultiBufferSource buffer, int light, int overlay) {
+        if (!be.getStorage().getSlot(slot).isLockMode()) return;
+
+        int slots = be.getStorage().getSlotCount();
+        Direction facing = be.getBlockState().getValue(HORIZONTAL_FACING);
+
+        Vec3 uv = DrawerInteractionHelper.getLockUV(slot, slots);
+
+        ms.pushPose();
+
+        ms.translate(0.5, 0.5, 0.5);
+        ms.mulPose(Axis.YP.rotationDegrees(RenderHelper.getFaceRotation(facing)));
+        ms.translate(uv.x - 0.5, uv.y - 0.5, 0.475);
+
+        float scale = slots == 1 ? 0.2f : 0.1f;
+        ms.scale(scale, scale, scale);
+
+        VertexConsumer vertexConsumer = buffer.getBuffer(RenderType.entityCutout(LOCK_TEXTURE));
+        Matrix4f matrix = ms.last().pose();
+        Vector3f normal = new Vector3f(0, 0, 1);
+
+        RenderHelper.renderFullTexture(matrix, vertexConsumer, light, overlay, normal, 1f);
+
+        ms.popPose();
+    }
+
+    private static void renderSlotVoid(DrawerBlockEntity be, int slot, PoseStack ms,
+                                       MultiBufferSource buffer, int light, int overlay) {
+        if (!be.getStorage().getSlot(slot).isVoidMode()) return;
+
+        int slots = be.getStorage().getSlotCount();
+        Direction facing = be.getBlockState().getValue(HORIZONTAL_FACING);
+
+        Vec3 uv = DrawerInteractionHelper.getVoidUV(slot, slots);
+
+        ms.pushPose();
+
+        ms.translate(0.5, 0.5, 0.5);
+        ms.mulPose(Axis.YP.rotationDegrees(RenderHelper.getFaceRotation(facing)));
+        ms.translate(uv.x - 0.5, uv.y - 0.5, 0.475);
+
+        float scale = slots == 1 ? 0.2f : 0.1f;
+        ms.scale(scale, scale, scale);
+
+        VertexConsumer vertexConsumer = buffer.getBuffer(RenderType.entityCutout(VOID_TEXTURE));
+        Matrix4f matrix = ms.last().pose();
+        Vector3f normal = new Vector3f(0, 0, 1);
+
+        RenderHelper.renderFullTexture(matrix, vertexConsumer, light, overlay, normal, 1f);
 
         ms.popPose();
     }

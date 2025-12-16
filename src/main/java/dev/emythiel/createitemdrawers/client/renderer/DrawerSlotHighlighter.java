@@ -44,7 +44,7 @@ public class DrawerSlotHighlighter {
             .showAABB("drawer_slot_" + be.getBlockPos() + "_" + slot, box)
             .colored(overCapacity ? 0xFFFFFF : 0xFF0000)
             .withFaceTexture(overCapacity ? null : AllSpecialTextures.SELECTION)
-            .lineWidth(0.02f);
+            .lineWidth(0.01f);
 
         // Render Wrench text when looking at front
         Player player = Minecraft.getInstance().player;

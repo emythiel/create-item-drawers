@@ -27,6 +27,18 @@ public class DrawerInteractionHelper {
         return new Vec3(uv.x, uv.y - shift, 0);
     }
 
+    public static Vec3 getLockUV(int slot, int slotCount) {
+        Vec3 uv = getSlotUV(slot, slotCount);
+        double shift = (slotCount == 1) ? 0.35 : 0.18;
+        return new Vec3(uv.x - (shift / 2), uv.y + shift, 0);
+    }
+
+    public static Vec3 getVoidUV(int slot, int slotCount) {
+        Vec3 uv = getSlotUV(slot, slotCount);
+        double shift = (slotCount == 1) ? 0.35 : 0.18;
+        return new Vec3(uv.x + (shift / 2), uv.y + shift, 0);
+    }
+
     public static int getHitSlot(DrawerBlockEntity be, Vec3 hitPos) {
         Direction facing = be.getBlockState().getValue(HorizontalDirectionalBlock.FACING);
         BlockPos pos = be.getBlockPos();

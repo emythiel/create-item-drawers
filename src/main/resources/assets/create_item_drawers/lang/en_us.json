@@ -4,6 +4,7 @@
   "create_item_drawers.configuration.render-settings": "Render Settings",
   "create_item_drawers.configuration.itemRenderDistance": "Item Render Distance",
   "create_item_drawers.configuration.textRenderDistance": "Text Render Distance",
+  "create_item_drawers.configuration.additionalRenderDistance": "Additional Render Distance",
   "create_item_drawers.configuration.storage-settings": "Storage Settings",
   "create_item_drawers.configuration.singleCapacity": "Single Drawer Stacks",
   "create_item_drawers.configuration.doubleCapacity": "Double Drawer Stacks",

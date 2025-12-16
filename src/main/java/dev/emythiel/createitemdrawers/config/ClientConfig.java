@@ -8,6 +8,7 @@ public class ClientConfig {
 
     public static ModConfigSpec.IntValue ITEM_RENDER_DISTANCE;
     public static ModConfigSpec.IntValue TEXT_RENDER_DISTANCE;
+    public static ModConfigSpec.IntValue ADDITIONAL_RENDER_DISTANCE;
 
     static {
         ModConfigSpec.Builder builder = new ModConfigSpec.Builder();
@@ -19,6 +20,9 @@ public class ClientConfig {
         TEXT_RENDER_DISTANCE = builder
             .comment("Sets the distance at which text on the drawers are rendered")
             .defineInRange("textRenderDistance", 16, 1, 128);
+        ADDITIONAL_RENDER_DISTANCE = builder
+            .comment("Sets the distance at which additional information (such as lock/void mode) are rendered")
+            .defineInRange("additionalRenderDistance", 4, 1, 128);
         builder.pop();
 
         SPEC = builder.build();
