@@ -1,9 +1,13 @@
 package dev.emythiel.createitemdrawers.util;
 
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import dev.emythiel.createitemdrawers.CreateItemDrawers;
 import net.createmod.catnip.math.VecHelper;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.phys.Vec3;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
@@ -39,17 +43,65 @@ public class RenderHelper {
         };
     }
 
-    public static void addQuad(Matrix4f matrix, VertexConsumer vertexConsumer, int light, int overlay,
-                               float x1, float x2, float y1, float y2, float z,
-                               float uMin, float uMax, float vMin, float vMax, Vector3f normal) {
-        // x1=left, x2=right, y1=bottom, y2=top
-        addVertex(matrix, vertexConsumer, light, overlay, x2, y1, z, uMax, vMin, normal);  // Bottom-right
-        addVertex(matrix, vertexConsumer, light, overlay, x2, y2, z, uMax, vMax, normal);  // Top-right
-        addVertex(matrix, vertexConsumer, light, overlay, x1, y2, z, uMin, vMax, normal);  // Top-left
-        addVertex(matrix, vertexConsumer, light, overlay, x1, y1, z, uMin, vMin, normal);  // Bottom-left
+    private static final ResourceLocation ATLAS = CreateItemDrawers.asResource("textures/sprite/icons.png");
+
+    public enum DrawerIcon {
+        TIER_1(0, 0),
+        TIER_2(16,0),
+        TIER_3(32, 0),
+        TIER_4(48, 0),
+        TIER_5(64, 0),
+        LOCK(0, 16),
+        VOID(16, 16);
+
+        private static final float ATLAS_SIZE = 256f;
+        private static final float ICON_SIZE = 16f;
+
+        private final float uMin;
+        private final float uMax;
+        private final float vMin;
+        private final float vMax;
+
+        DrawerIcon (int x, int y) {
+            this.uMin = x / ATLAS_SIZE;
+            this.uMax = (x + ICON_SIZE) / ATLAS_SIZE;
+            this.vMin = y / ATLAS_SIZE;
+            this.vMax = (y + ICON_SIZE) / ATLAS_SIZE;
+        }
+
+        public float getUMin() { return uMin; }
+        public float getUMax() { return uMax; }
+        public float getVMin() { return vMin; }
+        public float getVMax() { return vMax; }
     }
 
-    public static void addVertex(Matrix4f matrix, VertexConsumer vertexConsumer, int light, int overlay,
+    public static void renderIconFromAtlas(Matrix4f matrix, MultiBufferSource buffer, int light, int overlay,
+                                           Vector3f normal, float x, float y, float z, float size,
+                                           DrawerIcon icon) {
+        VertexConsumer vertexConsumer = buffer.getBuffer(RenderType.entityCutout(ATLAS));
+        float halfSize = size / 2f;
+
+        renderTextureRegion(matrix, vertexConsumer, light, overlay,
+            x - halfSize, x + halfSize, y - halfSize, y + halfSize, z,
+            icon.getUMin(), icon.getUMax(), icon.getVMin(), icon.getVMax(), normal);
+    }
+
+    private static void renderTextureRegion(Matrix4f matrix, VertexConsumer vertexConsumer, int light, int overlay,
+                                           float minX, float maxX, float minY, float maxY, float z,
+                                           float uMin, float uMax, float vMin, float vMax, Vector3f normal) {
+        addQuad(matrix, vertexConsumer, light, overlay, minX, maxX, minY, maxY, z, uMin, uMax, vMin, vMax, normal);
+    }
+
+    private static void addQuad(Matrix4f matrix, VertexConsumer vertexConsumer, int light, int overlay,
+                               float x1, float x2, float y1, float y2, float z,
+                               float uMin, float uMax, float vMin, float vMax, Vector3f normal) {
+        addVertex(matrix, vertexConsumer, light, overlay, x2, y1, z, uMax, vMax, normal);
+        addVertex(matrix, vertexConsumer, light, overlay, x2, y2, z, uMax, vMin, normal);
+        addVertex(matrix, vertexConsumer, light, overlay, x1, y2, z, uMin, vMin, normal);
+        addVertex(matrix, vertexConsumer, light, overlay, x1, y1, z, uMin, vMax, normal);
+    }
+
+    private static void addVertex(Matrix4f matrix, VertexConsumer vertexConsumer, int light, int overlay,
                                  float x, float y, float z, float u, float v, Vector3f normal) {
         vertexConsumer.addVertex(matrix, x, y, z)
             .setColor(1f, 1f, 1f, 1f)
@@ -57,18 +109,5 @@ public class RenderHelper {
             .setOverlay(overlay)
             .setLight(light)
             .setNormal(normal.x(), normal.y(), normal.z());
-    }
-
-    public static void renderFullTexture(Matrix4f matrix, VertexConsumer vertexConsumer, int light, int overlay,
-                                         Vector3f normal, float size) {
-        float halfSize = size / 2f;
-        addQuad(matrix, vertexConsumer, light, overlay, -halfSize, halfSize, -halfSize, halfSize, 0f,
-            0f, 1f, 1f, 0f, normal);
-    }
-
-    public static void renderTextureRegion(Matrix4f matrix, VertexConsumer vertexConsumer, int light, int overlay,
-                                           float minX, float maxX, float minY, float maxY, float z,
-                                           float uMin, float uMax, float vMin, float vMax, Vector3f normal) {
-        addQuad(matrix, vertexConsumer, light, overlay, minX, maxX, minY, maxY, z, uMin, uMax, vMin, vMax, normal);
     }
 }

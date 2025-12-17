@@ -1,7 +1,7 @@
 {
 	"format_version": "1.9.0",
 	"credit": "Made with Blockbench",
-  "parent": "block/block",
+	"parent": "block/block",
 	"textures": {
 		"particle": "create_item_drawers:block/side",
 		"side": "create_item_drawers:block/side",
@@ -21,6 +21,20 @@
 				"west": {"uv": [0, 0.5, 16, 16], "rotation": 270, "texture": "#side"},
 				"up": {"uv": [0, 0.5, 16, 16], "texture": "#side"},
 				"down": {"uv": [0, 0.5, 16, 16], "rotation": 180, "texture": "#side"}
+			}
+		},
+		{
+			"name": "upgrade",
+			"from": [7, 14.5, 0],
+			"to": [9, 15.5, 0.5],
+			"rotation": {"angle": 0, "axis": "y", "origin": [7, 13.5, 0]},
+			"faces": {
+				"north": {"uv": [7, 0, 9, 1], "texture": "#side"},
+				"east": {"uv": [2.5, 0, 3, 1], "texture": "#side"},
+				"south": {"uv": [0, 0.5, 2, 1.5], "texture": "#missing"},
+				"west": {"uv": [13, 0, 13.5, 1], "texture": "#side"},
+				"up": {"uv": [0, 0, 2, 0.5], "texture": "#missing"},
+				"down": {"uv": [7, 0, 9, 0.5], "texture": "#side"}
 			}
 		},
 		{
@@ -85,7 +99,7 @@
 			"name": "frame",
 			"origin": [0, 0, 0],
 			"color": 0,
-			"children": [1, 2, 3, 4]
+			"children": [1, 2, 3, 4, 5]
 		}
 	]
 }

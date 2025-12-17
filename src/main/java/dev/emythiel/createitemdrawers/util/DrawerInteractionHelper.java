@@ -23,20 +23,25 @@ public class DrawerInteractionHelper {
 
     public static Vec3 getTextUV(int slot, int slotCount) {
         Vec3 uv = getSlotUV(slot, slotCount);
-        double shift = (slotCount == 1) ? 0.30 : 0.15;
+        double shift = (slotCount == 1) ? 0.30 : 0.165;
         return new Vec3(uv.x, uv.y - shift, 0);
     }
 
     public static Vec3 getLockUV(int slot, int slotCount) {
         Vec3 uv = getSlotUV(slot, slotCount);
-        double shift = (slotCount == 1) ? 0.35 : 0.18;
-        return new Vec3(uv.x - (shift / 2), uv.y + shift, 0);
+        double shift = (slotCount == 1) ? 0.35 : 0.165;
+        return new Vec3(uv.x - (shift / 1.5), uv.y + shift, 0);
     }
 
     public static Vec3 getVoidUV(int slot, int slotCount) {
         Vec3 uv = getSlotUV(slot, slotCount);
-        double shift = (slotCount == 1) ? 0.35 : 0.18;
-        return new Vec3(uv.x + (shift / 2), uv.y + shift, 0);
+        double shift = (slotCount == 1) ? 0.35 : 0.165;
+        return new Vec3(uv.x + (shift / 1.5), uv.y + shift, 0);
+    }
+
+    public static Vec3 getUpgradeUV(int slotCount) {
+        double shift = (slotCount == 1) ? 0.953 : 0.968;
+        return new Vec3(0.5, shift, 0);
     }
 
     public static int getHitSlot(DrawerBlockEntity be, Vec3 hitPos) {

@@ -5,8 +5,11 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 import com.simibubi.create.foundation.blockEntity.renderer.SafeBlockEntityRenderer;
 import dev.emythiel.createitemdrawers.CreateItemDrawers;
+import dev.emythiel.createitemdrawers.block.DrawerBlockItem;
 import dev.emythiel.createitemdrawers.block.entity.DrawerBlockEntity;
 import dev.emythiel.createitemdrawers.config.ClientConfig;
+import dev.emythiel.createitemdrawers.item.CapacityUpgradeItem;
+import dev.emythiel.createitemdrawers.registry.ModItems;
 import dev.emythiel.createitemdrawers.util.DrawerInteractionHelper;
 import dev.emythiel.createitemdrawers.util.RenderHelper;
 import net.minecraft.client.Minecraft;
@@ -22,30 +25,35 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.HorizontalDirectionalBlock;
 import net.minecraft.world.phys.Vec3;
-import org.joml.Matrix3f;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
+
+import java.util.Map;
 
 import static dev.emythiel.createitemdrawers.block.base.BaseBlock.HORIZONTAL_FACING;
 
 public class DrawerRenderer extends SafeBlockEntityRenderer<DrawerBlockEntity> {
     public DrawerRenderer(BlockEntityRendererProvider.Context ctx) {}
 
-    private static int itemDist = ClientConfig.ITEM_RENDER_DISTANCE.get();
-    private static int textDist = ClientConfig.TEXT_RENDER_DISTANCE.get();
-    private static final int additionalDist = ClientConfig.ADDITIONAL_RENDER_DISTANCE.get();
-
-    private static ResourceLocation LOCK_TEXTURE = CreateItemDrawers.asResource("textures/sprite/lock_icon.png");
-    private static ResourceLocation VOID_TEXTURE = CreateItemDrawers.asResource("textures/sprite/void_icon.png");
-
     @Override
     protected void renderSafe(DrawerBlockEntity be, float partialTicks,
                               PoseStack ms, MultiBufferSource buffer, int packedLight, int overlay) {
+        int itemDist = ClientConfig.ITEM_RENDER_DISTANCE.get();
+        int textDist = ClientConfig.TEXT_RENDER_DISTANCE.get();
+        int additionalDist = ClientConfig.ADDITIONAL_RENDER_DISTANCE.get();
+        boolean shouldRenderItem = ClientConfig.ITEM_RENDER.get();
+        boolean shouldRenderText = ClientConfig.TEXT_RENDER.get();
+        boolean shouldRenderAdditional = ClientConfig.ADDITIONAL_RENDER.get();
+
+        if (!shouldRenderItem && !shouldRenderText && !shouldRenderAdditional)
+            return; // All renders disabled, just exit
+
         Level level = be.getLevel();
         BlockPos facePos = be.getBlockPos().relative(be.getBlockState().getValue(HorizontalDirectionalBlock.FACING));
         int light = level != null ? LevelRenderer.getLightColor(level, facePos) : LightTexture.pack(15, 15);
@@ -61,9 +69,9 @@ public class DrawerRenderer extends SafeBlockEntityRenderer<DrawerBlockEntity> {
             be.getBlockPos().getZ() + 0.5
         );
 
-        boolean items = be.getRenderItems() && distSq <= itemDist * itemDist;
-        boolean texts = be.getRenderCounts() && distSq <= textDist * textDist;
-        boolean additionals = be.getRenderAdditional() && distSq <= additionalDist * additionalDist;
+        boolean items = be.getRenderItems() && distSq <= itemDist * itemDist && shouldRenderItem;
+        boolean texts = be.getRenderCounts() && distSq <= textDist * textDist && shouldRenderText;
+        boolean additionals = be.getRenderAdditional() && distSq <= additionalDist * additionalDist && shouldRenderAdditional;
 
         if (!items && !texts && !additionals)
             return;
@@ -85,6 +93,11 @@ public class DrawerRenderer extends SafeBlockEntityRenderer<DrawerBlockEntity> {
 
         if (frontNormal.dot(toPlayer) <= 0)
             return;
+
+        if (additionals) {
+            if (!be.getUpgrade().isEmpty())
+                renderUpgrade(be, be.getUpgrade(), ms, buffer, light, overlay);
+        }
 
         for (int slot = 0; slot < be.getStorage().getSlotCount(); slot++) {
             if (items)
@@ -151,7 +164,7 @@ public class DrawerRenderer extends SafeBlockEntityRenderer<DrawerBlockEntity> {
         ms.translate(0.5, 0.5, 0.5);
         ms.mulPose(Axis.YP.rotationDegrees(RenderHelper.getFaceRotation(facing)));
 
-        ms.translate(uv.x - 0.5, uv.y - 0.5, 0.475);
+        ms.translate(uv.x - 0.5, uv.y - 0.5, 0.471);
         float scale = slots == 1 ? 0.02f : 0.01f;
         ms.scale(scale, -scale, scale);
 
@@ -178,16 +191,16 @@ public class DrawerRenderer extends SafeBlockEntityRenderer<DrawerBlockEntity> {
 
         ms.translate(0.5, 0.5, 0.5);
         ms.mulPose(Axis.YP.rotationDegrees(RenderHelper.getFaceRotation(facing)));
-        ms.translate(uv.x - 0.5, uv.y - 0.5, 0.475);
+        ms.translate(uv.x - 0.5, uv.y - 0.5, 0.471);
 
-        float scale = slots == 1 ? 0.2f : 0.1f;
+        float scale = slots == 1 ? 0.15f : 0.08f;
         ms.scale(scale, scale, scale);
 
-        VertexConsumer vertexConsumer = buffer.getBuffer(RenderType.entityCutout(LOCK_TEXTURE));
         Matrix4f matrix = ms.last().pose();
         Vector3f normal = new Vector3f(0, 0, 1);
 
-        RenderHelper.renderFullTexture(matrix, vertexConsumer, light, overlay, normal, 1f);
+        RenderHelper.renderIconFromAtlas(matrix, buffer, light, overlay, normal,
+            0, 0, 0, 1f, RenderHelper.DrawerIcon.LOCK);
 
         ms.popPose();
     }
@@ -205,16 +218,55 @@ public class DrawerRenderer extends SafeBlockEntityRenderer<DrawerBlockEntity> {
 
         ms.translate(0.5, 0.5, 0.5);
         ms.mulPose(Axis.YP.rotationDegrees(RenderHelper.getFaceRotation(facing)));
-        ms.translate(uv.x - 0.5, uv.y - 0.5, 0.475);
+        ms.translate(uv.x - 0.5, uv.y - 0.5, 0.471);
 
-        float scale = slots == 1 ? 0.2f : 0.1f;
+        float scale = slots == 1 ? 0.15f : 0.08f;
         ms.scale(scale, scale, scale);
 
-        VertexConsumer vertexConsumer = buffer.getBuffer(RenderType.entityCutout(VOID_TEXTURE));
         Matrix4f matrix = ms.last().pose();
         Vector3f normal = new Vector3f(0, 0, 1);
 
-        RenderHelper.renderFullTexture(matrix, vertexConsumer, light, overlay, normal, 1f);
+        RenderHelper.renderIconFromAtlas(matrix, buffer, light, overlay, normal,
+            0, 0, 0, 1f, RenderHelper.DrawerIcon.VOID);
+
+        ms.popPose();
+    }
+
+    private static void renderUpgrade(DrawerBlockEntity be, ItemStack upgrade, PoseStack ms,
+                                      MultiBufferSource buffer, int light, int overlay) {
+        if (upgrade.isEmpty()) return;
+
+        Map<Item, RenderHelper.DrawerIcon> UPGRADE_ICONS = Map.of(
+            ModItems.CAPACITY_UPGRADE_T1.get(), RenderHelper.DrawerIcon.TIER_1,
+            ModItems.CAPACITY_UPGRADE_T2.get(), RenderHelper.DrawerIcon.TIER_2,
+            ModItems.CAPACITY_UPGRADE_T3.get(), RenderHelper.DrawerIcon.TIER_3,
+            ModItems.CAPACITY_UPGRADE_T4.get(), RenderHelper.DrawerIcon.TIER_4,
+            ModItems.CAPACITY_UPGRADE_T5.get(), RenderHelper.DrawerIcon.TIER_5
+        );
+
+        RenderHelper.DrawerIcon icon = UPGRADE_ICONS.get(upgrade.getItem());
+        if (icon == null)
+            return;
+
+        int slots = be.getStorage().getSlotCount();
+
+        Direction facing = be.getBlockState().getValue(HORIZONTAL_FACING);
+
+        Vec3 uv = DrawerInteractionHelper.getUpgradeUV(slots);
+
+        ms.pushPose();
+
+        ms.translate(0.5, 0.5, 0.5);
+        ms.mulPose(Axis.YP.rotationDegrees(RenderHelper.getFaceRotation(facing)));
+        ms.translate(uv.x - 0.5, uv.y - 0.5, 0.501);
+        float scale = slots == 1 ? 0.12f : 0.08f;
+        ms.scale(scale, scale, scale);
+
+        Matrix4f matrix = ms.last().pose();
+        Vector3f normal = new Vector3f(0, 0, 1);
+
+        RenderHelper.renderIconFromAtlas(matrix, buffer, light, overlay, normal,
+            0, 0, 0, 1f, icon);
 
         ms.popPose();
     }
