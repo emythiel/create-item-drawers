@@ -68,8 +68,8 @@ public class DrawerExtractionHandler {
 
         player.getInventory().placeItemBackInInventory(extracted);
 
-        /*CreateItemDrawerLang.translate(sneaking ? "interaction.extract_stack" : "interaction.extract_one")
-            .sendStatus(player);*/
+        CreateItemDrawerLang.translate(sneaking ? "interaction.extract_stack" : "interaction.extract_one")
+            .sendStatus(player);
         level.playSound(null, pos, SoundEvents.ITEM_PICKUP, SoundSource.BLOCKS, 0.2f, 0.2f);
         drawer.setChangedAndSync();
     }

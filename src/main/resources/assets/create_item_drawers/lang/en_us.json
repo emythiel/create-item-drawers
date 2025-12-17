@@ -5,6 +5,9 @@
   "create_item_drawers.configuration.itemRenderDistance": "Item Render Distance",
   "create_item_drawers.configuration.textRenderDistance": "Text Render Distance",
   "create_item_drawers.configuration.additionalRenderDistance": "Additional Render Distance",
+  "create_item_drawers.configuration.additional-settings": "Additional Settings",
+  "create_item_drawers.configuration.goggleTooltip": "Goggle Tooltip",
+  "create_item_drawers.configuration.goggleTooltipRequireWrench": "Goggle Tooltip Requires Wrench",
   "create_item_drawers.configuration.storage-settings": "Storage Settings",
   "create_item_drawers.configuration.singleCapacity": "Single Drawer Stacks",
   "create_item_drawers.configuration.doubleCapacity": "Double Drawer Stacks",
@@ -45,8 +48,11 @@
   "item.create_item_drawers.capacity_upgrade_t5": "Capacity Upgrade Tier V",
 
   "create_item_drawers.tooltip.capacity_multiplier": "Multiplier: _%sx_",
+  "create_item_drawers.tooltip.hold_for_contents": "Hold [%s] to View Contents",
   "create_item_drawers.tooltip.storage": "Storage:",
   "create_item_drawers.tooltip.upgrade": "Upgrade:",
+  "create_item_drawers.tooltip.lock": "Locked ",
+  "create_item_drawers.tooltip.void": " Voiding",
   "create_item_drawers.tooltip.empty": "Empty",
 
   "create_item_drawers.interaction.drawer_connected": "Connected Drawers",

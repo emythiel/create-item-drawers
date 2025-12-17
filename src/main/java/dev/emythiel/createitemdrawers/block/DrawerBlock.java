@@ -97,7 +97,7 @@ public class DrawerBlock extends BaseBlock implements IWrenchable, IBE<DrawerBlo
                 be.setChangedAndSync();
 
                 if (!sneaking) {
-                    //CreateItemDrawerLang.translate("interaction.insert_held_stack").sendStatus(player);
+                    CreateItemDrawerLang.translate("interaction.insert_held_stack").sendStatus(player);
                     AllSoundEvents.ITEM_HATCH.playOnServer(level, pos);
                     return ItemInteractionResult.SUCCESS;
                 }
@@ -126,7 +126,7 @@ public class DrawerBlock extends BaseBlock implements IWrenchable, IBE<DrawerBlo
             }
             if (anyInserted) {
                 be.setChangedAndSync();
-                //CreateItemDrawerLang.translate("interaction.insert_matching_stacks").sendStatus(player);
+                CreateItemDrawerLang.translate("interaction.insert_matching_stacks").sendStatus(player);
                 AllSoundEvents.ITEM_HATCH.playOnServer(level, pos);
                 return ItemInteractionResult.SUCCESS;
             }

@@ -8,6 +8,7 @@ import com.simibubi.create.foundation.blockEntity.SmartBlockEntity;
 import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
 import com.simibubi.create.foundation.blockEntity.behaviour.edgeInteraction.EdgeInteractionBehaviour;
 import dev.emythiel.createitemdrawers.block.DrawerBlock;
+import dev.emythiel.createitemdrawers.config.ClientConfig;
 import dev.emythiel.createitemdrawers.item.CapacityUpgradeItem;
 import dev.emythiel.createitemdrawers.registry.ModBlockEntities;
 import dev.emythiel.createitemdrawers.storage.DrawerItemHandler;
@@ -17,6 +18,7 @@ import dev.emythiel.createitemdrawers.util.CreateItemDrawerLang;
 import dev.emythiel.createitemdrawers.util.connection.ConnectedGroupHandler;
 import dev.emythiel.createitemdrawers.util.connection.ConnectedGroupHandler.ConnectedGroup;
 import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
@@ -257,9 +259,15 @@ public class DrawerBlockEntity extends SmartBlockEntity implements MenuProvider,
 
     @Override
     public boolean addToGoggleTooltip(List<Component> tooltip, boolean isPlayerSneaking) {
-        if (!isPlayerSneaking)
+        boolean SHOW_GOGGLE_TOOLTIP = ClientConfig.SHOW_GOGGLE_TOOLTIP.get();
+        boolean GOOGLE_TOOLTIP_REQUIRE_WRENCH = ClientConfig.GOOGLE_TOOLTIP_REQUIRE_WRENCH.get();
+
+        if (!SHOW_GOGGLE_TOOLTIP)
             return false;
-        if (storage.getSlotCount() <= 0)
+
+        Player player = Minecraft.getInstance().player;
+        boolean holdingWrench = player.getMainHandItem().is(AllItems.WRENCH.get());
+        if (GOOGLE_TOOLTIP_REQUIRE_WRENCH && !holdingWrench)
             return false;
 
         CreateItemDrawerLang.translate("gui.goggles.drawer_info")
