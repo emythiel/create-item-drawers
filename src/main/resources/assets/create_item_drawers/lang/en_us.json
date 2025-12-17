@@ -3,8 +3,11 @@
 
   "create_item_drawers.configuration.render-settings": "Render Settings",
   "create_item_drawers.configuration.itemRenderDistance": "Item Render Distance",
+  "create_item_drawers.configuration.itemRender": "Item Rendering",
   "create_item_drawers.configuration.textRenderDistance": "Text Render Distance",
+  "create_item_drawers.configuration.textRender": "Text Rendering",
   "create_item_drawers.configuration.additionalRenderDistance": "Additional Render Distance",
+  "create_item_drawers.configuration.additionalRender": "Lock / Void / Upgrade Rendering",
   "create_item_drawers.configuration.additional-settings": "Additional Settings",
   "create_item_drawers.configuration.goggleTooltip": "Goggle Tooltip",
   "create_item_drawers.configuration.goggleTooltipRequireWrench": "Goggle Tooltip Requires Wrench",
