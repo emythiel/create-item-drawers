@@ -1,45 +1,40 @@
 package dev.emythiel.createitemdrawers.client.renderer;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
+import com.simibubi.create.content.contraptions.behaviour.MovementContext;
+import com.simibubi.create.content.contraptions.render.ContraptionMatrices;
 import com.simibubi.create.foundation.blockEntity.renderer.SafeBlockEntityRenderer;
-import dev.emythiel.createitemdrawers.CreateItemDrawers;
-import dev.emythiel.createitemdrawers.block.DrawerBlockItem;
+import com.simibubi.create.foundation.virtualWorld.VirtualRenderWorld;
+import dev.emythiel.createitemdrawers.block.DrawerBlock;
 import dev.emythiel.createitemdrawers.block.entity.DrawerBlockEntity;
 import dev.emythiel.createitemdrawers.config.ClientConfig;
-import dev.emythiel.createitemdrawers.item.CapacityUpgradeItem;
-import dev.emythiel.createitemdrawers.registry.ModItems;
-import dev.emythiel.createitemdrawers.util.DrawerInteractionHelper;
+import dev.emythiel.createitemdrawers.storage.DrawerSlot;
 import dev.emythiel.createitemdrawers.util.RenderHelper;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.Font;
+import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.FormattedCharSequence;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.HorizontalDirectionalBlock;
+import net.minecraft.world.level.LightLayer;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
-import org.joml.Matrix4f;
-import org.joml.Vector3f;
-
-import java.util.Map;
 
 import static dev.emythiel.createitemdrawers.block.base.BaseBlock.HORIZONTAL_FACING;
 
 public class DrawerRenderer extends SafeBlockEntityRenderer<DrawerBlockEntity> {
     public DrawerRenderer(BlockEntityRendererProvider.Context ctx) {}
+
+
 
     @Override
     protected void renderSafe(DrawerBlockEntity be, float partialTicks,
@@ -54,13 +49,9 @@ public class DrawerRenderer extends SafeBlockEntityRenderer<DrawerBlockEntity> {
         if (!shouldRenderItem && !shouldRenderText && !shouldRenderAdditional)
             return; // All renders disabled, just exit
 
-        Level level = be.getLevel();
-        BlockPos facePos = be.getBlockPos().relative(be.getBlockState().getValue(HorizontalDirectionalBlock.FACING));
-        int light = level != null ? LevelRenderer.getLightColor(level, facePos) : LightTexture.pack(15, 15);
-
-        Player player = Minecraft.getInstance().player;
-        if (player == null)
-            return;
+        Minecraft mc = Minecraft.getInstance();
+        Player player = mc.player;
+        if (player == null) return;
 
         // Check player distance
         double distSq = player.distanceToSqr(
@@ -77,7 +68,7 @@ public class DrawerRenderer extends SafeBlockEntityRenderer<DrawerBlockEntity> {
             return;
 
         // Check if player is in front of block (don't render if behind)
-        Direction facing = be.getBlockState().getValue(HorizontalDirectionalBlock.FACING);
+        Direction facing = be.getBlockState().getValue(HORIZONTAL_FACING);
 
         Vec3 frontNormal = new Vec3(
             facing.getStepX(),
@@ -94,179 +85,139 @@ public class DrawerRenderer extends SafeBlockEntityRenderer<DrawerBlockEntity> {
         if (frontNormal.dot(toPlayer) <= 0)
             return;
 
-        if (additionals) {
-            if (!be.getUpgrade().isEmpty())
-                renderUpgrade(be, be.getUpgrade(), ms, buffer, light, overlay);
+        Level level = be.getLevel();
+        BlockPos facePos = be.getBlockPos().relative(facing);
+        int light = level != null ? LevelRenderer.getLightColor(level, facePos) : LightTexture.pack(15, 15);
+
+        ms.pushPose();
+        ms.mulPose(Axis.YP.rotationDegrees(RenderHelper.getFaceRotation(facing)));
+        ms.translate(-0.5, 0.5, -0.03);
+
+        int slotCount = be.getStorage().getSlotCount();
+
+        if (additionals && !be.getUpgrade().isEmpty())
+            RenderHelper.renderDrawerUpgrade(be.getUpgrade(), slotCount, ms, buffer, light);
+
+        for (int slot = 0; slot < slotCount; slot++) {
+            DrawerSlot currentSlot = be.getStorage().getSlot(slot);
+            ItemStack storedItem = currentSlot.getStoredItem();
+            int count = currentSlot.getCount();
+            boolean lockMode = currentSlot.isLockMode();
+            boolean voidMode = currentSlot.isVoidMode();
+            if (!storedItem.isEmpty() && items)
+                RenderHelper.renderSlotItem(mc.getItemRenderer(), storedItem, slot, slotCount, ms, buffer, light);
+            if (count > 0 && texts)
+                RenderHelper.renderSlotText(String.valueOf(count), slot, slotCount, ms, buffer, light);
+            if (lockMode && additionals)
+                RenderHelper.renderSlotMode(RenderHelper.DrawerIcon.LOCK, slot, slotCount, ms, buffer, light);
+            if (voidMode && additionals)
+                RenderHelper.renderSlotMode(RenderHelper.DrawerIcon.VOID, slot, slotCount, ms, buffer, light);
         }
 
-        for (int slot = 0; slot < be.getStorage().getSlotCount(); slot++) {
-            if (items)
-                renderSlotItem(be, slot, ms, buffer, light, overlay);
-            if (texts)
-                renderSlotText(be, slot, ms, buffer, light);
-            if (additionals) {
-                if (be.getStorage().getSlot(slot).isLockMode())
-                    renderSlotLock(be, slot, ms, buffer, light, overlay);
-                if (be.getStorage().getSlot(slot).isVoidMode())
-                    renderSlotVoid(be, slot, ms, buffer, light, overlay);
-            }
-        }
-    }
-
-    private static void renderSlotItem(DrawerBlockEntity be, int slot, PoseStack ms,
-                                      MultiBufferSource buffer, int light, int overlay) {
-
-        ItemStack stack = be.getStorage().getSlot(slot).getStoredItem();
-        if (stack.isEmpty()) return;
-
-        int slots = be.getStorage().getSlotCount();
-        Direction facing = be.getBlockState().getValue(HorizontalDirectionalBlock.FACING);
-
-        Vec3 uv = DrawerInteractionHelper.getSlotUV(slot, slots);
-
-        ms.pushPose();
-
-        ms.translate(0.5, 0.5, 0.5); // Center block first
-
-        ms.mulPose(Axis.YP.rotationDegrees(RenderHelper.getFaceRotation(facing))); // Rotate towards proper face
-
-        ms.translate(uv.x - 0.5, uv.y - 0.5, 0.47); // Apply local UV offset
-
-        // Scale item
-        float scale = slots == 1 ? 0.5f : 0.25f;
-        ms.scale(scale, scale, 0.001f);
-
-        Minecraft.getInstance().getItemRenderer().renderStatic(
-            stack, ItemDisplayContext.GUI, light, overlay, ms, buffer, null, 0
-        );
-
         ms.popPose();
     }
 
-    private static void renderSlotText(DrawerBlockEntity be, int slot, PoseStack ms,
-                                      MultiBufferSource buffer, int light) {
-        int count = be.getStorage().getSlot(slot).getCount();
-        if (count <= 0) return;
+    public static void renderFromContraptionContext(MovementContext context, VirtualRenderWorld renderWorld,
+                                           ContraptionMatrices matrices, MultiBufferSource buffer) {
+        if (!(context.state.getBlock() instanceof DrawerBlock drawer)) return;
 
-        int slots = be.getStorage().getSlotCount();
-        Direction facing = be.getBlockState().getValue(HorizontalDirectionalBlock.FACING);
-
-        Vec3 uv = DrawerInteractionHelper.getTextUV(slot, slots);
-
-        ms.pushPose();
-
-        Font font = Minecraft.getInstance().font;
-        String text = String.valueOf(count);
-        Component textComponent = Component.literal(text);
-        FormattedCharSequence formattedText = textComponent.getVisualOrderText();
-        int textWidth = font.width(formattedText);
-
-        ms.translate(0.5, 0.5, 0.5);
-        ms.mulPose(Axis.YP.rotationDegrees(RenderHelper.getFaceRotation(facing)));
-
-        ms.translate(uv.x - 0.5, uv.y - 0.5, 0.471);
-        float scale = slots == 1 ? 0.02f : 0.01f;
-        ms.scale(scale, -scale, scale);
-
-        float xOffset = -textWidth / 2f;
-
-        Minecraft.getInstance().font.drawInBatch(
-            formattedText, xOffset, 0f, 0xFFFFFF, false,
-            ms.last().pose(), buffer, Font.DisplayMode.NORMAL, 0, light
-        );
-
-        ms.popPose();
-    }
-
-    private static void renderSlotLock(DrawerBlockEntity be, int slot, PoseStack ms,
-                                       MultiBufferSource buffer, int light, int overlay) {
-        if (!be.getStorage().getSlot(slot).isLockMode()) return;
-
-        int slots = be.getStorage().getSlotCount();
-        Direction facing = be.getBlockState().getValue(HORIZONTAL_FACING);
-
-        Vec3 uv = DrawerInteractionHelper.getLockUV(slot, slots);
-
-        ms.pushPose();
-
-        ms.translate(0.5, 0.5, 0.5);
-        ms.mulPose(Axis.YP.rotationDegrees(RenderHelper.getFaceRotation(facing)));
-        ms.translate(uv.x - 0.5, uv.y - 0.5, 0.471);
-
-        float scale = slots == 1 ? 0.15f : 0.08f;
-        ms.scale(scale, scale, scale);
-
-        Matrix4f matrix = ms.last().pose();
-        Vector3f normal = new Vector3f(0, 0, 1);
-
-        RenderHelper.renderIconFromAtlas(matrix, buffer, light, overlay, normal,
-            0, 0, 0, 1f, RenderHelper.DrawerIcon.LOCK);
-
-        ms.popPose();
-    }
-
-    private static void renderSlotVoid(DrawerBlockEntity be, int slot, PoseStack ms,
-                                       MultiBufferSource buffer, int light, int overlay) {
-        if (!be.getStorage().getSlot(slot).isVoidMode()) return;
-
-        int slots = be.getStorage().getSlotCount();
-        Direction facing = be.getBlockState().getValue(HORIZONTAL_FACING);
-
-        Vec3 uv = DrawerInteractionHelper.getVoidUV(slot, slots);
-
-        ms.pushPose();
-
-        ms.translate(0.5, 0.5, 0.5);
-        ms.mulPose(Axis.YP.rotationDegrees(RenderHelper.getFaceRotation(facing)));
-        ms.translate(uv.x - 0.5, uv.y - 0.5, 0.471);
-
-        float scale = slots == 1 ? 0.15f : 0.08f;
-        ms.scale(scale, scale, scale);
-
-        Matrix4f matrix = ms.last().pose();
-        Vector3f normal = new Vector3f(0, 0, 1);
-
-        RenderHelper.renderIconFromAtlas(matrix, buffer, light, overlay, normal,
-            0, 0, 0, 1f, RenderHelper.DrawerIcon.VOID);
-
-        ms.popPose();
-    }
-
-    private static void renderUpgrade(DrawerBlockEntity be, ItemStack upgrade, PoseStack ms,
-                                      MultiBufferSource buffer, int light, int overlay) {
-        if (upgrade.isEmpty()) return;
-
-        Map<Item, RenderHelper.DrawerIcon> UPGRADE_ICONS = Map.of(
-            ModItems.CAPACITY_UPGRADE_T1.get(), RenderHelper.DrawerIcon.TIER_1,
-            ModItems.CAPACITY_UPGRADE_T2.get(), RenderHelper.DrawerIcon.TIER_2,
-            ModItems.CAPACITY_UPGRADE_T3.get(), RenderHelper.DrawerIcon.TIER_3,
-            ModItems.CAPACITY_UPGRADE_T4.get(), RenderHelper.DrawerIcon.TIER_4,
-            ModItems.CAPACITY_UPGRADE_T5.get(), RenderHelper.DrawerIcon.TIER_5
-        );
-
-        RenderHelper.DrawerIcon icon = UPGRADE_ICONS.get(upgrade.getItem());
-        if (icon == null)
+        boolean shouldRenderItem = ClientConfig.ITEM_RENDER.get();
+        boolean shouldRenderText = ClientConfig.TEXT_RENDER.get();
+        boolean shouldRenderAdditional = ClientConfig.ADDITIONAL_RENDER.get();
+        if (!shouldRenderItem && !shouldRenderText && !shouldRenderAdditional)
             return;
 
-        int slots = be.getStorage().getSlotCount();
+        int slotCount = drawer.getSlotCount();
+        BlockState state = context.state;
+        CompoundTag tag = context.blockEntityData;
+        if (tag == null || state == null) return;
 
-        Direction facing = be.getBlockState().getValue(HORIZONTAL_FACING);
+        Minecraft mc = Minecraft.getInstance();
+        LocalPlayer player = mc.player;
+        if (player == null) return;
 
-        Vec3 uv = DrawerInteractionHelper.getUpgradeUV(slots);
+        boolean renderItem = !tag.contains("RenderItem") || tag.getBoolean("RenderItem") && shouldRenderItem;
+        boolean renderCount = !tag.contains("RenderCount") || tag.getBoolean("RenderCount") && shouldRenderText;
+        boolean renderAdditional = !tag.contains("RenderAdditional") || tag.getBoolean("RenderAdditional") && shouldRenderAdditional;
+        if (!renderItem && !renderCount && !renderAdditional) return;
+
+        double distance = context.position != null
+            ? Math.sqrt(player.distanceToSqr(context.position))
+            : Math.sqrt(player.distanceToSqr(context.contraption.entity.toGlobalVector(Vec3.atCenterOf(context.localPos), 1f)));
+
+        if (distance >= 10) {
+            return;
+        }
+
+        Direction facing = state.getValue(HORIZONTAL_FACING);
+
+        Vec3 frontNormal = new Vec3(
+            facing.getStepX(),
+            facing.getStepY(),
+            facing.getStepZ()
+        ).normalize();
+
+        Vec3 toPlayer = new Vec3(
+            player.getX() - (context.localPos.getX() + 0.5),
+            player.getY() - (context.localPos.getY() + 0.5),
+            player.getZ() - (context.localPos.getZ() + 0.5)
+        ).normalize();
+
+        if (frontNormal.dot(toPlayer) <= 0)
+            return;
+
+        BlockPos lightPos = context.contraption.entity.blockPosition().offset(context.localPos).relative(facing);
+
+        int blockLight = context.world.getBrightness(LightLayer.BLOCK, lightPos);
+        int skyLight = context.world.getBrightness(LightLayer.SKY, lightPos);
+        int light = LightTexture.pack(blockLight, skyLight);
+
+        PoseStack ms = matrices.getModelViewProjection();
 
         ms.pushPose();
-
-        ms.translate(0.5, 0.5, 0.5);
+        ms.translate(context.localPos.getX(), context.localPos.getY(), context.localPos.getZ());
         ms.mulPose(Axis.YP.rotationDegrees(RenderHelper.getFaceRotation(facing)));
-        ms.translate(uv.x - 0.5, uv.y - 0.5, 0.501);
-        float scale = slots == 1 ? 0.12f : 0.08f;
-        ms.scale(scale, scale, scale);
+        ms.translate(-0.5, 0.5, -0.03);
 
-        Matrix4f matrix = ms.last().pose();
-        Vector3f normal = new Vector3f(0, 0, 1);
+        if (tag.contains("Upgrade") && renderAdditional) {
+            ItemStack upgrade = tag.getCompound("Upgrade").isEmpty()
+                ? ItemStack.EMPTY
+                : ItemStack.parseOptional(renderWorld.registryAccess(), tag.getCompound("Upgrade"));
+            if (!upgrade.isEmpty()) {
+                RenderHelper.renderDrawerUpgrade(upgrade, slotCount, ms, buffer, light);
+            }
+        }
 
-        RenderHelper.renderIconFromAtlas(matrix, buffer, light, overlay, normal,
-            0, 0, 0, 1f, icon);
+        if (tag.contains("Slots", Tag.TAG_LIST)) {
+            ListTag list = tag.getList("Slots", Tag.TAG_COMPOUND);
+            for (int slot = 0; slot < Math.min(list.size(), slotCount); slot++) {
+                CompoundTag slotTag = list.getCompound(slot);
+                if (slotTag.contains("Item") && renderItem) {
+                    ItemStack storedItem = slotTag.getCompound("Item").isEmpty()
+                        ? ItemStack.EMPTY
+                        : ItemStack.parseOptional(renderWorld.registryAccess(), slotTag.getCompound("Item"));
+                    if (!storedItem.isEmpty())
+                        RenderHelper.renderSlotItem(mc.getItemRenderer(), storedItem, slot, slotCount, ms, buffer, light);
+                }
+                if (slotTag.contains("Count") && renderCount) {
+                    int count = slotTag.getInt("Count");
+                    if (count > 0)
+                        RenderHelper.renderSlotText(String.valueOf(count), slot, slotCount, ms, buffer, light);
+                }
+                if (slotTag.contains("Locked") && renderAdditional) {
+                    boolean lockMode = slotTag.getBoolean("Locked");
+                    if (lockMode) {
+                        RenderHelper.renderSlotMode(RenderHelper.DrawerIcon.LOCK, slot, slotCount, ms, buffer, light);
+                    }
+                }
+                if (slotTag.contains("Void") && renderAdditional) {
+                    boolean voidMode = slotTag.getBoolean("Void");
+                    if (voidMode) {
+                        RenderHelper.renderSlotMode(RenderHelper.DrawerIcon.VOID, slot, slotCount, ms, buffer, light);
+                    }
+                }
+            }
+        }
 
         ms.popPose();
     }

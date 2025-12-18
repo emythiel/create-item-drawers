@@ -1,16 +1,28 @@
 package dev.emythiel.createitemdrawers.util;
 
+import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import dev.emythiel.createitemdrawers.CreateItemDrawers;
+import dev.emythiel.createitemdrawers.registry.ModItems;
 import net.createmod.catnip.math.VecHelper;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Font;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.entity.ItemRenderer;
+import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemDisplayContext;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
+
+import java.util.Map;
 
 public class RenderHelper {
     public static float getFaceRotation(Direction facing) {
@@ -43,7 +55,94 @@ public class RenderHelper {
         };
     }
 
-    private static final ResourceLocation ATLAS = CreateItemDrawers.asResource("textures/sprite/icons.png");
+    public static void renderSlotItem(ItemRenderer itemRenderer, ItemStack stack, int slot, int slots,
+                                       PoseStack ms, MultiBufferSource buffer, int light) {
+        Level level = Minecraft.getInstance().level;
+
+        Vec3 uv = DrawerInteractionHelper.getSlotUV(slot, slots);
+
+        ms.pushPose();
+        ms.translate(uv.x, uv.y, uv.z);
+        float scale = slots == 1 ? 0.5F : 0.25f;
+        ms.scale(scale, scale, 0.001f);
+
+        itemRenderer.renderStatic(stack, ItemDisplayContext.GUI, light, OverlayTexture.NO_OVERLAY,
+            ms, buffer, level, 0);
+
+        ms.popPose();
+    }
+
+    public static void renderSlotText(String text, int slot, int slots, PoseStack ms, MultiBufferSource buffer, int light) {
+        Font font = Minecraft.getInstance().font;
+
+        Vec3 uv = DrawerInteractionHelper.getTextUV(slot, slots);
+
+        ms.pushPose();
+        ms.translate(uv.x, uv.y, uv.z);
+        float scale = slots == 1 ? 0.02f : 0.01f;
+        ms.scale(scale, -scale, scale);
+        float xOffset = -font.width(text) / 2f;
+
+        font.drawInBatch(text, xOffset, 0, 0xFFFFFF, false,
+            ms.last().pose(), buffer, Font.DisplayMode.NORMAL, 0, light);
+
+        ms.popPose();
+    }
+
+    public static void renderSlotMode(RenderHelper.DrawerIcon mode, int slot, int slots,
+                                      PoseStack ms, MultiBufferSource buffer, int light) {
+        Vec3 uv;
+
+        if (mode == DrawerIcon.LOCK)
+            uv = DrawerInteractionHelper.getLockUV(slot, slots);
+        else if (mode == DrawerIcon.VOID)
+            uv = DrawerInteractionHelper.getVoidUV(slot, slots);
+        else
+            return;
+
+        ms.pushPose();
+        ms.translate(uv.x, uv.y, uv.z);
+        float scale = slots == 1 ? 0.15f : 0.08f;
+        ms.scale(scale, scale, scale);
+
+        Matrix4f matrix = ms.last().pose();
+        Vector3f normal = new Vector3f(0, 0, 1);
+
+        renderIconFromAtlas(matrix, buffer, light, OverlayTexture.NO_OVERLAY, normal,
+            0, 0, 0, 1f, mode);
+
+        ms.popPose();
+    }
+
+    public static void renderDrawerUpgrade(ItemStack upgrade, int slots,
+                                            PoseStack ms, MultiBufferSource buffer, int light) {
+        Map<Item, DrawerIcon> UPGRADE_ICONS = Map.of(
+            ModItems.CAPACITY_UPGRADE_T1.get(), DrawerIcon.TIER_1,
+            ModItems.CAPACITY_UPGRADE_T2.get(), DrawerIcon.TIER_2,
+            ModItems.CAPACITY_UPGRADE_T3.get(), DrawerIcon.TIER_3,
+            ModItems.CAPACITY_UPGRADE_T4.get(), DrawerIcon.TIER_4,
+            ModItems.CAPACITY_UPGRADE_T5.get(), DrawerIcon.TIER_5
+        );
+
+        DrawerIcon icon = UPGRADE_ICONS.get(upgrade.getItem());
+        if (icon == null)
+            return;
+
+        Vec3 uv = DrawerInteractionHelper.getUpgradeUV(slots);
+
+        ms.pushPose();
+        ms.translate(uv.x, uv.y, uv.z);
+        float scale = slots == 1 ? 0.12f : 0.08f;
+        ms.scale(scale, scale, scale);
+
+        Matrix4f matrix = ms.last().pose();
+        Vector3f normal = new Vector3f(0, 0, 1);
+
+        renderIconFromAtlas(matrix, buffer, light, OverlayTexture.NO_OVERLAY, normal,
+            0, 0, 0, 1f, icon);
+
+        ms.popPose();
+    }
 
     public enum DrawerIcon {
         TIER_1(0, 0),
@@ -75,6 +174,7 @@ public class RenderHelper {
         public float getVMax() { return vMax; }
     }
 
+    private static final ResourceLocation ATLAS = CreateItemDrawers.asResource("textures/sprite/icons.png");
     public static void renderIconFromAtlas(Matrix4f matrix, MultiBufferSource buffer, int light, int overlay,
                                            Vector3f normal, float x, float y, float z, float size,
                                            DrawerIcon icon) {

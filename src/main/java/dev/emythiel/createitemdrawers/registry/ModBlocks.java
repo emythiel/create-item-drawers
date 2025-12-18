@@ -5,10 +5,12 @@ import com.tterrag.registrate.util.entry.BlockEntry;
 import dev.emythiel.createitemdrawers.CreateItemDrawers;
 import dev.emythiel.createitemdrawers.block.DrawerBlock;
 import dev.emythiel.createitemdrawers.block.DrawerBlockItem;
+import dev.emythiel.createitemdrawers.contraption.MountedMovementBehaviour;
 import dev.emythiel.createitemdrawers.util.connection.DrawerCTBehaviour;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.material.MapColor;
 
+import static com.simibubi.create.api.behaviour.movement.MovementBehaviour.movementBehaviour;
 import static com.simibubi.create.api.contraption.storage.item.MountedItemStorageType.mountedItemStorage;
 import static com.simibubi.create.foundation.data.TagGen.pickaxeOnly;
 
@@ -31,7 +33,7 @@ public class ModBlocks {
             .onRegister(CreateRegistrate.connectedTextures(DrawerCTBehaviour::new))
             .tag(ModTags.Blocks.DRAWERS)
             .transform(mountedItemStorage(ModMountedStorageTypes.MOUNTED_DRAWER))
-            //.onRegister(movementBehaviour(new MountedMovementBehaviour()))
+            .onRegister(movementBehaviour(new MountedMovementBehaviour()))
             .item(DrawerBlockItem::new)
             .tag(ModTags.Items.DRAWERS)
             .build()
@@ -49,7 +51,7 @@ public class ModBlocks {
             .onRegister(CreateRegistrate.connectedTextures(DrawerCTBehaviour::new))
             .tag(ModTags.Blocks.DRAWERS)
             .transform(mountedItemStorage(ModMountedStorageTypes.MOUNTED_DRAWER))
-            //.onRegister(movementBehaviour(new MountedMovementBehaviour()))
+            .onRegister(movementBehaviour(new MountedMovementBehaviour()))
             .item(DrawerBlockItem::new)
             .tag(ModTags.Items.DRAWERS)
             .build()
@@ -67,7 +69,7 @@ public class ModBlocks {
             .onRegister(CreateRegistrate.connectedTextures(DrawerCTBehaviour::new))
             .tag(ModTags.Blocks.DRAWERS)
             .transform(mountedItemStorage(ModMountedStorageTypes.MOUNTED_DRAWER))
-            //.onRegister(movementBehaviour(new MountedMovementBehaviour()))
+            .onRegister(movementBehaviour(new MountedMovementBehaviour()))
             .item(DrawerBlockItem::new)
             .tag(ModTags.Items.DRAWERS)
             .build()

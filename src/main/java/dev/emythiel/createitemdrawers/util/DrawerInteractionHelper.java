@@ -10,11 +10,11 @@ import net.minecraft.world.phys.Vec3;
 public class DrawerInteractionHelper {
     public static Vec3 getSlotUV(int slot, int slotCount) {
         return switch (slotCount) {
-            case 1 -> new Vec3(0.5, 0.5, 0);
-            case 2 -> new Vec3(0.5, slot == 0 ? 0.75 : 0.25, 0);
+            case 1 -> new Vec3(0, 0, 0);
+            case 2 -> new Vec3(0, slot == 0 ? 0.25 : -0.25, 0);
             case 4 -> {
-                double x = (slot % 2 == 0) ? 0.25 : 0.75;
-                double y = (slot < 2) ? 0.75 : 0.25;
+                double x = (slot % 2 == 0) ? -0.25 : 0.25;
+                double y = (slot < 2) ? 0.25 : -0.25;
                 yield new Vec3(x, y, 0);
             }
             default -> new Vec3(0.5, 0.5, 0);
@@ -23,25 +23,25 @@ public class DrawerInteractionHelper {
 
     public static Vec3 getTextUV(int slot, int slotCount) {
         Vec3 uv = getSlotUV(slot, slotCount);
-        double shift = (slotCount == 1) ? 0.30 : 0.165;
-        return new Vec3(uv.x, uv.y - shift, 0);
+        double shift = (slotCount == 1) ? 0.30 : 0.135;
+        return new Vec3(uv.x, uv.y - shift, 0.001);
     }
 
     public static Vec3 getLockUV(int slot, int slotCount) {
         Vec3 uv = getSlotUV(slot, slotCount);
         double shift = (slotCount == 1) ? 0.35 : 0.165;
-        return new Vec3(uv.x - (shift / 1.5), uv.y + shift, 0);
+        return new Vec3(uv.x - (shift / 1.5), uv.y + shift, 0.001);
     }
 
     public static Vec3 getVoidUV(int slot, int slotCount) {
         Vec3 uv = getSlotUV(slot, slotCount);
         double shift = (slotCount == 1) ? 0.35 : 0.165;
-        return new Vec3(uv.x + (shift / 1.5), uv.y + shift, 0);
+        return new Vec3(uv.x + (shift / 1.5), uv.y + shift, 0.001);
     }
 
     public static Vec3 getUpgradeUV(int slotCount) {
-        double shift = (slotCount == 1) ? 0.953 : 0.968;
-        return new Vec3(0.5, shift, 0);
+        double shift = (slotCount == 1) ? 0.453 : 0.468;
+        return new Vec3(0, shift, 0.031);
     }
 
     public static int getHitSlot(DrawerBlockEntity be, Vec3 hitPos) {
@@ -75,49 +75,11 @@ public class DrawerInteractionHelper {
         float scale = (slots == 1) ? 0.5f : 0.25f;
         float half = scale * 0.5f;
 
-        double minX = uv.x - half;
-        double maxX = uv.x + half;
+        double minX = uv.x - half + 0.5f;
+        double maxX = uv.x + half + 0.5f;
 
-        double minY = uv.y - half;
-        double maxY = uv.y + half;
-
-        Direction facing = be.getBlockState().getValue(HorizontalDirectionalBlock.FACING);
-
-        Vec3 p1 = RenderHelper.faceUVToWorld(pos, facing, minX, minY, 0.035);
-        Vec3 p2 = RenderHelper.faceUVToWorld(pos, facing, maxX, maxY, 0.035);
-
-        return new AABB(p1, p2);
-    }
-
-    /* OLD AABB RENDER
-    public static AABB getSlotAABB(DrawerBlockEntity be, int slot) {
-        BlockPos pos = be.getBlockPos();
-
-        double minX, minY, maxX, maxY;
-
-        int slots = be.getStorage().getSlotCount();
-        if (slots == 1) {
-            minX = 0.25; maxX = 0.75;
-            minY = 0.25; maxY = 0.75;
-        }
-        else if (slots == 2) {
-            minX = 0.25; maxX = 0.75;
-            if (slot == 0) {
-                minY = 0.55; maxY = 0.95;
-            } else {
-                minY = 0.05; maxY = 0.45;
-            }
-        }
-        else {
-            int row = slot / 2;
-            int col = slot % 2;
-
-            minX = col == 0 ? 0.05 : 0.55;
-            maxX = minX + 0.40;
-
-            minY = row == 0 ? 0.55 : 0.05;
-            maxY = minY + 0.40;
-        }
+        double minY = uv.y - half + 0.5f;
+        double maxY = uv.y + half + 0.5f;
 
         Direction facing = be.getBlockState().getValue(HorizontalDirectionalBlock.FACING);
 
@@ -126,6 +88,4 @@ public class DrawerInteractionHelper {
 
         return new AABB(p1, p2);
     }
-    */
-
 }

@@ -8,15 +8,17 @@ import com.simibubi.create.content.contraptions.render.ContraptionMatrices;
 import com.simibubi.create.foundation.virtualWorld.VirtualRenderWorld;
 import dev.emythiel.createitemdrawers.CreateItemDrawers;
 import dev.emythiel.createitemdrawers.client.renderer.DrawerRenderer;
+import dev.engine_room.flywheel.api.visualization.VisualizationManager;
 import net.minecraft.client.renderer.MultiBufferSource;
 
 import javax.annotation.Nullable;
 
-/*public class MountedMovementBehaviour implements MovementBehaviour {
+public class MountedMovementBehaviour implements MovementBehaviour {
 
-    @Override
+    /*@Override
     public void tick(MovementContext context) {
         if (context.world.isClientSide()) return;
+        if (!context.stall) return;
 
         CreateItemDrawers.LOGGER.debug("[BEHAVIOUR] tick called at {}", context.localPos);
         @Nullable MountedStorage storage = getMountedStorage(context);
@@ -32,9 +34,9 @@ import javax.annotation.Nullable;
         } else {
             CreateItemDrawers.LOGGER.debug("[BEHAVIOUR] No storage found at {}", context.localPos);
         }
-    }
+    }*/
 
-    @Nullable
+    /*@Nullable
     private MountedStorage getMountedStorage(MovementContext context) {
         if (context.world.isClientSide()) return null;
 
@@ -51,16 +53,17 @@ import javax.annotation.Nullable;
         }
 
         return null;
-    }
+    }*/
 
     @Override
     public void renderInContraption(MovementContext context, VirtualRenderWorld renderWorld,
                                     ContraptionMatrices matrices, MultiBufferSource buffer) {
-        DrawerRenderer.renderFromContraptionContext(context, matrices, buffer);
+        //if (!VisualizationManager.supportsVisualization(context.world))
+        DrawerRenderer.renderFromContraptionContext(context, renderWorld, matrices, buffer);
     }
 
     @Override
     public boolean disableBlockEntityRendering() {
         return true;
     }
-}*/
+}
