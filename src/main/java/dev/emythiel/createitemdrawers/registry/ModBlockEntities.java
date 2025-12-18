@@ -4,6 +4,7 @@ import com.simibubi.create.foundation.data.CreateRegistrate;
 import com.tterrag.registrate.util.entry.BlockEntityEntry;
 import dev.emythiel.createitemdrawers.CreateItemDrawers;
 import dev.emythiel.createitemdrawers.block.entity.DrawerBlockEntity;
+import dev.emythiel.createitemdrawers.client.renderer.DrawerRenderer;
 
 public class ModBlockEntities {
     private static final CreateRegistrate REGISTRATE = CreateItemDrawers.registrate();
@@ -15,6 +16,7 @@ public class ModBlockEntities {
                 ModBlocks.DOUBLE_DRAWER,
                 ModBlocks.QUAD_DRAWER
             )
+            .renderer(() -> DrawerRenderer::new)
             .register();
 
     public static void register() {}

@@ -21,13 +21,4 @@ public class DrawerClientEvents {
     public static void onRenderHighlight(RenderHighlightEvent.Block event) {
         DrawerSlotHighlighter.onRenderHighlight(event);
     }
-
-    @SubscribeEvent
-    public static void registerRenderers(EntityRenderersEvent.RegisterRenderers event) {
-        event.registerBlockEntityRenderer(
-            ModBlockEntities.DRAWER_BLOCK_ENTITY.get(),
-            DrawerRenderer::new
-        );
-    }
-
 }
