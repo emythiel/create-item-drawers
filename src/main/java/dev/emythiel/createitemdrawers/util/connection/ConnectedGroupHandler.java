@@ -137,6 +137,26 @@ public class ConnectedGroupHandler {
         drawer1.group.offsets.add(BlockPos.ZERO.subtract(drawer2.group.offsets.get(0)));
     }
 
+    public static void connectionGroupCleanup(BlockState state, Level level, BlockPos pos) {
+        for (Direction direction : Iterate.directions) {
+            if (direction.getAxis() == state.getValue(HORIZONTAL_FACING)
+                .getAxis())
+                continue;
+
+            BlockPos otherPos = pos.relative(direction);
+            ConnectedGroup thisGroup = DrawerHelper.getInput(level, pos);
+            ConnectedGroup otherGroup = DrawerHelper.getInput(level, otherPos);
+
+            if (thisGroup == null || otherGroup == null)
+                continue;
+            if (!pos.offset(thisGroup.offsets.get(0))
+                .equals(otherPos.offset(otherGroup.offsets.get(0))))
+                continue;
+
+            ConnectedGroupHandler.toggleConnection(level, pos, otherPos);
+        }
+    }
+
     private static void modifyAndUpdate(Level world, BlockPos pos, Consumer<ConnectedGroup> callback) {
         BlockEntity be = world.getBlockEntity(pos);
         if (!(be instanceof DrawerBlockEntity drawer))

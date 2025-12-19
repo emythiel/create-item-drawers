@@ -6,7 +6,6 @@ import dev.emythiel.createitemdrawers.network.SyncMountedStoragePacket;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
@@ -24,7 +23,10 @@ public class ClientPayloadHandler {
                 StructureTemplate.StructureBlockInfo blockInfo = contraptionEntity.getContraption().getBlocks().get(packet.localPos());
 
                 if (blockInfo == null) {
-                    CreateItemDrawers.LOGGER.warn("Could not find block info at position {} for contraption {}", packet.localPos(), packet.contraptionId());
+                    CreateItemDrawers.LOGGER.warn(
+                        "Could not find block info at position {} for contraption {}",
+                        packet.localPos(), packet.contraptionId()
+                    );
                     return;
                 }
 
@@ -38,7 +40,7 @@ public class ClientPayloadHandler {
                 }
 
                 newTag.putBoolean("RenderItem", packetTag.getBoolean("RenderItem"));
-                newTag.putBoolean("RenderText", packetTag.getBoolean("RenderText"));
+                newTag.putBoolean("RenderCount", packetTag.getBoolean("RenderCount"));
                 newTag.putBoolean("RenderAdditional", packetTag.getBoolean("RenderAdditional"));
 
                 if (packetTag.contains("Slots", CompoundTag.TAG_LIST)) {

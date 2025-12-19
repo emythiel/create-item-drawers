@@ -21,7 +21,7 @@ public class DrawerInteractionHelper {
         };
     }
 
-    public static Vec3 getTextUV(int slot, int slotCount) {
+    public static Vec3 getCountUV(int slot, int slotCount) {
         Vec3 uv = getSlotUV(slot, slotCount);
         double shift = (slotCount == 1) ? 0.30 : 0.135;
         return new Vec3(uv.x, uv.y - shift, 0.001);

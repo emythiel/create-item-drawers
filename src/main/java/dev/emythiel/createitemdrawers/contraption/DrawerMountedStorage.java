@@ -14,13 +14,10 @@ import dev.emythiel.createitemdrawers.storage.DrawerSlot;
 import dev.emythiel.createitemdrawers.storage.DrawerStorage;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
-import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
@@ -74,15 +71,6 @@ public class DrawerMountedStorage extends WrapperMountedItemStorage<DrawerItemHa
     public static DrawerMountedStorage fromStorage(DrawerBlockEntity be) {
         DrawerStorage drawerStorage = be.getStorage();
         DrawerItemHandler handler = new DrawerItemHandler(drawerStorage);
-
-        for (int i = 0; i < drawerStorage.getSlotCount(); i++) {
-            DrawerSlot slot = drawerStorage.getSlot(i);
-            if (!slot.isEmpty()) {
-                // TODO:
-                // We need to simulate the storage having items
-                // This is handled by the DrawerItemHandler's getStackInSlot method
-            }
-        }
 
         DrawerMountedStorage storage = new DrawerMountedStorage(handler);
 
@@ -171,7 +159,7 @@ public class DrawerMountedStorage extends WrapperMountedItemStorage<DrawerItemHa
         }
 
         tag.putBoolean("RenderItem", renderItem);
-        tag.putBoolean("RenderText", renderCount);
+        tag.putBoolean("RenderCount", renderCount);
         tag.putBoolean("RenderAdditional", renderAdditional);
 
         ListTag slotsTag = new ListTag();
@@ -187,8 +175,6 @@ public class DrawerMountedStorage extends WrapperMountedItemStorage<DrawerItemHa
         }
         tag.put("Slots", slotsTag);
         tag.putInt("SlotCount", slotCount);
-
-        //context.blockEntityData = tag;
 
         PacketDistributor.sendToPlayersTrackingEntity(
             context.contraption.entity, new SyncMountedStoragePacket(

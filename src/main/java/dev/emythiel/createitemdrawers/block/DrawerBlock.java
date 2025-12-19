@@ -11,11 +11,8 @@ import dev.emythiel.createitemdrawers.storage.DrawerSlot;
 import dev.emythiel.createitemdrawers.util.CreateItemDrawerLang;
 import dev.emythiel.createitemdrawers.util.DrawerInteractionHelper;
 import dev.emythiel.createitemdrawers.util.connection.ConnectedGroupHandler;
-import dev.emythiel.createitemdrawers.util.connection.ConnectedGroupHandler.ConnectedGroup;
 import dev.emythiel.createitemdrawers.util.connection.DrawerHelper;
-import net.createmod.catnip.data.Iterate;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.ItemInteractionResult;
@@ -168,6 +165,8 @@ public class DrawerBlock extends BaseBlock implements IWrenchable, IBE<DrawerBlo
             DrawerBlockEntity drawer = DrawerHelper.getDrawer(level, pos);
 
             if (drawer != null && !level.isClientSide() && !isMoving) {
+                ConnectedGroupHandler.connectionGroupCleanup(state, level, pos);
+
                 boolean hasStoredItems = false;
                 for (int i = 0; i < drawer.getStorage().getSlotCount(); i++) {
                     if (drawer.getStorage().getSlot(i).getCount() > 0) {
@@ -185,32 +184,11 @@ public class DrawerBlock extends BaseBlock implements IWrenchable, IBE<DrawerBlo
                 }
             }
 
-            connectionGroupCleanup(state, level, pos);
             IBE.onRemove(state, level, pos, newState);
             return;
         }
 
         super.onRemove(state, level, pos, newState, isMoving);
-    }
-
-    private void connectionGroupCleanup(BlockState state, Level level, BlockPos pos) {
-        for (Direction direction : Iterate.directions) {
-            if (direction.getAxis() == state.getValue(HORIZONTAL_FACING)
-                .getAxis())
-                continue;
-
-            BlockPos otherPos = pos.relative(direction);
-            ConnectedGroup thisGroup = DrawerHelper.getInput(level, pos);
-            ConnectedGroup otherGroup = DrawerHelper.getInput(level, otherPos);
-
-            if (thisGroup == null || otherGroup == null)
-                continue;
-            if (!pos.offset(thisGroup.offsets.get(0))
-                .equals(otherPos.offset(otherGroup.offsets.get(0))))
-                continue;
-
-            ConnectedGroupHandler.toggleConnection(level, pos, otherPos);
-        }
     }
 
     @Override

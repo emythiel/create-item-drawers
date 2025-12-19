@@ -72,18 +72,18 @@ public class RenderHelper {
         ms.popPose();
     }
 
-    public static void renderSlotText(String text, int slot, int slots, PoseStack ms, MultiBufferSource buffer, int light) {
+    public static void renderSlotCount(String count, int slot, int slots, PoseStack ms, MultiBufferSource buffer, int light) {
         Font font = Minecraft.getInstance().font;
 
-        Vec3 uv = DrawerInteractionHelper.getTextUV(slot, slots);
+        Vec3 uv = DrawerInteractionHelper.getCountUV(slot, slots);
 
         ms.pushPose();
         ms.translate(uv.x, uv.y, uv.z);
         float scale = slots == 1 ? 0.02f : 0.01f;
         ms.scale(scale, -scale, scale);
-        float xOffset = -font.width(text) / 2f;
+        float xOffset = -font.width(count) / 2f;
 
-        font.drawInBatch(text, xOffset, 0, 0xFFFFFF, false,
+        font.drawInBatch(count, xOffset, 0, 0xFFFFFF, false,
             ms.last().pose(), buffer, Font.DisplayMode.NORMAL, 0, light);
 
         ms.popPose();

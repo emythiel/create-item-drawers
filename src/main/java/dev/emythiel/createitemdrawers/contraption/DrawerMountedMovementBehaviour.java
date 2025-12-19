@@ -8,8 +8,6 @@ import com.simibubi.create.content.contraptions.render.ContraptionMatrices;
 import com.simibubi.create.foundation.virtualWorld.VirtualRenderWorld;
 import dev.emythiel.createitemdrawers.client.renderer.DrawerRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.core.HolderLookup;
-import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
 
@@ -43,7 +41,6 @@ public class DrawerMountedMovementBehaviour implements MovementBehaviour {
     @Override
     public void renderInContraption(MovementContext context, VirtualRenderWorld renderWorld,
                                     ContraptionMatrices matrices, MultiBufferSource buffer) {
-        //if (!VisualizationManager.supportsVisualization(context.world))
         DrawerRenderer.renderFromContraptionContext(context, renderWorld, matrices, buffer);
     }
 
