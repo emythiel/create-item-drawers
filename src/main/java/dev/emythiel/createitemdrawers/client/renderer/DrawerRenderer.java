@@ -88,8 +88,9 @@ public class DrawerRenderer extends SafeBlockEntityRenderer<DrawerBlockEntity> {
         int light = level != null ? LevelRenderer.getLightColor(level, facePos) : LightTexture.pack(15, 15);
 
         ms.pushPose();
+        ms.translate(0.5, 0.5, 0.5);
         ms.mulPose(Axis.YP.rotationDegrees(RenderHelper.getFaceRotation(facing)));
-        ms.translate(-0.5, 0.5, -0.03);
+        ms.translate(0, 0, 0.47);
 
         int slotCount = be.getStorage().getSlotCount();
 
@@ -149,7 +150,8 @@ public class DrawerRenderer extends SafeBlockEntityRenderer<DrawerBlockEntity> {
 
         Direction facing = state.getValue(HORIZONTAL_FACING);
 
-        Vec3 frontNormal = new Vec3(
+        // Checking if player is in front not reliable on contraptions, at least not with same method as normal render
+        /*Vec3 frontNormal = new Vec3(
             facing.getStepX(),
             facing.getStepY(),
             facing.getStepZ()
@@ -162,7 +164,7 @@ public class DrawerRenderer extends SafeBlockEntityRenderer<DrawerBlockEntity> {
         ).normalize();
 
         if (frontNormal.dot(toPlayer) <= 0)
-            return;
+            return;*/
 
         BlockPos lightPos = context.contraption.entity.blockPosition().offset(context.localPos).relative(facing);
 
@@ -173,9 +175,9 @@ public class DrawerRenderer extends SafeBlockEntityRenderer<DrawerBlockEntity> {
         PoseStack ms = matrices.getModelViewProjection();
 
         ms.pushPose();
-        ms.translate(context.localPos.getX(), context.localPos.getY(), context.localPos.getZ());
+        ms.translate(context.localPos.getX() + 0.5f, context.localPos.getY() + 0.5f, context.localPos.getZ() + 0.5f);
         ms.mulPose(Axis.YP.rotationDegrees(RenderHelper.getFaceRotation(facing)));
-        ms.translate(-0.5, 0.5, -0.03);
+        ms.translate(0, 0, 0.47);
 
         if (tag.contains("Upgrade") && renderAdditional) {
             ItemStack upgrade = tag.getCompound("Upgrade").isEmpty()
