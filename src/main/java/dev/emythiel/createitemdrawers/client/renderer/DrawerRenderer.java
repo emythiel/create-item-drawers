@@ -41,10 +41,10 @@ public class DrawerRenderer extends SafeBlockEntityRenderer<DrawerBlockEntity> {
         int textDist = ClientConfig.TEXT_RENDER_DISTANCE.get();
         int additionalDist = ClientConfig.ADDITIONAL_RENDER_DISTANCE.get();
         boolean shouldRenderItem = ClientConfig.ITEM_RENDER.get();
-        boolean shouldRenderText = ClientConfig.TEXT_RENDER.get();
+        boolean shouldRenderCount = ClientConfig.TEXT_RENDER.get();
         boolean shouldRenderAdditional = ClientConfig.ADDITIONAL_RENDER.get();
 
-        if (!shouldRenderItem && !shouldRenderText && !shouldRenderAdditional)
+        if (!shouldRenderItem && !shouldRenderCount && !shouldRenderAdditional)
             return; // All renders disabled, just exit
 
         Minecraft mc = Minecraft.getInstance();
@@ -58,11 +58,11 @@ public class DrawerRenderer extends SafeBlockEntityRenderer<DrawerBlockEntity> {
             be.getBlockPos().getZ() + 0.5
         );
 
-        boolean items = be.getRenderItems() && distSq <= itemDist * itemDist && shouldRenderItem;
-        boolean texts = be.getRenderCounts() && distSq <= textDist * textDist && shouldRenderText;
-        boolean additionals = be.getRenderAdditional() && distSq <= additionalDist * additionalDist && shouldRenderAdditional;
+        boolean renderItem = be.getRenderItems() && distSq <= itemDist * itemDist && shouldRenderItem;
+        boolean renderCount = be.getRenderCounts() && distSq <= textDist * textDist && shouldRenderCount;
+        boolean renderAdditional = be.getRenderAdditional() && distSq <= additionalDist * additionalDist && shouldRenderAdditional;
 
-        if (!items && !texts && !additionals)
+        if (!renderItem && !renderCount && !renderAdditional)
             return;
 
         // Check if player is in front of block (don't render if behind)
@@ -94,7 +94,7 @@ public class DrawerRenderer extends SafeBlockEntityRenderer<DrawerBlockEntity> {
 
         int slotCount = be.getStorage().getSlotCount();
 
-        if (additionals && !be.getUpgrade().isEmpty())
+        if (renderAdditional && !be.getUpgrade().isEmpty())
             RenderHelper.renderDrawerUpgrade(be.getUpgrade(), slotCount, ms, buffer, light);
 
         for (int slot = 0; slot < slotCount; slot++) {
@@ -103,13 +103,13 @@ public class DrawerRenderer extends SafeBlockEntityRenderer<DrawerBlockEntity> {
             int count = currentSlot.getCount();
             boolean lockMode = currentSlot.isLockMode();
             boolean voidMode = currentSlot.isVoidMode();
-            if (!storedItem.isEmpty() && items)
+            if (!storedItem.isEmpty() && renderItem)
                 RenderHelper.renderSlotItem(mc.getItemRenderer(), storedItem, slot, slotCount, ms, buffer, light);
-            if (count > 0 && texts)
-                RenderHelper.renderSlotText(String.valueOf(count), slot, slotCount, ms, buffer, light);
-            if (lockMode && additionals)
+            if (count > 0 && renderCount)
+                RenderHelper.renderSlotCount(String.valueOf(count), slot, slotCount, ms, buffer, light);
+            if (lockMode && renderAdditional)
                 RenderHelper.renderSlotMode(RenderHelper.DrawerIcon.LOCK, slot, slotCount, ms, buffer, light);
-            if (voidMode && additionals)
+            if (voidMode && renderAdditional)
                 RenderHelper.renderSlotMode(RenderHelper.DrawerIcon.VOID, slot, slotCount, ms, buffer, light);
         }
 
@@ -121,9 +121,9 @@ public class DrawerRenderer extends SafeBlockEntityRenderer<DrawerBlockEntity> {
         if (!(context.state.getBlock() instanceof DrawerBlock drawer)) return;
 
         boolean shouldRenderItem = ClientConfig.ITEM_RENDER.get();
-        boolean shouldRenderText = ClientConfig.TEXT_RENDER.get();
+        boolean shouldRenderCount = ClientConfig.TEXT_RENDER.get();
         boolean shouldRenderAdditional = ClientConfig.ADDITIONAL_RENDER.get();
-        if (!shouldRenderItem && !shouldRenderText && !shouldRenderAdditional)
+        if (!shouldRenderItem && !shouldRenderCount && !shouldRenderAdditional)
             return;
 
         int slotCount = drawer.getSlotCount();
@@ -136,7 +136,7 @@ public class DrawerRenderer extends SafeBlockEntityRenderer<DrawerBlockEntity> {
         if (player == null) return;
 
         boolean renderItem = !tag.contains("RenderItem") || tag.getBoolean("RenderItem") && shouldRenderItem;
-        boolean renderCount = !tag.contains("RenderCount") || tag.getBoolean("RenderCount") && shouldRenderText;
+        boolean renderCount = !tag.contains("RenderCount") || tag.getBoolean("RenderCount") && shouldRenderCount;
         boolean renderAdditional = !tag.contains("RenderAdditional") || tag.getBoolean("RenderAdditional") && shouldRenderAdditional;
         if (!renderItem && !renderCount && !renderAdditional) return;
 
@@ -202,7 +202,7 @@ public class DrawerRenderer extends SafeBlockEntityRenderer<DrawerBlockEntity> {
                 if (slotTag.contains("Count") && renderCount) {
                     int count = slotTag.getInt("Count");
                     if (count > 0)
-                        RenderHelper.renderSlotText(String.valueOf(count), slot, slotCount, ms, buffer, light);
+                        RenderHelper.renderSlotCount(String.valueOf(count), slot, slotCount, ms, buffer, light);
                 }
                 if (slotTag.contains("Locked") && renderAdditional) {
                     boolean lockMode = slotTag.getBoolean("Locked");
