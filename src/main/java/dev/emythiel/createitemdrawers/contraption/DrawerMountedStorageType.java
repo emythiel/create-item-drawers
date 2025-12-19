@@ -2,6 +2,7 @@ package dev.emythiel.createitemdrawers.contraption;
 
 import com.simibubi.create.api.contraption.storage.item.MountedItemStorageType;
 import dev.emythiel.createitemdrawers.block.entity.DrawerBlockEntity;
+import dev.emythiel.createitemdrawers.util.connection.ConnectedGroupHandler;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -14,6 +15,12 @@ public class DrawerMountedStorageType extends MountedItemStorageType<DrawerMount
 
     @Override
     public DrawerMountedStorage mount(Level level, BlockState state, BlockPos pos, BlockEntity be) {
-        return be instanceof DrawerBlockEntity drawerBlock ? DrawerMountedStorage.fromStorage(drawerBlock) : null;
+        if (be instanceof DrawerBlockEntity drawer) {
+            ConnectedGroupHandler.connectionGroupCleanup(state, level, pos);
+
+            return DrawerMountedStorage.fromStorage(drawer);
+        }
+
+        return null;
     }
 }

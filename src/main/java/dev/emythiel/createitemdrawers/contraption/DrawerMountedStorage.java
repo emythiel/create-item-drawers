@@ -6,12 +6,14 @@ import com.simibubi.create.api.contraption.storage.item.WrapperMountedItemStorag
 import com.simibubi.create.content.contraptions.Contraption;
 import com.simibubi.create.content.contraptions.behaviour.MovementContext;
 import com.simibubi.create.foundation.codec.CreateCodecs;
+import dev.emythiel.createitemdrawers.CreateItemDrawers;
 import dev.emythiel.createitemdrawers.block.entity.DrawerBlockEntity;
 import dev.emythiel.createitemdrawers.network.SyncMountedStoragePacket;
 import dev.emythiel.createitemdrawers.registry.ModMountedStorageTypes;
 import dev.emythiel.createitemdrawers.storage.DrawerItemHandler;
 import dev.emythiel.createitemdrawers.storage.DrawerSlot;
 import dev.emythiel.createitemdrawers.storage.DrawerStorage;
+import dev.emythiel.createitemdrawers.util.connection.ConnectedGroupHandler;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
@@ -21,6 +23,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate.StructureBlockInfo;
 import net.neoforged.neoforge.items.ItemStackHandler;
 import net.neoforged.neoforge.network.PacketDistributor;
@@ -189,6 +192,8 @@ public class DrawerMountedStorage extends WrapperMountedItemStorage<DrawerItemHa
     public void initBlockEntityData(MovementContext context) {
         if (initialized || context.world.isClientSide()) return;
 
+        CreateItemDrawers.LOGGER.debug("Group tag: {}", context.blockEntityData.getCompound("ConnectedGroup"));
+
         CompoundTag tag = new CompoundTag();
 
         tag.putInt("SlotCount", slotCount);
@@ -213,6 +218,18 @@ public class DrawerMountedStorage extends WrapperMountedItemStorage<DrawerItemHa
         }
         tag.put("Slots", slotsTag);
 
+        ConnectedGroupHandler.ConnectedGroup newGroup = new ConnectedGroupHandler.ConnectedGroup();
+        CompoundTag groupTag = new CompoundTag();
+        newGroup.write(groupTag);
+        tag.put("ConnectedGroup", groupTag);
+
+        StructureTemplate.StructureBlockInfo updatedInfo = new StructureTemplate.StructureBlockInfo(
+            context.localPos,
+            context.state,
+            tag
+        );
+        context.contraption.getBlocks().put(context.localPos, updatedInfo);
+
         context.blockEntityData = tag;
         this.currentContraption = context.contraption.entity.getContraption();
 
@@ -223,6 +240,7 @@ public class DrawerMountedStorage extends WrapperMountedItemStorage<DrawerItemHa
                 tag.copy()
             )
         );
+        CreateItemDrawers.LOGGER.debug("Group tag: {}", context.blockEntityData.getCompound("ConnectedGroup"));
         initialized = true;
     }
 

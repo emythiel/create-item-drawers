@@ -7,6 +7,7 @@ import com.simibubi.create.content.contraptions.behaviour.MovementContext;
 import com.simibubi.create.content.contraptions.render.ContraptionMatrices;
 import com.simibubi.create.foundation.virtualWorld.VirtualRenderWorld;
 import dev.emythiel.createitemdrawers.client.renderer.DrawerRenderer;
+import dev.emythiel.createitemdrawers.util.connection.ConnectedGroupHandler;
 import net.minecraft.client.renderer.MultiBufferSource;
 
 import javax.annotation.Nullable;
