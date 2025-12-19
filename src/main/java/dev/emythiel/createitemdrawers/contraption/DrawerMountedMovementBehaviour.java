@@ -6,54 +6,39 @@ import com.simibubi.create.content.contraptions.AbstractContraptionEntity;
 import com.simibubi.create.content.contraptions.behaviour.MovementContext;
 import com.simibubi.create.content.contraptions.render.ContraptionMatrices;
 import com.simibubi.create.foundation.virtualWorld.VirtualRenderWorld;
-import dev.emythiel.createitemdrawers.CreateItemDrawers;
 import dev.emythiel.createitemdrawers.client.renderer.DrawerRenderer;
-import dev.engine_room.flywheel.api.visualization.VisualizationManager;
 import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.core.HolderLookup;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
 
-public class MountedMovementBehaviour implements MovementBehaviour {
+public class DrawerMountedMovementBehaviour implements MovementBehaviour {
 
-    /*@Override
+    @Override
     public void tick(MovementContext context) {
         if (context.world.isClientSide()) return;
-        if (!context.stall) return;
 
-        CreateItemDrawers.LOGGER.debug("[BEHAVIOUR] tick called at {}", context.localPos);
-        @Nullable MountedStorage storage = getMountedStorage(context);
+        @Nullable DrawerMountedStorage storage = getMountedStorage(context);
         if (storage != null) {
-            CreateItemDrawers.LOGGER.debug("[BEHAVIOUR] Found Storage, initalized: {}, dirty: {}", storage.initialized, storage.isDirty());
-            if (!storage.initialized) {
-                storage.initialized = true;
-                storage.updateClientStorageData(context);
-            }
-            if (storage.isDirty()) {
-                storage.updateClientStorageData(context);
-            }
-        } else {
-            CreateItemDrawers.LOGGER.debug("[BEHAVIOUR] No storage found at {}", context.localPos);
+            if (!storage.initialized)
+                storage.initBlockEntityData(context);
+            if (storage.isDirty())
+                storage.updateClientStorageData(context, context.contraption.entity.level().registryAccess());
         }
-    }*/
+    }
 
-    /*@Nullable
-    private MountedStorage getMountedStorage(MovementContext context) {
-        if (context.world.isClientSide()) return null;
-
+    @Nullable
+    private DrawerMountedStorage getMountedStorage(MovementContext context) {
         AbstractContraptionEntity entity = context.contraption.entity;
-        if (entity == null) {
-            CreateItemDrawers.LOGGER.debug("[BEHAVIOUR] No contraption entity");
-            return null;
-        }
         MountedItemStorage storage = entity.getContraption().getStorage().getAllItemStorages().get(context.localPos);
-        CreateItemDrawers.LOGGER.debug("[BEHAVIOUR] Raw storage at {}: {}", context.localPos, storage);
 
-        if (storage instanceof MountedStorage drawer) {
+        if (storage instanceof DrawerMountedStorage drawer) {
             return drawer;
         }
 
         return null;
-    }*/
+    }
 
     @Override
     public void renderInContraption(MovementContext context, VirtualRenderWorld renderWorld,

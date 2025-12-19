@@ -77,7 +77,8 @@ public class DrawerBlockEntity extends SmartBlockEntity implements MenuProvider,
             this.storage = new DrawerStorage(1);
         }
 
-        this.itemHandler = new DrawerItemHandler(this);
+        this.itemHandler = new DrawerItemHandler(this.storage);
+        this.itemHandler.setOnChange(this::setChangedAndSync);
     }
 
     public static void registerCapabilities(RegisterCapabilitiesEvent event) {
@@ -320,5 +321,11 @@ public class DrawerBlockEntity extends SmartBlockEntity implements MenuProvider,
         }
 
         return true;
+    }
+
+    public void applyInventoryToBlock(DrawerItemHandler wrapped) {
+        for (int i = 0; i < itemHandler.getSlots(); i++) {
+            itemHandler.setStackInSlot(i, i < wrapped.getSlots() ? wrapped.getStackInSlot(i) : ItemStack.EMPTY);
+        }
     }
 }

@@ -34,8 +34,6 @@ import static dev.emythiel.createitemdrawers.block.base.BaseBlock.HORIZONTAL_FAC
 public class DrawerRenderer extends SafeBlockEntityRenderer<DrawerBlockEntity> {
     public DrawerRenderer(BlockEntityRendererProvider.Context ctx) {}
 
-
-
     @Override
     protected void renderSafe(DrawerBlockEntity be, float partialTicks,
                               PoseStack ms, MultiBufferSource buffer, int packedLight, int overlay) {

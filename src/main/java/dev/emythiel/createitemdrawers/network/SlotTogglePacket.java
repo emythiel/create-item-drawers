@@ -12,7 +12,7 @@ import org.jetbrains.annotations.NotNull;
 public record SlotTogglePacket(BlockPos pos, int slot, ToggleMode mode, boolean value) implements CustomPacketPayload {
 
     public static final Type<SlotTogglePacket> TYPE =
-        new Type<>(ResourceLocation.fromNamespaceAndPath(CreateItemDrawers.MODID, "slot_toggle"));
+        new Type<>(CreateItemDrawers.asResource("slot_toggle"));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, SlotTogglePacket> STREAM_CODEC =
         StreamCodec.composite(

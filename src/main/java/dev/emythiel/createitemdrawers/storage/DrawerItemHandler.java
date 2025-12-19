@@ -7,28 +7,29 @@ import org.jetbrains.annotations.NotNull;
 
 public class DrawerItemHandler extends ItemStackHandler {
 
-    private final DrawerBlockEntity drawer;
+    private final DrawerStorage storage;
+    private Runnable onChange = () -> {};
 
-    public DrawerItemHandler(DrawerBlockEntity drawer) {
-        this.drawer = drawer;
+    public DrawerItemHandler(DrawerStorage storage) {
+        this.storage = storage;
     }
 
-    private DrawerStorage storage() {
-        return drawer.getStorage();
+    public void setOnChange(Runnable onChange) {
+        this.onChange = onChange;
     }
 
     @Override
     public int getSlots() {
-        return storage().getSlotCount();
+        return storage.getSlotCount();
     }
 
     @NotNull
     @Override
     public ItemStack getStackInSlot(int slot) {
-        if (slot < 0 || slot >= storage().getSlotCount())
+        if (slot < 0 || slot >= storage.getSlotCount())
             return ItemStack.EMPTY;
 
-        DrawerSlot s = storage().getSlot(slot);
+        DrawerSlot s = storage.getSlot(slot);
         if (s.isEmpty())
             return ItemStack.EMPTY;
 
@@ -51,11 +52,11 @@ public class DrawerItemHandler extends ItemStackHandler {
             return ItemStack.EMPTY;
 
         ItemStack remaining = stack;
-        int slotCount = storage().getSlotCount();
+        int slotCount = storage.getSlotCount();
 
         // Check and insert into a slot containing same item first
         for (int i = 0; i < slotCount && !remaining.isEmpty(); i++) {
-            DrawerSlot s = storage().getSlot(i);
+            DrawerSlot s = storage.getSlot(i);
 
             if (s.isEmpty())
                 continue;
@@ -63,18 +64,18 @@ public class DrawerItemHandler extends ItemStackHandler {
             if (!s.canAccept(remaining))
                 continue;
 
-            remaining = storage().insert(i, remaining, simulate);
+            remaining = storage.insert(i, remaining, simulate);
         }
 
         // Insert into first available slot
         if (!remaining.isEmpty() && slot >= 0 && slot < slotCount) {
-            DrawerSlot s = storage().getSlot(slot);
+            DrawerSlot s = storage.getSlot(slot);
 
             if (s.isEmpty() && s.isLockMode())
                 return remaining;
 
             if (s.canAccept(remaining))
-                remaining = storage().insert(slot, remaining, simulate);
+                remaining = storage.insert(slot, remaining, simulate);
         }
 
         /* TODO: Fallback loop through every slot
@@ -96,7 +97,7 @@ public class DrawerItemHandler extends ItemStackHandler {
         }*/
 
         if (!simulate && remaining.getCount() != stack.getCount())
-            drawer.setChangedAndSync();
+            onChange.run();
 
         return remaining;
     }
@@ -107,17 +108,17 @@ public class DrawerItemHandler extends ItemStackHandler {
         if (amount <= 0)
             return ItemStack.EMPTY;
 
-        if (slot < 0 || slot >= storage().getSlotCount())
+        if (slot < 0 || slot >= storage.getSlotCount())
             return ItemStack.EMPTY;
 
-        DrawerSlot s = storage().getSlot(slot);
+        DrawerSlot s = storage.getSlot(slot);
         if (s.isEmpty())
             return ItemStack.EMPTY;
 
-        ItemStack extracted = storage().extract(slot, amount, simulate);
+        ItemStack extracted = storage.extract(slot, amount, simulate);
 
         if (!simulate && !extracted.isEmpty()) {
-            drawer.setChangedAndSync();
+            onChange.run();
         }
 
         return extracted;
@@ -126,7 +127,7 @@ public class DrawerItemHandler extends ItemStackHandler {
     @Override
     public int getStackLimit(int slot, ItemStack stack) {
         if (slot >= 0 && slot < 4) {
-            return drawer.getStorage().getCapacity(slot, stack);
+            return storage.getCapacity(slot, stack);
         }
         return super.getStackLimit(slot, stack);
     }
@@ -134,7 +135,7 @@ public class DrawerItemHandler extends ItemStackHandler {
     @Override
     public int getSlotLimit(int slot) {
         if (slot >= 0 && slot < 4) {
-            return drawer.getStorage().getCapacity(slot, ItemStack.EMPTY);
+            return storage.getCapacity(slot, ItemStack.EMPTY);
         }
         return super.getSlotLimit(slot);
     }
@@ -144,10 +145,10 @@ public class DrawerItemHandler extends ItemStackHandler {
         if (stack.isEmpty())
             return false;
 
-        if (slot < 0 || slot >= storage().getSlotCount())
+        if (slot < 0 || slot >= storage.getSlotCount())
             return false;
 
-        return storage().getSlot(slot).canAccept(stack);
+        return storage.getSlot(slot).canAccept(stack);
     }
 
     @Override

@@ -7,13 +7,13 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 
-public class MountedStorageType extends MountedItemStorageType<MountedStorage> {
-    public MountedStorageType() {
-        super(MountedStorage.CODEC);
+public class DrawerMountedStorageType extends MountedItemStorageType<DrawerMountedStorage> {
+    public DrawerMountedStorageType() {
+        super(DrawerMountedStorage.CODEC);
     }
 
     @Override
-    public MountedStorage mount(Level level, BlockState state, BlockPos pos, BlockEntity be) {
-        return be instanceof DrawerBlockEntity drawerBlock ? MountedStorage.fromStorage(drawerBlock) : null;
+    public DrawerMountedStorage mount(Level level, BlockState state, BlockPos pos, BlockEntity be) {
+        return be instanceof DrawerBlockEntity drawerBlock ? DrawerMountedStorage.fromStorage(drawerBlock) : null;
     }
 }
