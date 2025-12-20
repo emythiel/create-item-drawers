@@ -1,6 +1,5 @@
 package dev.emythiel.createitemdrawers.util;
 
-import dev.emythiel.createitemdrawers.CreateItemDrawers;
 import dev.emythiel.createitemdrawers.block.entity.DrawerBlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -16,7 +15,7 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 
-@EventBusSubscriber(modid = CreateItemDrawers.MODID)
+@EventBusSubscriber
 public class DrawerExtractionHandler {
 
     @SubscribeEvent(priority = EventPriority.HIGH)

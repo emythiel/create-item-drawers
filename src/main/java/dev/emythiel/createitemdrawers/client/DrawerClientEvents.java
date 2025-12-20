@@ -1,24 +1,24 @@
 package dev.emythiel.createitemdrawers.client;
 
-
-import dev.emythiel.createitemdrawers.CreateItemDrawers;
-import dev.emythiel.createitemdrawers.client.renderer.DrawerRenderer;
 import dev.emythiel.createitemdrawers.client.renderer.DrawerSlotHighlighter;
-import dev.emythiel.createitemdrawers.registry.ModBlockEntities;
+import dev.emythiel.createitemdrawers.client.renderer.DrawerTooltip;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.fml.common.Mod;
-import net.neoforged.neoforge.client.event.EntityRenderersEvent;
+import net.neoforged.neoforge.client.event.ClientTickEvent;
 import net.neoforged.neoforge.client.event.RenderHighlightEvent;
 
 
-@Mod(value = CreateItemDrawers.MODID, dist = Dist.CLIENT)
-@EventBusSubscriber(modid = CreateItemDrawers.MODID, value = Dist.CLIENT)
+@EventBusSubscriber(Dist.CLIENT)
 public class DrawerClientEvents {
 
     @SubscribeEvent
     public static void onRenderHighlight(RenderHighlightEvent.Block event) {
         DrawerSlotHighlighter.onRenderHighlight(event);
+    }
+
+    @SubscribeEvent
+    public static void onClientTick(ClientTickEvent.Post event) {
+        DrawerTooltip.tick();
     }
 }

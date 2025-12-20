@@ -1,6 +1,5 @@
 package dev.emythiel.createitemdrawers.datagen;
 
-import dev.emythiel.createitemdrawers.CreateItemDrawers;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.PackOutput;
@@ -15,7 +14,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
-@EventBusSubscriber(modid = CreateItemDrawers.MODID)
+@EventBusSubscriber
 public class DataGenerators {
     @SubscribeEvent
     public static void gatherData(GatherDataEvent event) {

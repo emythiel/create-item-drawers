@@ -1,6 +1,5 @@
 package dev.emythiel.createitemdrawers.util;
 
-import dev.emythiel.createitemdrawers.CreateItemDrawers;
 import dev.emythiel.createitemdrawers.block.entity.DrawerBlockEntity;
 import net.minecraft.world.level.block.HorizontalDirectionalBlock;
 import net.neoforged.bus.api.EventPriority;
@@ -9,7 +8,7 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.common.util.TriState;
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 
-@EventBusSubscriber(modid = CreateItemDrawers.MODID)
+@EventBusSubscriber
 public class DrawerSneakBypassHandler {
 
     @SubscribeEvent(priority = EventPriority.LOW)

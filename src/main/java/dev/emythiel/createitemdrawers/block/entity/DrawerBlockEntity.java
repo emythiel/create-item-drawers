@@ -64,7 +64,6 @@ public class DrawerBlockEntity extends SmartBlockEntity implements MenuProvider,
     public ConnectedGroup group = new ConnectedGroup();
     private IItemHandler combinedHandler;
     protected boolean reRender;
-    private EdgeInteractionBehaviour connectivity;
 
 
     public DrawerBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
@@ -239,7 +238,7 @@ public class DrawerBlockEntity extends SmartBlockEntity implements MenuProvider,
 
     @Override
     public void addBehaviours(List<BlockEntityBehaviour> behaviours) {
-        connectivity = new EdgeInteractionBehaviour(this, ConnectedGroupHandler::toggleConnection)
+        EdgeInteractionBehaviour connectivity = new EdgeInteractionBehaviour(this, ConnectedGroupHandler::toggleConnection)
             .connectivity(ConnectedGroupHandler::shouldConnect)
             .require(AllItems.WRENCH.get());
         behaviours.add(connectivity);

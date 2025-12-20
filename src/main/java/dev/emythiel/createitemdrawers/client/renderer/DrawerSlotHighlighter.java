@@ -1,24 +1,14 @@
 package dev.emythiel.createitemdrawers.client.renderer;
 
-import com.simibubi.create.AllItems;
 import com.simibubi.create.AllSpecialTextures;
-import com.simibubi.create.CreateClient;
 import dev.emythiel.createitemdrawers.block.entity.DrawerBlockEntity;
-import dev.emythiel.createitemdrawers.util.CreateItemDrawerLang;
 import dev.emythiel.createitemdrawers.util.DrawerInteractionHelper;
 import net.createmod.catnip.outliner.Outliner;
-import net.minecraft.client.Minecraft;
 import net.minecraft.core.Direction;
-import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.HorizontalDirectionalBlock;
 import net.minecraft.world.phys.AABB;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.client.event.RenderHighlightEvent;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class DrawerSlotHighlighter {
 
@@ -45,16 +35,6 @@ public class DrawerSlotHighlighter {
             .colored(overCapacity ? 0xFFFFFF : 0xFF0000)
             .withFaceTexture(overCapacity ? null : AllSpecialTextures.SELECTION)
             .lineWidth(0.01f);
-
-        // Render Wrench text when looking at front
-        Player player = Minecraft.getInstance().player;
-        boolean holdingWrench = player.getMainHandItem().is(AllItems.WRENCH.get());
-        if (holdingWrench) {
-            List<MutableComponent> tip = new ArrayList<>();
-            tip.add(CreateItemDrawerLang.translate("interaction.settings").component());
-            tip.add(CreateItemDrawerLang.translate("interaction.open_settings").component());
-            CreateClient.VALUE_SETTINGS_HANDLER.showHoverTip(tip);
-        }
     }
 
     private static DrawerBlockEntity getDrawer(RenderHighlightEvent.Block event) {
