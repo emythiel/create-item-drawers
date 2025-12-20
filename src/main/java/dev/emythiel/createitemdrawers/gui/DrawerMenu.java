@@ -68,17 +68,17 @@ public class DrawerMenu extends MenuBase<DrawerBlockEntity> {
         int count = be.getStorage().getSlotCount();
 
         if (count == 1) {
-            this.addSlot(new ReadOnlySlotItemHandler(be.getItemHandler(null), 0, 110, 39));
+            this.addSlot(new ReadOnlySlotItemHandler(be.getLocalHandler(), 0, 110, 39));
         }
         else if (count == 2) {
-            this.addSlot(new ReadOnlySlotItemHandler(be.getItemHandler(null), 0, 110, 27));
-            this.addSlot(new ReadOnlySlotItemHandler(be.getItemHandler(null), 1, 110, 51));
+            this.addSlot(new ReadOnlySlotItemHandler(be.getLocalHandler(), 0, 110, 27));
+            this.addSlot(new ReadOnlySlotItemHandler(be.getLocalHandler(), 1, 110, 51));
         }
         else if (count == 4) {
-            this.addSlot(new ReadOnlySlotItemHandler(be.getItemHandler(null), 0, 98, 27));
-            this.addSlot(new ReadOnlySlotItemHandler(be.getItemHandler(null), 1, 122, 27));
-            this.addSlot(new ReadOnlySlotItemHandler(be.getItemHandler(null), 2, 98, 51));
-            this.addSlot(new ReadOnlySlotItemHandler(be.getItemHandler(null), 3, 122, 51));
+            this.addSlot(new ReadOnlySlotItemHandler(be.getLocalHandler(), 0, 98, 27));
+            this.addSlot(new ReadOnlySlotItemHandler(be.getLocalHandler(), 1, 122, 27));
+            this.addSlot(new ReadOnlySlotItemHandler(be.getLocalHandler(), 2, 98, 51));
+            this.addSlot(new ReadOnlySlotItemHandler(be.getLocalHandler(), 3, 122, 51));
         }
 
         // Upgrade slot

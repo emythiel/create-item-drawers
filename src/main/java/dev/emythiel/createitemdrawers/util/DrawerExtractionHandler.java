@@ -57,7 +57,7 @@ public class DrawerExtractionHandler {
         var storage = drawer.getStorage();
         var drawerSlot = storage.getSlot(slot);
 
-        if (drawerSlot.isEmpty())
+        if (drawerSlot.getStoredItem().isEmpty())
             return;
 
         int amount = sneaking ? drawerSlot.getStoredItem().getMaxStackSize() : 1;

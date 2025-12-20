@@ -51,14 +51,6 @@ public class ToggleButton extends AbstractSimiWidget {
         return this;
     }
 
-    public ToggleButton withTooltip(Supplier<Component> supplier) {
-        this.tooltipSupplier = () -> {
-            Component component = supplier.get();
-            return component == null ? List.of() : List.of(component);
-        };
-        return this;
-    }
-
     @Override
     protected void renderWidget(@NotNull GuiGraphics graphics, int mouseX, int mouseY, float partialTicks) {
 

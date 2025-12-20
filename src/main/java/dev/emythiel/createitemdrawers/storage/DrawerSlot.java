@@ -26,12 +26,6 @@ public class DrawerSlot {
 
     public DrawerSlot() {}
 
-    /** A slot is “empty” if the stored item is empty OR count == 0. */
-    public boolean isEmpty() {
-        return storedItem.isEmpty();
-    }
-
-
     /* Getters and Setters */
 
     public ItemStack getStoredItem() { return storedItem; }
@@ -75,11 +69,11 @@ public class DrawerSlot {
             return false;
 
         // Locked, slot not empty -> must match template
-        if (lockMode && !isEmpty())
+        if (lockMode && !getStoredItem().isEmpty())
             return matches(stack);
 
         // Unlocked, empty -> accept anything
-        if (isEmpty())
+        if (getStoredItem().isEmpty())
             return true;
 
         // Unlocked, not empty -> must match stored item
@@ -108,7 +102,7 @@ public class DrawerSlot {
         int toAdd = Math.min(stack.getCount(), space);
 
         if (!simulate) {
-            if (isEmpty()) {
+            if (getStoredItem().isEmpty()) {
                 storedItem = stack.copyWithCount(1);
             }
             count += toAdd;
@@ -133,7 +127,7 @@ public class DrawerSlot {
      * @return          items withdrawn (can be more than 64!)
      */
     public ItemStack extract(int amount, boolean simulate) {
-        if (isEmpty())
+        if (getStoredItem().isEmpty())
             return ItemStack.EMPTY;
 
         int take = Math.min(amount, count);

@@ -132,7 +132,8 @@ public class DrawerScreen extends AbstractContainerScreen<DrawerMenu> {
             DrawerBlockEntity be = menu.contentHolder;
             DrawerSlot drawerSlot = be.getStorage().getSlot(ro.getSlotIndex());
 
-            if (stack.isEmpty() && drawerSlot.isLockMode() && !drawerSlot.getStoredItem().isEmpty()) {
+            // Check if slot is locked and has template, but actual count is 0
+            if (drawerSlot.isLockMode() && !drawerSlot.getStoredItem().isEmpty() && drawerSlot.getCount() == 0) {
                 stack = drawerSlot.getStoredItem();
                 isTemplateItem = true;
             }
@@ -140,10 +141,13 @@ public class DrawerScreen extends AbstractContainerScreen<DrawerMenu> {
         graphics.renderItem(stack, slot.x, slot.y, hash);
         // If template item is used, gray it out
         if (isTemplateItem) {
+            graphics.pose().pushPose();
+            graphics.pose().translate(0, 0, 1); // Between item (100) and tooltip (200+)
             graphics.fill(RenderType.guiOverlay(),
                 slot.x, slot.y,
                 slot.x + 16, slot.y + 16,
                 0x80AAAAAA);
+            graphics.pose().popPose();
             return;
         }
 
