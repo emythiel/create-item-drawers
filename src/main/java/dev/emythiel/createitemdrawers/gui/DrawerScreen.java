@@ -2,20 +2,15 @@ package dev.emythiel.createitemdrawers.gui;
 
 import com.simibubi.create.foundation.gui.AllIcons;
 import com.simibubi.create.foundation.gui.widget.IconButton;
-import com.simibubi.create.foundation.gui.widget.Label;
-import com.simibubi.create.foundation.gui.widget.ScrollInput;
-import com.simibubi.create.foundation.gui.widget.SelectionScrollInput;
 import dev.emythiel.createitemdrawers.CreateItemDrawers;
 import dev.emythiel.createitemdrawers.block.entity.DrawerBlockEntity;
 import dev.emythiel.createitemdrawers.gui.widgets.ToggleButton;
-import dev.emythiel.createitemdrawers.network.RenderPacket;
 import dev.emythiel.createitemdrawers.network.SlotTogglePacket;
 import dev.emythiel.createitemdrawers.storage.DrawerSlot;
 import dev.emythiel.createitemdrawers.util.CreateItemDrawerLang;
 import net.createmod.catnip.lang.FontHelper;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -139,14 +134,15 @@ public class DrawerScreen extends AbstractContainerScreen<DrawerMenu> {
             }
         }
         graphics.renderItem(stack, slot.x, slot.y, hash);
-        // If template item is used, gray it out
+        // If template item, apply gray overlay on item and don't render count
         if (isTemplateItem) {
             graphics.pose().pushPose();
-            graphics.pose().translate(0, 0, 1); // Between item (100) and tooltip (200+)
-            graphics.fill(RenderType.guiOverlay(),
+            graphics.pose().translate(0, 0, 275);
+            graphics.fill(
                 slot.x, slot.y,
                 slot.x + 16, slot.y + 16,
-                0x80AAAAAA);
+                0x80AAAAAA
+            );
             graphics.pose().popPose();
             return;
         }
@@ -180,10 +176,11 @@ public class DrawerScreen extends AbstractContainerScreen<DrawerMenu> {
         // Convert slot coordinates to scaled space
         float inv = 1f / scale;
 
+        //int drawX = (int)((centerX - textWidth * scale / 2) * inv);
         int drawX = (int)((centerX - textWidth * scale / 2) * inv);
-        int drawY = (int)((slot.y + 16 + 2) * inv);
+        int drawY = (int)((slot.y + 16 - 5) * inv);
 
-        graphics.drawString(this.font, s, drawX, drawY, 0xDDDDDD, true);
+        graphics.drawString(this.font, s, drawX, drawY, 0xFFFFFF/*0xDDDDDD*/, true);
 
         graphics.pose().popPose();
     }
