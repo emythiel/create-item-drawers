@@ -38,10 +38,10 @@ public class DrawerRenderer extends SafeBlockEntityRenderer<DrawerBlockEntity> {
     protected void renderSafe(DrawerBlockEntity be, float partialTicks,
                               PoseStack ms, MultiBufferSource buffer, int packedLight, int overlay) {
         int itemDist = ClientConfig.ITEM_RENDER_DISTANCE.get();
-        int textDist = ClientConfig.TEXT_RENDER_DISTANCE.get();
+        int countDist = ClientConfig.COUNT_RENDER_DISTANCE.get();
         int additionalDist = ClientConfig.ADDITIONAL_RENDER_DISTANCE.get();
         boolean shouldRenderItem = ClientConfig.ITEM_RENDER.get();
-        boolean shouldRenderCount = ClientConfig.TEXT_RENDER.get();
+        boolean shouldRenderCount = ClientConfig.COUNT_RENDER.get();
         boolean shouldRenderAdditional = ClientConfig.ADDITIONAL_RENDER.get();
 
         if (!shouldRenderItem && !shouldRenderCount && !shouldRenderAdditional)
@@ -59,7 +59,7 @@ public class DrawerRenderer extends SafeBlockEntityRenderer<DrawerBlockEntity> {
         );
 
         boolean renderItem = be.getRenderItems() && distSq <= itemDist * itemDist && shouldRenderItem;
-        boolean renderCount = be.getRenderCounts() && distSq <= textDist * textDist && shouldRenderCount;
+        boolean renderCount = be.getRenderCounts() && distSq <= countDist * countDist && shouldRenderCount;
         boolean renderAdditional = be.getRenderAdditional() && distSq <= additionalDist * additionalDist && shouldRenderAdditional;
 
         if (!renderItem && !renderCount && !renderAdditional)
@@ -121,7 +121,7 @@ public class DrawerRenderer extends SafeBlockEntityRenderer<DrawerBlockEntity> {
         if (!(context.state.getBlock() instanceof DrawerBlock drawer)) return;
 
         boolean shouldRenderItem = ClientConfig.ITEM_RENDER.get();
-        boolean shouldRenderCount = ClientConfig.TEXT_RENDER.get();
+        boolean shouldRenderCount = ClientConfig.COUNT_RENDER.get();
         boolean shouldRenderAdditional = ClientConfig.ADDITIONAL_RENDER.get();
         if (!shouldRenderItem && !shouldRenderCount && !shouldRenderAdditional)
             return;

@@ -1,5 +1,6 @@
 package dev.emythiel.createitemdrawers.config;
 
+import dev.emythiel.createitemdrawers.util.CreateItemDrawerLang;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.neoforge.common.ModConfigSpec;
@@ -28,39 +29,41 @@ public class ServerConfig {
         builder.comment(
             "Storage capacity is based on stacks per slot.",
             "Upgrades multiplies the base capacity stacks."
-        ).push("storage-settings");
+        ).push("storage_settings");
         SINGLE_CAPACITY = builder
             .comment("Single slot drawers")
-            .defineInRange("singleCapacity", 32, 1, 65536);
+            .defineInRange("drawer_single_capacity", 32, 1, 65536);
         DOUBLE_CAPACITY = builder
             .comment("Double slot drawers")
-            .defineInRange("doubleCapacity", 16, 1, 65536);
+            .defineInRange("drawer_double_capacity", 16, 1, 65536);
         QUAD_CAPACITY = builder
             .comment("Quad slot drawers")
-            .defineInRange("quadCapacity", 8, 1, 65536);
+            .defineInRange("drawer_quad_capacity", 8, 1, 65536);
 
         CAPACITY_UPGRADE_T1 = builder
             .comment("Tier 1 capacity multiplier")
-            .defineInRange("capacityUpgradeT1", 2, 1, 65536);
+            .defineInRange("upgrade_t1_multiplier", 2, 1, 65536);
         CAPACITY_UPGRADE_T2 = builder
             .comment("Tier 2 capacity multiplier")
-            .defineInRange("capacityUpgradeT2", 4, 1, 65536);
+            .defineInRange("upgrade_t2_multiplier", 4, 1, 65536);
         CAPACITY_UPGRADE_T3 = builder
             .comment("Tier 3 capacity multiplier")
-            .defineInRange("capacityUpgradeT3", 8, 1, 65536);
+            .defineInRange("upgrade_t3_multiplier", 8, 1, 65536);
         CAPACITY_UPGRADE_T4 = builder
             .comment("Tier 4 capacity multiplier")
-            .defineInRange("capacityUpgradeT4", 16, 1, 65536);
+            .defineInRange("upgrade_t4_multiplier", 16, 1, 65536);
         CAPACITY_UPGRADE_T5 = builder
             .comment("Tier 5 capacity multiplier")
-            .defineInRange("capacityUpgradeT5", 32, 1, 65536);
+            .defineInRange("upgrade_t5_multiplier", 32, 1, 65536);
         builder.pop();
 
         BLACKLIST = builder
             .comment(
-                "List of item IDs that cannot be stored in drawers",
+                "List of item IDs that cannot be stored in drawers.",
                 "Example: [\"minecraft:diamond_sword\", \"minecraft:stone\"]"
             )
+            .translation(String.valueOf(CreateItemDrawerLang.translate("config.blacklist")
+                .component()))
             .defineListAllowEmpty(
                 "blacklist",
                 List.of("create_item_drawers:single_drawer",

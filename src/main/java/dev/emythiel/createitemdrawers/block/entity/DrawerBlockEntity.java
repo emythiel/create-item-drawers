@@ -260,7 +260,7 @@ public class DrawerBlockEntity extends SmartBlockEntity implements MenuProvider,
 
     @Override
     public boolean addToGoggleTooltip(List<Component> tooltip, boolean isPlayerSneaking) {
-        boolean SHOW_GOGGLE_TOOLTIP = ClientConfig.SHOW_GOGGLE_TOOLTIP.get();
+        boolean SHOW_GOGGLE_TOOLTIP = ClientConfig.GOGGLE_TOOLTIP.get();
         boolean GOOGLE_TOOLTIP_REQUIRE_WRENCH = ClientConfig.GOOGLE_TOOLTIP_REQUIRE_WRENCH.get();
 
         if (!SHOW_GOGGLE_TOOLTIP)
