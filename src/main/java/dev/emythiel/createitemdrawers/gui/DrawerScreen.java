@@ -160,10 +160,12 @@ public class DrawerScreen extends AbstractContainerScreen<DrawerMenu> {
 
         // If above 10.000, show count as 10k etc
         String s = (count > 9999) ? (count / 1000) + "k" : String.valueOf(count);
+        // If above 1mil, show count as 1m, 10m etc. Also, why? That's so many! But be better safe I guess
+        if (count > 999999)
+            s = (count / 1000000) + "m";
 
         // Position
         float scale = 0.60f;
-        int centerX = slot.x + 8;
         int textWidth = this.font.width(s);
 
         graphics.pose().pushPose();
@@ -176,9 +178,9 @@ public class DrawerScreen extends AbstractContainerScreen<DrawerMenu> {
         // Convert slot coordinates to scaled space
         float inv = 1f / scale;
 
-        //int drawX = (int)((centerX - textWidth * scale / 2) * inv);
-        int drawX = (int)((centerX - textWidth * scale / 2) * inv);
-        int drawY = (int)((slot.y + 16 - 5) * inv);
+        // x,y in bottom right corner of slot
+        int drawX = (int)((slot.x + 16) * inv) - textWidth;
+        int drawY = (int)((slot.y + 11) * inv);
 
         graphics.drawString(this.font, s, drawX, drawY, 0xFFFFFF/*0xDDDDDD*/, true);
 
