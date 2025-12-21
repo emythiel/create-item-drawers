@@ -155,7 +155,7 @@ public class DrawerBlock extends BaseBlock implements IWrenchable, IBE<DrawerBlo
 
     @Override
     public InteractionResult onWrenched(BlockState state, UseOnContext context) {
-        // TODO: Break connection if relevant
+        ConnectedGroupHandler.connectionGroupCleanup(state, context.getLevel(), context.getClickedPos());
         return IWrenchable.super.onWrenched(state, context);
     }
 
@@ -189,15 +189,5 @@ public class DrawerBlock extends BaseBlock implements IWrenchable, IBE<DrawerBlo
         }
 
         super.onRemove(state, level, pos, newState, isMoving);
-    }
-
-    @Override
-    public void neighborChanged(BlockState state, Level level, BlockPos pos, Block block, BlockPos fromPos, boolean isMoving) {
-        BlockEntity be = level.getBlockEntity(pos);
-        if (be instanceof DrawerBlockEntity drawer) {
-            //connectionGroupCleanup(state, level, pos);
-            drawer.connectivityChanged();
-        }
-        super.neighborChanged(state, level, pos, block, fromPos, isMoving);
     }
 }
