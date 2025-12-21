@@ -119,4 +119,9 @@ public class DrawerItemHandler extends ItemStackHandler {
 
         return s.canAccept(stack);
     }
+
+    @Override
+    public void setStackInSlot(int slot, @NotNull ItemStack stack) {
+
+    }
 }
