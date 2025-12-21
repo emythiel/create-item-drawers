@@ -1,7 +1,5 @@
 package dev.emythiel.createitemdrawers.storage;
 
-import dev.emythiel.createitemdrawers.CreateItemDrawers;
-import dev.emythiel.createitemdrawers.block.entity.DrawerBlockEntity;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.items.ItemStackHandler;
 import org.jetbrains.annotations.NotNull;
@@ -120,10 +118,5 @@ public class DrawerItemHandler extends ItemStackHandler {
             return false;
 
         return s.canAccept(stack);
-    }
-
-    @Override
-    public void setStackInSlot(int slot, @NotNull ItemStack stack) {
-
     }
 }

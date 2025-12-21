@@ -5,9 +5,11 @@ import com.simibubi.create.foundation.item.ItemDescription;
 import dev.emythiel.createitemdrawers.block.entity.DrawerBlockEntity;
 import dev.emythiel.createitemdrawers.config.ClientConfig;
 import dev.emythiel.createitemdrawers.config.ServerConfig;
+import dev.emythiel.createitemdrawers.ponder.CreateItemDrawersPonderPlugin;
 import dev.emythiel.createitemdrawers.registry.*;
 import dev.emythiel.createitemdrawers.util.connection.DrawerSpriteShifts;
 import net.createmod.catnip.lang.FontHelper;
+import net.createmod.ponder.foundation.PonderIndex;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.CreativeModeTab;
@@ -74,6 +76,7 @@ public class CreateItemDrawers {
     private void onClientSetup(FMLClientSetupEvent event) {
         // Otherwise textures don't load properly on start grr
         event.enqueueWork(DrawerSpriteShifts::init);
+        PonderIndex.addPlugin(new CreateItemDrawersPonderPlugin());
     }
 
     private void registerCapabilities(RegisterCapabilitiesEvent event) {

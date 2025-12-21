@@ -11,6 +11,8 @@ import dev.emythiel.createitemdrawers.block.entity.DrawerBlockEntity;
 import dev.emythiel.createitemdrawers.config.ClientConfig;
 import dev.emythiel.createitemdrawers.storage.DrawerSlot;
 import dev.emythiel.createitemdrawers.util.RenderHelper;
+import net.createmod.catnip.gui.AbstractSimiScreen;
+import net.createmod.ponder.api.level.PonderLevel;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.LevelRenderer;
@@ -43,9 +45,10 @@ public class DrawerRenderer extends SafeBlockEntityRenderer<DrawerBlockEntity> {
         boolean shouldRenderItem = ClientConfig.ITEM_RENDER.get();
         boolean shouldRenderCount = ClientConfig.COUNT_RENDER.get();
         boolean shouldRenderAdditional = ClientConfig.ADDITIONAL_RENDER.get();
+        boolean isPonderScene = be.getLevel() instanceof PonderLevel;
 
-        if (!shouldRenderItem && !shouldRenderCount && !shouldRenderAdditional)
-            return; // All renders disabled, just exit
+        if (!shouldRenderItem && !shouldRenderCount && !shouldRenderAdditional && !isPonderScene)
+            return; // All renders disabled and not ponder, just exit
 
         Minecraft mc = Minecraft.getInstance();
         Player player = mc.player;
@@ -61,6 +64,13 @@ public class DrawerRenderer extends SafeBlockEntityRenderer<DrawerBlockEntity> {
         boolean renderItem = be.getRenderItems() && distSq <= itemDist * itemDist && shouldRenderItem;
         boolean renderCount = be.getRenderCounts() && distSq <= countDist * countDist && shouldRenderCount;
         boolean renderAdditional = be.getRenderAdditional() && distSq <= additionalDist * additionalDist && shouldRenderAdditional;
+
+        // If ponder scene, overwrite to force render
+        if (isPonderScene) {
+            renderItem = true;
+            renderCount = true;
+            renderAdditional = true;
+        }
 
         if (!renderItem && !renderCount && !renderAdditional)
             return;
@@ -80,7 +90,7 @@ public class DrawerRenderer extends SafeBlockEntityRenderer<DrawerBlockEntity> {
             player.getZ() - (be.getBlockPos().getZ() + 0.5)
         ).normalize();
 
-        if (frontNormal.dot(toPlayer) <= 0)
+        if (frontNormal.dot(toPlayer) <= 0 && !isPonderScene)
             return;
 
         Level level = be.getLevel();

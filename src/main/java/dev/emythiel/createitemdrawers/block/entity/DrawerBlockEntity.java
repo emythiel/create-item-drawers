@@ -27,7 +27,6 @@ import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.MenuProvider;
-import net.minecraft.world.SimpleMenuProvider;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -44,14 +43,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-/**
- * DrawerBlockEntity represents a placed drawer block in the world.
- * Responsibilities:
- *   ✔ Hold a DrawerStorage instance (manages per-slot data)
- *   ✔ Track drawer-wide render settings (show item and/or count)
- *   ✔ Save and load all storage + settings to NBT
- *   ✔ Provide block update sync to clients
- */
 public class DrawerBlockEntity extends SmartBlockEntity implements MenuProvider, TransformableBlockEntity, IHaveGoggleInformation {
     private final DrawerStorage storage;
     private final DrawerItemHandler itemHandler;
@@ -65,7 +56,7 @@ public class DrawerBlockEntity extends SmartBlockEntity implements MenuProvider,
     private IItemHandler combinedHandler;
     protected boolean reRender;
 
-
+    
     public DrawerBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
         super(type, pos, state);
 
@@ -130,6 +121,7 @@ public class DrawerBlockEntity extends SmartBlockEntity implements MenuProvider,
     public boolean getRenderAdditional() { return renderAdditional; }
     public void setRenderAdditional(boolean v) { this.renderAdditional = v; }
 
+    // NBT Saving/Loading
     public void setChangedAndSync() {
         setChanged();
         if (level != null && !level.isClientSide())
@@ -226,16 +218,10 @@ public class DrawerBlockEntity extends SmartBlockEntity implements MenuProvider,
     @Override
     public Component getDisplayName() {
         int slots = storage.getSlotCount();
-        return Component.translatable("gui.create_item_drawers.drawer_" + slots);
+        return CreateItemDrawerLang.translate("gui.drawer_" + slots).component();
     }
 
-    public MenuProvider getMenuProvider() {
-        return new SimpleMenuProvider(
-            (id, inv, player) -> DrawerMenu.create(id, inv, this),
-            Component.literal("Drawer Settings")
-        );
-    }
-
+    // Connection Handling
     @Override
     public void addBehaviours(List<BlockEntityBehaviour> behaviours) {
         EdgeInteractionBehaviour connectivity = new EdgeInteractionBehaviour(this, ConnectedGroupHandler::toggleConnection)
@@ -257,6 +243,7 @@ public class DrawerBlockEntity extends SmartBlockEntity implements MenuProvider,
         notifyUpdate();
     }
 
+    // Goggle tooltip
     @Override
     public boolean addToGoggleTooltip(List<Component> tooltip, boolean isPlayerSneaking) {
         boolean SHOW_GOGGLE_TOOLTIP = ClientConfig.GOGGLE_TOOLTIP.get();
@@ -320,11 +307,5 @@ public class DrawerBlockEntity extends SmartBlockEntity implements MenuProvider,
         }
 
         return true;
-    }
-
-    public void applyInventoryToBlock(DrawerItemHandler wrapped) {
-        for (int i = 0; i < itemHandler.getSlots(); i++) {
-            itemHandler.setStackInSlot(i, i < wrapped.getSlots() ? wrapped.getStackInSlot(i) : ItemStack.EMPTY);
-        }
     }
 }
