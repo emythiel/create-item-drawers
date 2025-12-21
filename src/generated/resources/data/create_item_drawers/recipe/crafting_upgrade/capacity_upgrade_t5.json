@@ -3,8 +3,8 @@
   "category": "misc",
   "group": "capacity_upgrade",
   "key": {
-    "E": {
-      "item": "create:experience_block"
+    "H": {
+      "item": "minecraft:heavy_core"
     },
     "S": {
       "item": "minecraft:shulker_shell"
@@ -15,7 +15,7 @@
   },
   "pattern": [
     "SSS",
-    "UEU",
+    "UHU",
     "SSS"
   ],
   "result": {

@@ -3,11 +3,11 @@
   "category": "misc",
   "group": "capacity_upgrade",
   "key": {
+    "E": {
+      "item": "create:experience_block"
+    },
     "N": {
       "item": "minecraft:netherite_ingot"
-    },
-    "S": {
-      "item": "create:sturdy_sheet"
     },
     "U": {
       "item": "create_item_drawers:capacity_upgrade_t3"
@@ -15,7 +15,7 @@
   },
   "pattern": [
     "NNN",
-    "USU",
+    "UEU",
     "NNN"
   ],
   "result": {

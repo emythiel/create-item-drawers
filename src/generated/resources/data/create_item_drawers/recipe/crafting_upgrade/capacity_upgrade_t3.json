@@ -6,8 +6,8 @@
     "D": {
       "item": "minecraft:diamond"
     },
-    "P": {
-      "item": "create:precision_mechanism"
+    "S": {
+      "item": "create:sturdy_sheet"
     },
     "U": {
       "item": "create_item_drawers:capacity_upgrade_t2"
@@ -15,7 +15,7 @@
   },
   "pattern": [
     "DDD",
-    "UPU",
+    "USU",
     "DDD"
   ],
   "result": {

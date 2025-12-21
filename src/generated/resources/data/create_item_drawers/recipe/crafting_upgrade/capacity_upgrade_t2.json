@@ -6,13 +6,16 @@
     "B": {
       "item": "create:brass_ingot"
     },
+    "P": {
+      "item": "create:precision_mechanism"
+    },
     "U": {
       "item": "create_item_drawers:capacity_upgrade_t1"
     }
   },
   "pattern": [
     "BBB",
-    "U U",
+    "UPU",
     "BBB"
   ],
   "result": {

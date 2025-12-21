@@ -3,17 +3,17 @@
   "category": "misc",
   "group": "capacity_upgrade",
   "key": {
-    "E": {
-      "item": "minecraft:ender_pearl"
+    "B": {
+      "item": "create:crafting_blueprint"
     },
-    "Z": {
-      "item": "create:zinc_ingot"
+    "V": {
+      "item": "create:item_vault"
     }
   },
   "pattern": [
-    "ZZZ",
-    " E ",
-    "ZZZ"
+    " V ",
+    "VBV",
+    " V "
   ],
   "result": {
     "count": 1,
