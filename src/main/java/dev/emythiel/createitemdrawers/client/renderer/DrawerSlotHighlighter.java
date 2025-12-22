@@ -1,7 +1,7 @@
 package dev.emythiel.createitemdrawers.client.renderer;
 
 import com.simibubi.create.AllSpecialTextures;
-import dev.emythiel.createitemdrawers.block.entity.DrawerBlockEntity;
+import dev.emythiel.createitemdrawers.block.entity.DrawerStorageBlockEntity;
 import dev.emythiel.createitemdrawers.util.DrawerInteractionHelper;
 import net.createmod.catnip.outliner.Outliner;
 import net.minecraft.core.Direction;
@@ -14,7 +14,7 @@ public class DrawerSlotHighlighter {
 
     @SubscribeEvent
     public static void onRenderHighlight(RenderHighlightEvent.Block event) {
-        DrawerBlockEntity be = getDrawer(event);
+        DrawerStorageBlockEntity be = getDrawer(event);
         if (be == null) return;
 
         int slot = DrawerInteractionHelper.getHitSlot(be, event.getTarget().getLocation());
@@ -37,11 +37,11 @@ public class DrawerSlotHighlighter {
             .lineWidth(0.01f);
     }
 
-    private static DrawerBlockEntity getDrawer(RenderHighlightEvent.Block event) {
+    private static DrawerStorageBlockEntity getDrawer(RenderHighlightEvent.Block event) {
         var level = event.getCamera().getEntity().level();
         var pos = event.getTarget().getBlockPos();
 
-        if (level.getBlockEntity(pos) instanceof DrawerBlockEntity be)
+        if (level.getBlockEntity(pos) instanceof DrawerStorageBlockEntity be)
             return be;
 
         return null;

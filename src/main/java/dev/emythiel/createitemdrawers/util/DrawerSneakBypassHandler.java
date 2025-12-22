@@ -1,6 +1,6 @@
 package dev.emythiel.createitemdrawers.util;
 
-import dev.emythiel.createitemdrawers.block.entity.DrawerBlockEntity;
+import dev.emythiel.createitemdrawers.block.base.BaseDrawerBlockEntity;
 import net.minecraft.world.level.block.HorizontalDirectionalBlock;
 import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -21,7 +21,7 @@ public class DrawerSneakBypassHandler {
         var pos = event.getPos();
         var be = level.getBlockEntity(pos);
 
-        if (!(be instanceof DrawerBlockEntity))
+        if (!(be instanceof BaseDrawerBlockEntity))
             return;
 
         // Check if fron face clicked

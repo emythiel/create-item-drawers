@@ -1,7 +1,7 @@
 {
   "values": [
-    "create_item_drawers:single_drawer",
-    "create_item_drawers:double_drawer",
-    "create_item_drawers:quad_drawer"
+    "create_item_drawers:item_drawer_single",
+    "create_item_drawers:item_drawer_double",
+    "create_item_drawers:item_drawer_quad"
   ]
 }

@@ -11,11 +11,11 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "name": "create_item_drawers:double_drawer"
+          "name": "create_item_drawers:item_drawer_quad"
         }
       ],
       "rolls": 1.0
     }
   ],
-  "random_sequence": "create_item_drawers:blocks/double_drawer"
+  "random_sequence": "create_item_drawers:blocks/item_drawer_quad"
 }

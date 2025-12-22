@@ -1,7 +1,7 @@
 package dev.emythiel.createitemdrawers.gui;
 
 import com.simibubi.create.foundation.gui.menu.MenuBase;
-import dev.emythiel.createitemdrawers.block.entity.DrawerBlockEntity;
+import dev.emythiel.createitemdrawers.block.entity.DrawerStorageBlockEntity;
 import dev.emythiel.createitemdrawers.registry.ModMenus;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
@@ -13,29 +13,29 @@ import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 
-public class DrawerMenu extends MenuBase<DrawerBlockEntity> {
+public class DrawerMenu extends MenuBase<DrawerStorageBlockEntity> {
 
     public DrawerMenu(MenuType<?> type, int id, Inventory inv, RegistryFriendlyByteBuf extraData) {
         super(type, id, inv, extraData);
     }
 
-    public DrawerMenu(MenuType<?> type, int id, Inventory inv, DrawerBlockEntity be) {
+    public DrawerMenu(MenuType<?> type, int id, Inventory inv, DrawerStorageBlockEntity be) {
         super(type, id, inv, be);
     }
 
-    public static DrawerMenu create (int id, Inventory inv, DrawerBlockEntity be) {
+    public static DrawerMenu create (int id, Inventory inv, DrawerStorageBlockEntity be) {
         return new DrawerMenu(ModMenus.DRAWER_MENU.get(), id, inv, be);
     }
 
     @Override
-    protected DrawerBlockEntity createOnClient(RegistryFriendlyByteBuf extraData) {
+    protected DrawerStorageBlockEntity createOnClient(RegistryFriendlyByteBuf extraData) {
         BlockPos pos = extraData.readBlockPos();
         Level level = Minecraft.getInstance().level;
-        return (DrawerBlockEntity) level.getBlockEntity(pos);
+        return (DrawerStorageBlockEntity) level.getBlockEntity(pos);
     }
 
     @Override
-    protected void initAndReadInventory(DrawerBlockEntity be) {
+    protected void initAndReadInventory(DrawerStorageBlockEntity be) {
 
     }
 
@@ -64,7 +64,7 @@ public class DrawerMenu extends MenuBase<DrawerBlockEntity> {
         }
 
         // Drawer slots
-        DrawerBlockEntity be = contentHolder;
+        DrawerStorageBlockEntity be = contentHolder;
         int count = be.getStorage().getSlotCount();
 
         if (count == 1) {
@@ -86,7 +86,7 @@ public class DrawerMenu extends MenuBase<DrawerBlockEntity> {
     }
 
     @Override
-    protected void saveData(DrawerBlockEntity be) {
+    protected void saveData(DrawerStorageBlockEntity be) {
         be.setChangedAndSync();
     }
 

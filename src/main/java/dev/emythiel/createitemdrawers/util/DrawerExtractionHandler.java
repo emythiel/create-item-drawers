@@ -1,6 +1,6 @@
 package dev.emythiel.createitemdrawers.util;
 
-import dev.emythiel.createitemdrawers.block.entity.DrawerBlockEntity;
+import dev.emythiel.createitemdrawers.block.entity.DrawerStorageBlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.sounds.SoundEvents;
@@ -24,7 +24,7 @@ public class DrawerExtractionHandler {
         var pos = event.getPos();
         var be = level.getBlockEntity(pos);
 
-        if (!(be instanceof DrawerBlockEntity drawer))
+        if (!(be instanceof DrawerStorageBlockEntity drawer))
             return;
 
         var state = drawer.getBlockState();
@@ -52,7 +52,7 @@ public class DrawerExtractionHandler {
         extractFromSlot(drawer, slot, player, sneaking, level, pos);
     }
 
-    private static void extractFromSlot(DrawerBlockEntity drawer, int slot, Player player, boolean sneaking, Level level, BlockPos pos) {
+    private static void extractFromSlot(DrawerStorageBlockEntity drawer, int slot, Player player, boolean sneaking, Level level, BlockPos pos) {
         var storage = drawer.getStorage();
         var drawerSlot = storage.getSlot(slot);
 

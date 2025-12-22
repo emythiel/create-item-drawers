@@ -4,14 +4,14 @@ import com.simibubi.create.AllItems;
 import com.simibubi.create.AllSoundEvents;
 import com.simibubi.create.content.equipment.wrench.IWrenchable;
 import com.simibubi.create.foundation.block.IBE;
-import dev.emythiel.createitemdrawers.block.base.BaseBlock;
-import dev.emythiel.createitemdrawers.block.entity.DrawerBlockEntity;
+import dev.emythiel.createitemdrawers.block.base.BaseDrawerBlock;
+import dev.emythiel.createitemdrawers.block.entity.DrawerStorageBlockEntity;
 import dev.emythiel.createitemdrawers.registry.ModBlockEntities;
 import dev.emythiel.createitemdrawers.storage.DrawerSlot;
 import dev.emythiel.createitemdrawers.util.CreateItemDrawerLang;
 import dev.emythiel.createitemdrawers.util.DrawerInteractionHelper;
 import dev.emythiel.createitemdrawers.util.connection.ConnectedGroupHandler;
-import dev.emythiel.createitemdrawers.util.connection.DrawerHelper;
+import dev.emythiel.createitemdrawers.util.connection.ConnectionHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -31,22 +31,22 @@ import net.minecraft.world.phys.BlockHitResult;
 import java.util.Collections;
 import java.util.List;
 
-public class DrawerBlock extends BaseBlock implements IWrenchable, IBE<DrawerBlockEntity> {
+public class DrawerStorageBlock extends BaseDrawerBlock implements IWrenchable, IBE<DrawerStorageBlockEntity> {
 
     private final int slotCount;
 
-    public DrawerBlock(Properties properties, int slotCount) {
+    public DrawerStorageBlock(Properties properties, int slotCount) {
         super(properties);
         this.slotCount = slotCount;
     }
 
     @Override
-    public Class<DrawerBlockEntity> getBlockEntityClass() {
-        return DrawerBlockEntity.class;
+    public Class<DrawerStorageBlockEntity> getBlockEntityClass() {
+        return DrawerStorageBlockEntity.class;
     }
 
     @Override
-    public BlockEntityType<? extends DrawerBlockEntity> getBlockEntityType() {
+    public BlockEntityType<? extends DrawerStorageBlockEntity> getBlockEntityType() {
         return ModBlockEntities.DRAWER_BLOCK_ENTITY.get();
     }
 
@@ -56,7 +56,7 @@ public class DrawerBlock extends BaseBlock implements IWrenchable, IBE<DrawerBlo
     @Override
     protected ItemInteractionResult useItemOn(ItemStack held, BlockState state, Level level, BlockPos pos,
                                               Player player, InteractionHand hand, BlockHitResult hit) {
-        if (!(level.getBlockEntity(pos) instanceof DrawerBlockEntity be))
+        if (!(level.getBlockEntity(pos) instanceof DrawerStorageBlockEntity be))
             return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
 
         if (!isFrontFace(state, hit.getDirection()))
@@ -136,7 +136,7 @@ public class DrawerBlock extends BaseBlock implements IWrenchable, IBE<DrawerBlo
     public List<ItemStack> getDrops(BlockState state, LootParams.Builder builder) {
         BlockEntity be = builder.getOptionalParameter(LootContextParams.BLOCK_ENTITY);
 
-        if (be instanceof DrawerBlockEntity drawer) {
+        if (be instanceof DrawerStorageBlockEntity drawer) {
             boolean hasStoredItems = false;
             for (int i = 0; i < drawer.getStorage().getSlotCount(); i++) {
                 if (drawer.getStorage().getSlot(i).getCount() > 0) {
@@ -162,7 +162,7 @@ public class DrawerBlock extends BaseBlock implements IWrenchable, IBE<DrawerBlo
     @Override
     public void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean isMoving) {
         if (state.hasBlockEntity() && !state.is(newState.getBlock())) {
-            DrawerBlockEntity drawer = DrawerHelper.getDrawer(level, pos);
+            DrawerStorageBlockEntity drawer = (DrawerStorageBlockEntity) ConnectionHelper.getDrawer(level, pos);
 
             if (drawer != null && !level.isClientSide() && !isMoving) {
                 ConnectedGroupHandler.connectionGroupCleanup(state, level, pos);

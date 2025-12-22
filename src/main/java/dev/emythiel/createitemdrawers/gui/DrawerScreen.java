@@ -3,7 +3,7 @@ package dev.emythiel.createitemdrawers.gui;
 import com.simibubi.create.foundation.gui.AllIcons;
 import com.simibubi.create.foundation.gui.widget.IconButton;
 import dev.emythiel.createitemdrawers.CreateItemDrawers;
-import dev.emythiel.createitemdrawers.block.entity.DrawerBlockEntity;
+import dev.emythiel.createitemdrawers.block.entity.DrawerStorageBlockEntity;
 import dev.emythiel.createitemdrawers.gui.widgets.ToggleButton;
 import dev.emythiel.createitemdrawers.network.SlotTogglePacket;
 import dev.emythiel.createitemdrawers.storage.DrawerSlot;
@@ -124,7 +124,7 @@ public class DrawerScreen extends AbstractContainerScreen<DrawerMenu> {
 
         // If drawer slot and empty but locked, show template item
         if (slot instanceof ReadOnlySlotItemHandler ro) {
-            DrawerBlockEntity be = menu.contentHolder;
+            DrawerStorageBlockEntity be = menu.contentHolder;
             DrawerSlot drawerSlot = be.getStorage().getSlot(ro.getSlotIndex());
 
             // Check if slot is locked and has template, but actual count is 0
@@ -191,7 +191,7 @@ public class DrawerScreen extends AbstractContainerScreen<DrawerMenu> {
     protected void init() {
         super.init();
 
-        DrawerBlockEntity be = menu.contentHolder;
+        DrawerStorageBlockEntity be = menu.contentHolder;
 
         IconButton closeMenuBtn =
             new IconButton(leftPos + 148, topPos + 85, AllIcons.I_CONFIRM);

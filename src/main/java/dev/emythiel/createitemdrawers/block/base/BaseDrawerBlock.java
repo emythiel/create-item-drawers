@@ -12,10 +12,10 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.Property;
 import org.jetbrains.annotations.NotNull;
 
-public abstract class BaseBlock extends Block {
+public abstract class BaseDrawerBlock extends Block {
     public static final Property<Direction> HORIZONTAL_FACING = BlockStateProperties.HORIZONTAL_FACING;
 
-    public BaseBlock(Properties properties) {
+    public BaseDrawerBlock(Properties properties) {
         super(properties);
 
         // ensure default state has a facing

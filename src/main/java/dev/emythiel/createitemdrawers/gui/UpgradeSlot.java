@@ -1,6 +1,6 @@
 package dev.emythiel.createitemdrawers.gui;
 
-import dev.emythiel.createitemdrawers.block.entity.DrawerBlockEntity;
+import dev.emythiel.createitemdrawers.block.entity.DrawerStorageBlockEntity;
 import dev.emythiel.createitemdrawers.item.CapacityUpgradeItem;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Player;
@@ -10,9 +10,9 @@ import org.jetbrains.annotations.NotNull;
 
 public class UpgradeSlot extends Slot {
 
-    private final DrawerBlockEntity be;
+    private final DrawerStorageBlockEntity be;
 
-    public UpgradeSlot(DrawerBlockEntity be, int x, int y) {
+    public UpgradeSlot(DrawerStorageBlockEntity be, int x, int y) {
         super(new SimpleContainer(1), 0, x, y);
         this.be = be;
     }

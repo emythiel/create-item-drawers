@@ -3,7 +3,7 @@
   "criteria": {
     "has_the_recipe": {
       "conditions": {
-        "recipe": "create_item_drawers:quad_drawer"
+        "recipe": "create_item_drawers:item_drawer_quad"
       },
       "trigger": "minecraft:recipe_unlocked"
     },
@@ -26,7 +26,7 @@
   ],
   "rewards": {
     "recipes": [
-      "create_item_drawers:quad_drawer"
+      "create_item_drawers:item_drawer_quad"
     ]
   }
 }

@@ -23,7 +23,7 @@ public class ModTabs {
     public static final DeferredHolder<CreativeModeTab, CreativeModeTab> CREATIVE_TAB =
         REGISTER.register("creative_mode_tab", () -> CreativeModeTab.builder()
             .title(CreateItemDrawerLang.translate("creative_tab").component())
-            .icon(ModBlocks.DOUBLE_DRAWER::asStack)
+            .icon(ModBlocks.DRAWER_DOUBLE::asStack)
             .withTabsBefore(AllCreativeModeTabs.PALETTES_CREATIVE_TAB.getId())
             .displayItems(new RegistrateDisplayItemGenerator())
             .build());

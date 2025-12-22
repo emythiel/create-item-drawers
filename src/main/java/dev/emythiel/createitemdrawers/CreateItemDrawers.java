@@ -2,7 +2,7 @@ package dev.emythiel.createitemdrawers;
 
 import com.simibubi.create.foundation.data.CreateRegistrate;
 import com.simibubi.create.foundation.item.ItemDescription;
-import dev.emythiel.createitemdrawers.block.entity.DrawerBlockEntity;
+import dev.emythiel.createitemdrawers.block.entity.DrawerStorageBlockEntity;
 import dev.emythiel.createitemdrawers.config.ClientConfig;
 import dev.emythiel.createitemdrawers.config.ServerConfig;
 import dev.emythiel.createitemdrawers.ponder.CreateItemDrawersPonderPlugin;
@@ -80,7 +80,7 @@ public class CreateItemDrawers {
     }
 
     private void registerCapabilities(RegisterCapabilitiesEvent event) {
-        DrawerBlockEntity.registerCapabilities(event);
+        DrawerStorageBlockEntity.registerCapabilities(event, ModBlockEntities.DRAWER_BLOCK_ENTITY.get());
     }
 
     // You can use SubscribeEvent and let the Event Bus discover methods to call

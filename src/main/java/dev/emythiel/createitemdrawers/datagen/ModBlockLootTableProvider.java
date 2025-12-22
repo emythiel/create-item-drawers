@@ -23,9 +23,9 @@ public class ModBlockLootTableProvider extends BlockLootSubProvider {
 
     @Override
     protected void generate() {
-        dropSelf(ModBlocks.SINGLE_DRAWER.get());
-        dropSelf(ModBlocks.DOUBLE_DRAWER.get());
-        dropSelf(ModBlocks.QUAD_DRAWER.get());
+        dropSelf(ModBlocks.DRAWER_SINGLE.get());
+        dropSelf(ModBlocks.DRAWER_DOUBLE.get());
+        dropSelf(ModBlocks.DRAWER_QUAD.get());
     }
 
     @NotNull

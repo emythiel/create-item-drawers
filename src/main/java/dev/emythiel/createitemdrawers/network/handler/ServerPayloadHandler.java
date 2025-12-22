@@ -1,12 +1,10 @@
 package dev.emythiel.createitemdrawers.network.handler;
 
-import dev.emythiel.createitemdrawers.block.entity.DrawerBlockEntity;
+import dev.emythiel.createitemdrawers.block.entity.DrawerStorageBlockEntity;
 import dev.emythiel.createitemdrawers.network.RenderPacket;
 import dev.emythiel.createitemdrawers.network.SlotTogglePacket;
 import net.minecraft.server.level.ServerPlayer;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
-
-import java.util.Objects;
 
 public class ServerPayloadHandler {
 
@@ -23,7 +21,7 @@ public class ServerPayloadHandler {
             var level = player.level();
             var be = level.getBlockEntity(packet.pos());
 
-            if (be instanceof DrawerBlockEntity drawer) {
+            if (be instanceof DrawerStorageBlockEntity drawer) {
                 drawer.setRenderItems(packet.renderMode());
                 drawer.setRenderCounts(packet.renderMode());
                 drawer.setRenderAdditional(packet.renderMode());
@@ -37,7 +35,7 @@ public class ServerPayloadHandler {
 
             var level = player.level();
             var be = level.getBlockEntity(packet.pos());
-            if (be instanceof DrawerBlockEntity drawer) {
+            if (be instanceof DrawerStorageBlockEntity drawer) {
                 var slot = drawer.getStorage().getSlot(packet.slot());
 
                 switch (packet.mode()) {

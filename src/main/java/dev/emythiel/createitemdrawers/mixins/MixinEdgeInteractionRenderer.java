@@ -5,9 +5,9 @@ import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour
 import com.simibubi.create.foundation.blockEntity.behaviour.edgeInteraction.EdgeInteractionBehaviour;
 import com.simibubi.create.foundation.blockEntity.behaviour.edgeInteraction.EdgeInteractionHandler;
 import com.simibubi.create.foundation.blockEntity.behaviour.edgeInteraction.EdgeInteractionRenderer;
-import dev.emythiel.createitemdrawers.block.DrawerBlock;
+import dev.emythiel.createitemdrawers.block.base.BaseDrawerBlock;
 import dev.emythiel.createitemdrawers.util.CreateItemDrawerLang;
-import dev.emythiel.createitemdrawers.util.connection.DrawerHelper;
+import dev.emythiel.createitemdrawers.util.connection.ConnectionHelper;
 import net.createmod.catnip.math.VecHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
@@ -44,7 +44,7 @@ public class MixinEdgeInteractionRenderer {
 
         BlockPos pos = result.getBlockPos();
         BlockState state = mc.level.getBlockState(pos);
-        if (!(state.getBlock() instanceof DrawerBlock)) return;
+        if (!(state.getBlock() instanceof BaseDrawerBlock)) return;
 
         EdgeInteractionBehaviour behaviour = BlockEntityBehaviour.get(mc.level, pos, EdgeInteractionBehaviour.TYPE);
         if (behaviour == null) return;
@@ -54,7 +54,7 @@ public class MixinEdgeInteractionRenderer {
             return;
 
         Direction closestEdge = create_item_drawers$findClosestEdge(pos, result.getLocation(), connectiveSides);
-        boolean connected = DrawerHelper.areDrawersConnected(mc.level, pos, pos.relative(closestEdge));
+        boolean connected = ConnectionHelper.areDrawersConnected(mc.level, pos, pos.relative(closestEdge));
 
         List<MutableComponent> tip = new ArrayList<>();
         tip.add(CreateItemDrawerLang.translate("interaction.drawer_connected").component());

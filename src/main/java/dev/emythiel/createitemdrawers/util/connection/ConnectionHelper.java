@@ -1,22 +1,22 @@
 package dev.emythiel.createitemdrawers.util.connection;
 
-import dev.emythiel.createitemdrawers.block.entity.DrawerBlockEntity;
+import dev.emythiel.createitemdrawers.block.base.BaseDrawerBlockEntity;
 import dev.emythiel.createitemdrawers.util.connection.ConnectedGroupHandler.ConnectedGroup;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
-public class DrawerHelper {
+public class ConnectionHelper {
 
-    public static DrawerBlockEntity getDrawer(BlockAndTintGetter reader, BlockPos pos) {
+    public static BaseDrawerBlockEntity getDrawer(BlockAndTintGetter reader, BlockPos pos) {
         BlockEntity be = reader.getBlockEntity(pos);
-        if (!(be instanceof DrawerBlockEntity))
+        if (!(be instanceof BaseDrawerBlockEntity))
             return null;
-        return (DrawerBlockEntity) be;
+        return (BaseDrawerBlockEntity) be;
     }
 
     public static ConnectedGroup getInput(BlockAndTintGetter reader, BlockPos pos) {
-        DrawerBlockEntity drawer = getDrawer(reader, pos);
+        BaseDrawerBlockEntity drawer = getDrawer(reader, pos);
         return drawer == null ? null : drawer.group;
     }
 

@@ -17,9 +17,9 @@ public class ModBlockStateProvider extends RegistrateBlockstateProvider {
 
     @Override
     protected void registerStatesAndModels() {
-        horizontalBlockWithExistingModel(ModBlocks.SINGLE_DRAWER, "single_drawer");
-        horizontalBlockWithExistingModel(ModBlocks.DOUBLE_DRAWER, "double_drawer");
-        horizontalBlockWithExistingModel(ModBlocks.QUAD_DRAWER, "quad_drawer");
+        horizontalBlockWithExistingModel(ModBlocks.DRAWER_SINGLE, "item_drawer_single");
+        horizontalBlockWithExistingModel(ModBlocks.DRAWER_DOUBLE, "item_drawer_double");
+        horizontalBlockWithExistingModel(ModBlocks.DRAWER_QUAD, "item_drawer_quad");
     }
 
     private void horizontalBlockWithExistingModel(BlockEntry<?> entry, String modelName) {

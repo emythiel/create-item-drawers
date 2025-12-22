@@ -2,7 +2,7 @@ package dev.emythiel.createitemdrawers.client.renderer;
 
 import com.simibubi.create.AllItems;
 import com.simibubi.create.CreateClient;
-import dev.emythiel.createitemdrawers.block.entity.DrawerBlockEntity;
+import dev.emythiel.createitemdrawers.block.entity.DrawerStorageBlockEntity;
 import dev.emythiel.createitemdrawers.util.CreateItemDrawerLang;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
@@ -17,7 +17,7 @@ import net.minecraft.world.phys.HitResult;
 import java.util.ArrayList;
 import java.util.List;
 
-import static dev.emythiel.createitemdrawers.block.base.BaseBlock.HORIZONTAL_FACING;
+import static dev.emythiel.createitemdrawers.block.base.BaseDrawerBlock.HORIZONTAL_FACING;
 
 public class DrawerTooltip {
 
@@ -37,7 +37,7 @@ public class DrawerTooltip {
 
         BlockPos pos = result.getBlockPos();
         BlockEntity be = level.getBlockEntity(pos);
-        if (!(be instanceof DrawerBlockEntity drawer)) return;
+        if (!(be instanceof DrawerStorageBlockEntity drawer)) return;
 
         Direction front = drawer.getBlockState().getValue(HORIZONTAL_FACING);
         if (result.getDirection() != front) return;

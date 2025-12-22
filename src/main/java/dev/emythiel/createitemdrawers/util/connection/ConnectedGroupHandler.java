@@ -1,7 +1,8 @@
 package dev.emythiel.createitemdrawers.util.connection;
 
-import dev.emythiel.createitemdrawers.block.DrawerBlock;
-import dev.emythiel.createitemdrawers.block.entity.DrawerBlockEntity;
+import dev.emythiel.createitemdrawers.block.DrawerStorageBlock;
+import dev.emythiel.createitemdrawers.block.base.BaseDrawerBlock;
+import dev.emythiel.createitemdrawers.block.base.BaseDrawerBlockEntity;
 import net.createmod.catnip.data.Iterate;
 import net.createmod.catnip.nbt.NBTHelper;
 import net.minecraft.core.BlockPos;
@@ -20,7 +21,7 @@ import java.util.*;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
-import static dev.emythiel.createitemdrawers.block.base.BaseBlock.HORIZONTAL_FACING;
+import static dev.emythiel.createitemdrawers.block.base.BaseDrawerBlock.HORIZONTAL_FACING;
 
 public class ConnectedGroupHandler {
 
@@ -34,7 +35,7 @@ public class ConnectedGroupHandler {
         if (face == refDirection)
             return false;
         BlockState neighbour = world.getBlockState(pos.relative(direction));
-        if (!(neighbour.getBlock() instanceof DrawerBlock))
+        if (!(neighbour.getBlock() instanceof BaseDrawerBlock))
             return false;
         if (refDirection != neighbour.getValue(HORIZONTAL_FACING))
             return false;
@@ -42,19 +43,19 @@ public class ConnectedGroupHandler {
     }
 
     public static void toggleConnection(Level world, BlockPos pos, BlockPos pos2) {
-        DrawerBlockEntity drawer1 = DrawerHelper.getDrawer(world, pos);
-        DrawerBlockEntity drawer2 = DrawerHelper.getDrawer(world, pos2);
+        BaseDrawerBlockEntity drawerBE1 = ConnectionHelper.getDrawer(world, pos);
+        BaseDrawerBlockEntity drawerBE2 = ConnectionHelper.getDrawer(world, pos2);
 
-        if (drawer1 == null || drawer2 == null)
+        if (drawerBE1 == null || drawerBE2 == null)
             return;
 
-        BlockPos controllerPos1 = drawer1.getBlockPos()
-            .offset(drawer1.group.offsets.get(0));
-        BlockPos controllerPos2 = drawer2.getBlockPos()
-            .offset(drawer2.group.offsets.get(0));
+        BlockPos controllerPos1 = drawerBE1.getBlockPos()
+            .offset(drawerBE1.group.offsets.get(0));
+        BlockPos controllerPos2 = drawerBE2.getBlockPos()
+            .offset(drawerBE2.group.offsets.get(0));
 
         if (controllerPos1.equals(controllerPos2)) {
-            DrawerBlockEntity controller = DrawerHelper.getDrawer(world, controllerPos1);
+            BaseDrawerBlockEntity controller = ConnectionHelper.getDrawer(world, controllerPos1);
 
             Set<BlockPos> positions = controller.group.offsets.stream()
                 .map(controllerPos1::offset)
@@ -76,65 +77,65 @@ public class ConnectedGroupHandler {
                 }
             }
 
-            initAndAddAll(world, drawer1, positions);
-            initAndAddAll(world, drawer2, splitGroup);
+            initAndAddAll(world, drawerBE1, positions);
+            initAndAddAll(world, drawerBE2, splitGroup);
 
-            drawer1.setChanged();
-            drawer1.connectivityChanged();
-            drawer2.setChanged();
-            drawer2.connectivityChanged();
+            drawerBE1.setChanged();
+            drawerBE1.connectivityChanged();
+            drawerBE2.setChanged();
+            drawerBE2.connectivityChanged();
             return;
         }
 
-        if (!drawer1.group.isController)
-            drawer1 = DrawerHelper.getDrawer(world, controllerPos1);
-        if (!drawer2.group.isController)
-            drawer2 = DrawerHelper.getDrawer(world, controllerPos2);
-        if (drawer1 == null || drawer2 == null)
+        if (!drawerBE1.group.isController)
+            drawerBE1 = ConnectionHelper.getDrawer(world, controllerPos1);
+        if (!drawerBE2.group.isController)
+            drawerBE2 = ConnectionHelper.getDrawer(world, controllerPos2);
+        if (drawerBE1 == null || drawerBE2 == null)
             return;
 
-        connectControllers(world, drawer1, drawer2);
+        connectControllers(world, drawerBE1, drawerBE2);
 
-        world.setBlock(drawer1.getBlockPos(), drawer1.getBlockState(), DrawerBlock.UPDATE_ALL);
+        world.setBlock(drawerBE1.getBlockPos(), drawerBE1.getBlockState(), DrawerStorageBlock.UPDATE_ALL);
 
-        drawer1.setChanged();
-        drawer1.connectivityChanged();
-        drawer2.setChanged();
-        drawer2.connectivityChanged();
+        drawerBE1.setChanged();
+        drawerBE1.connectivityChanged();
+        drawerBE2.setChanged();
+        drawerBE2.connectivityChanged();
     }
 
-    public static void initAndAddAll(Level world, DrawerBlockEntity drawer, Collection<BlockPos> positions) {
-        drawer.group = new ConnectedGroup();
+    public static void initAndAddAll(Level world, BaseDrawerBlockEntity drawerBE, Collection<BlockPos> positions) {
+        drawerBE.group = new ConnectedGroup();
         positions.forEach(splitPos -> {
             modifyAndUpdate(world, splitPos, group -> {
-                group.attachTo(drawer.getBlockPos(), splitPos);
-                drawer.group.offsets.add(splitPos.subtract(drawer.getBlockPos()));
+                group.attachTo(drawerBE.getBlockPos(), splitPos);
+                drawerBE.group.offsets.add(splitPos.subtract(drawerBE.getBlockPos()));
             });
         });
     }
 
-    public static void connectControllers(Level world, DrawerBlockEntity drawer1, DrawerBlockEntity drawer2) {
+    public static void connectControllers(Level world, BaseDrawerBlockEntity drawerBE1, BaseDrawerBlockEntity drawerBE2) {
 
-        drawer1.group.offsets.forEach(offset -> {
-            BlockPos connectedPos = drawer1.getBlockPos()
+        drawerBE1.group.offsets.forEach(offset -> {
+            BlockPos connectedPos = drawerBE1.getBlockPos()
                 .offset(offset);
             modifyAndUpdate(world, connectedPos, group -> {
             });
         });
 
-        drawer2.group.offsets.forEach(offset -> {
+        drawerBE2.group.offsets.forEach(offset -> {
             if (offset.equals(BlockPos.ZERO))
                 return;
-            BlockPos connectedPos = drawer2.getBlockPos()
+            BlockPos connectedPos = drawerBE2.getBlockPos()
                 .offset(offset);
             modifyAndUpdate(world, connectedPos, group -> {
-                group.attachTo(drawer1.getBlockPos(), connectedPos);
-                drawer1.group.offsets.add(BlockPos.ZERO.subtract(group.offsets.get(0)));
+                group.attachTo(drawerBE1.getBlockPos(), connectedPos);
+                drawerBE1.group.offsets.add(BlockPos.ZERO.subtract(group.offsets.get(0)));
             });
         });
 
-        drawer2.group.attachTo(drawer1.getBlockPos(), drawer2.getBlockPos());
-        drawer1.group.offsets.add(BlockPos.ZERO.subtract(drawer2.group.offsets.get(0)));
+        drawerBE2.group.attachTo(drawerBE1.getBlockPos(), drawerBE2.getBlockPos());
+        drawerBE1.group.offsets.add(BlockPos.ZERO.subtract(drawerBE2.group.offsets.get(0)));
     }
 
     public static void connectionGroupCleanup(BlockState state, Level level, BlockPos pos) {
@@ -144,8 +145,8 @@ public class ConnectedGroupHandler {
                 continue;
 
             BlockPos otherPos = pos.relative(direction);
-            ConnectedGroup thisGroup = DrawerHelper.getInput(level, pos);
-            ConnectedGroup otherGroup = DrawerHelper.getInput(level, otherPos);
+            ConnectedGroup thisGroup = ConnectionHelper.getInput(level, pos);
+            ConnectedGroup otherGroup = ConnectionHelper.getInput(level, otherPos);
 
             if (thisGroup == null || otherGroup == null)
                 continue;
@@ -159,12 +160,12 @@ public class ConnectedGroupHandler {
 
     private static void modifyAndUpdate(Level world, BlockPos pos, Consumer<ConnectedGroup> callback) {
         BlockEntity be = world.getBlockEntity(pos);
-        if (!(be instanceof DrawerBlockEntity drawer))
+        if (!(be instanceof BaseDrawerBlockEntity drawerBE))
             return;
 
-        callback.accept(drawer.group);
-        drawer.setChanged();
-        drawer.connectivityChanged();
+        callback.accept(drawerBE.group);
+        drawerBE.setChanged();
+        drawerBE.connectivityChanged();
     }
 
     public static class ConnectedGroup {
@@ -211,11 +212,11 @@ public class ConnectedGroupHandler {
         }
     }
 
-    public static IItemHandler buildCombinedHandler(DrawerBlockEntity anyMember) {
+    public static IItemHandler buildCombinedHandler(BaseDrawerBlockEntity anyMember) {
         if (anyMember == null || anyMember.getLevel() == null)
             return null;
 
-        DrawerBlockEntity controller = getController(anyMember);
+        BaseDrawerBlockEntity controller = getController(anyMember);
         if (controller == null)
             return null;
 
@@ -229,9 +230,9 @@ public class ConnectedGroupHandler {
 
         for (BlockPos offset : group.offsets) {
             BlockPos abs = controller.getBlockPos().offset(offset);
-            DrawerBlockEntity be = DrawerHelper.getDrawer(controller.getLevel(), abs);
-            if (be != null) {
-                handlers.add(be.getLocalHandler());
+            BaseDrawerBlockEntity be = ConnectionHelper.getDrawer(controller.getLevel(), abs);
+            if (be instanceof BaseDrawerBlockEntity drawerBE) {
+                handlers.add((IItemHandlerModifiable) drawerBE.getLocalHandler());
             }
         }
 
@@ -239,7 +240,7 @@ public class ConnectedGroupHandler {
     }
 
 
-    public static DrawerBlockEntity getController(DrawerBlockEntity be) {
+    public static BaseDrawerBlockEntity getController(BaseDrawerBlockEntity be) {
         if (be == null || be.getLevel() == null)
             return null;
 
@@ -248,6 +249,6 @@ public class ConnectedGroupHandler {
             return be;
 
         BlockPos controllerPos = group.getController(be.getBlockPos());
-        return DrawerHelper.getDrawer(be.getLevel(), controllerPos);
+        return ConnectionHelper.getDrawer(be.getLevel(), controllerPos);
     }
 }

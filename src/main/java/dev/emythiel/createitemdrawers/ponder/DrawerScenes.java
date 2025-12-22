@@ -2,7 +2,7 @@ package dev.emythiel.createitemdrawers.ponder;
 
 import com.simibubi.create.AllItems;
 import com.simibubi.create.foundation.ponder.CreateSceneBuilder;
-import dev.emythiel.createitemdrawers.block.entity.DrawerBlockEntity;
+import dev.emythiel.createitemdrawers.block.entity.DrawerStorageBlockEntity;
 import net.createmod.catnip.math.Pointing;
 import net.createmod.ponder.api.PonderPalette;
 import net.createmod.ponder.api.scene.SceneBuilder;
@@ -65,7 +65,7 @@ public class DrawerScenes {
         scene.overlay().showControls(new Vec3(2.5,1.60,2), Pointing.UP, 25)
             .rightClick();
         scene.idle(5);
-        scene.world().modifyBlockEntity(doubleDrawer, DrawerBlockEntity.class, (be) -> {
+        scene.world().modifyBlockEntity(doubleDrawer, DrawerStorageBlockEntity.class, (be) -> {
             be.getLocalHandler().insertItem(0, new ItemStack(Items.OAK_PLANKS).copyWithCount(64), false);
 
         });
@@ -73,7 +73,7 @@ public class DrawerScenes {
         scene.overlay().showControls(new Vec3(2.5,1.10,2), Pointing.UP, 25)
             .rightClick();
         scene.idle(5);
-        scene.world().modifyBlockEntity(doubleDrawer, DrawerBlockEntity.class, (be) -> {
+        scene.world().modifyBlockEntity(doubleDrawer, DrawerStorageBlockEntity.class, (be) -> {
             be.getLocalHandler().insertItem(1, new ItemStack(Items.IRON_INGOT).copyWithCount(36), false);
         });
         scene.idle(40);
@@ -87,7 +87,7 @@ public class DrawerScenes {
             .whileSneaking();
         scene.idle(5);
         BlockPos singleDrawer = util.grid().at(3,1,2);
-        scene.world().modifyBlockEntity(singleDrawer, DrawerBlockEntity.class, (be) -> {
+        scene.world().modifyBlockEntity(singleDrawer, DrawerStorageBlockEntity.class, (be) -> {
             be.getLocalHandler().insertItem(0, new ItemStack(Items.GRASS_BLOCK).copyWithCount(420), false);
         });
         scene.idle(60);
@@ -101,7 +101,7 @@ public class DrawerScenes {
         scene.overlay().showControls(new Vec3(3.5, 1.10,2), Pointing.UP, 25)
             .rightClick();
         scene.idle(5);
-        scene.world().modifyBlockEntity(singleDrawer, DrawerBlockEntity.class, (be) -> {
+        scene.world().modifyBlockEntity(singleDrawer, DrawerStorageBlockEntity.class, (be) -> {
             be.getStorage().getSlot(0).setCount(419);
         });
         scene.idle(60);
@@ -114,7 +114,7 @@ public class DrawerScenes {
             .rightClick()
             .whileSneaking();
         scene.idle(5);
-        scene.world().modifyBlockEntity(singleDrawer, DrawerBlockEntity.class, (be) -> {
+        scene.world().modifyBlockEntity(singleDrawer, DrawerStorageBlockEntity.class, (be) -> {
             be.getStorage().getSlot(0).setCount(355);
         });
         scene.idle(60);
@@ -222,7 +222,7 @@ public class DrawerScenes {
         scene.idle(22);
         scene.world().flapFunnel(funnelIn, false);
         scene.world().removeItemsFromBelt(belt1Stop);
-        scene.world().modifyBlockEntity(drawerMidRightS, DrawerBlockEntity.class, (be) -> {
+        scene.world().modifyBlockEntity(drawerMidRightS, DrawerStorageBlockEntity.class, (be) -> {
             be.getLocalHandler().insertItem(0, new ItemStack(Items.OAK_PLANKS).copyWithCount(60), false);
         });
         scene.overlay().showOutlineWithText(util.select().fromTo(2,1,2,3,3,2), 70)
@@ -234,28 +234,28 @@ public class DrawerScenes {
         scene.idle(22);
         scene.world().flapFunnel(funnelIn, false);
         scene.world().removeItemsFromBelt(belt1Stop);
-        scene.world().modifyBlockEntity(drawerMidLeftD, DrawerBlockEntity.class, (be) -> {
+        scene.world().modifyBlockEntity(drawerMidLeftD, DrawerStorageBlockEntity.class, (be) -> {
             be.getLocalHandler().insertItem(0, new ItemStack(Items.IRON_INGOT).copyWithCount(46), false);
         });
         scene.world().createItemOnBelt(belt1Start, Direction.WEST, new ItemStack(Items.GOLD_INGOT).copyWithCount(31));
         scene.idle(22);
         scene.world().flapFunnel(funnelIn, false);
         scene.world().removeItemsFromBelt(belt1Stop);
-        scene.world().modifyBlockEntity(drawerMidLeftD, DrawerBlockEntity.class, (be) -> {
+        scene.world().modifyBlockEntity(drawerMidLeftD, DrawerStorageBlockEntity.class, (be) -> {
             be.getLocalHandler().insertItem(1, new ItemStack(Items.GOLD_INGOT).copyWithCount(31), false);
         });
         scene.world().createItemOnBelt(belt1Start, Direction.WEST, new ItemStack(Items.OAK_PLANKS).copyWithCount(44));
         scene.idle(22);
         scene.world().flapFunnel(funnelIn, false);
         scene.world().removeItemsFromBelt(belt1Stop);
-        scene.world().modifyBlockEntity(drawerMidRightS, DrawerBlockEntity.class, (be) -> {
+        scene.world().modifyBlockEntity(drawerMidRightS, DrawerStorageBlockEntity.class, (be) -> {
             be.getLocalHandler().insertItem(0, new ItemStack(Items.OAK_PLANKS).copyWithCount(44), false);
         });
         scene.world().createItemOnBelt(belt1Start, Direction.WEST, new ItemStack(Items.DIAMOND).copyWithCount(12));
         scene.idle(22);
         scene.world().flapFunnel(funnelIn, false);
         scene.world().removeItemsFromBelt(belt1Stop);
-        scene.world().modifyBlockEntity(drawerBotRightS, DrawerBlockEntity.class, (be) -> {
+        scene.world().modifyBlockEntity(drawerBotRightS, DrawerStorageBlockEntity.class, (be) -> {
             be.getLocalHandler().insertItem(0, new ItemStack(Items.DIAMOND).copyWithCount(12), false);
         });
         scene.idle(10);
@@ -273,44 +273,44 @@ public class DrawerScenes {
         BlockPos belt2Start = util.grid().at(4,1,2);
         BlockPos funnelOut = util.grid().at(4,2,2);
 
-        scene.world().modifyBlockEntity(drawerMidRightS, DrawerBlockEntity.class, (be) -> {
+        scene.world().modifyBlockEntity(drawerMidRightS, DrawerStorageBlockEntity.class, (be) -> {
             be.getStorage().getSlot(0).setCount(103);
         });
         scene.world().flapFunnel(funnelOut, true);
         scene.world().createItemOnBelt(belt2Start, Direction.WEST, new ItemStack(Items.OAK_PLANKS));
         scene.idle(22);
-        scene.world().modifyBlockEntity(drawerMidRightS, DrawerBlockEntity.class, (be) -> {
+        scene.world().modifyBlockEntity(drawerMidRightS, DrawerStorageBlockEntity.class, (be) -> {
             be.getStorage().getSlot(0).setCount(102);
         });
         scene.world().flapFunnel(funnelOut, true);
         scene.world().createItemOnBelt(belt2Start, Direction.WEST, new ItemStack(Items.OAK_PLANKS));
         scene.idle(22);
-        scene.world().modifyBlockEntity(drawerMidRightS, DrawerBlockEntity.class, (be) -> {
+        scene.world().modifyBlockEntity(drawerMidRightS, DrawerStorageBlockEntity.class, (be) -> {
             be.getStorage().getSlot(0).setCount(101);
         });
         scene.markAsFinished();
         scene.world().flapFunnel(funnelOut, true);
         scene.world().createItemOnBelt(belt2Start, Direction.WEST, new ItemStack(Items.OAK_PLANKS));
         scene.idle(22);
-        scene.world().modifyBlockEntity(drawerMidRightS, DrawerBlockEntity.class, (be) -> {
+        scene.world().modifyBlockEntity(drawerMidRightS, DrawerStorageBlockEntity.class, (be) -> {
             be.getStorage().getSlot(0).setCount(100);
         });
         scene.world().flapFunnel(funnelOut, true);
         scene.world().createItemOnBelt(belt2Start, Direction.WEST, new ItemStack(Items.OAK_PLANKS));
         scene.idle(22);
-        scene.world().modifyBlockEntity(drawerMidRightS, DrawerBlockEntity.class, (be) -> {
+        scene.world().modifyBlockEntity(drawerMidRightS, DrawerStorageBlockEntity.class, (be) -> {
             be.getStorage().getSlot(0).setCount(99);
         });
         scene.world().flapFunnel(funnelOut, true);
         scene.world().createItemOnBelt(belt2Start, Direction.WEST, new ItemStack(Items.OAK_PLANKS));
         scene.idle(22);
-        scene.world().modifyBlockEntity(drawerMidRightS, DrawerBlockEntity.class, (be) -> {
+        scene.world().modifyBlockEntity(drawerMidRightS, DrawerStorageBlockEntity.class, (be) -> {
             be.getStorage().getSlot(0).setCount(98);
         });
         scene.world().flapFunnel(funnelOut, true);
         scene.world().createItemOnBelt(belt2Start, Direction.WEST, new ItemStack(Items.OAK_PLANKS));
         scene.idle(22);
-        scene.world().modifyBlockEntity(drawerMidRightS, DrawerBlockEntity.class, (be) -> {
+        scene.world().modifyBlockEntity(drawerMidRightS, DrawerStorageBlockEntity.class, (be) -> {
             be.getStorage().getSlot(0).setCount(97);
         });
         scene.world().flapFunnel(funnelOut, true);

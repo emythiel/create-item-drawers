@@ -3,7 +3,6 @@ package dev.emythiel.createitemdrawers.block;
 import dev.emythiel.createitemdrawers.util.CreateItemDrawerLang;
 import net.createmod.catnip.lang.FontHelper;
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
@@ -20,9 +19,9 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 import java.util.Objects;
 
-public class DrawerBlockItem extends BlockItem {
+public class DrawerStorageBlockItem extends BlockItem {
 
-    public DrawerBlockItem(Block block, Properties properties) {
+    public DrawerStorageBlockItem(Block block, Properties properties) {
         super(block, properties);
     }
 

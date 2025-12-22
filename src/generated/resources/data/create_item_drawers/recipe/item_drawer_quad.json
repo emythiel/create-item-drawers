@@ -10,12 +10,12 @@
     }
   },
   "pattern": [
-    "H",
-    "V",
-    "H"
+    "H H",
+    " V ",
+    "H H"
   ],
   "result": {
     "count": 1,
-    "id": "create_item_drawers:double_drawer"
+    "id": "create_item_drawers:item_drawer_quad"
   }
 }

@@ -1,4 +1,4 @@
-// 1.21.1	2025-11-29T19:40:42.7797892	Loot Tables
-98feca8b43207f21fad9920f6069006f4f51f3c7 data/create_item_drawers/loot_table/blocks/double_drawer.json
-6681de1cb9e931d7d78f09acfd35781d7f2cf044 data/create_item_drawers/loot_table/blocks/quad_drawer.json
-7b737acf261041526341edcf0895cf7c37f4710f data/create_item_drawers/loot_table/blocks/single_drawer.json
+// 1.21.1	2025-12-22T22:40:59.2440135	Loot Tables
+8b6c82a5afbbd38bd45208a30f1026f45d0721e3 data/create_item_drawers/loot_table/blocks/item_drawer_double.json
+29aefde0ce15fd61e22bb4179bca21254ffb89ca data/create_item_drawers/loot_table/blocks/item_drawer_quad.json
+22451df287610c6f9c9317b4d3298f940d09e68d data/create_item_drawers/loot_table/blocks/item_drawer_single.json

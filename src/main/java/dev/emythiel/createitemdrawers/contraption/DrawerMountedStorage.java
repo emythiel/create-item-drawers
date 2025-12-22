@@ -7,7 +7,7 @@ import com.simibubi.create.content.contraptions.Contraption;
 import com.simibubi.create.content.contraptions.behaviour.MovementContext;
 import com.simibubi.create.foundation.codec.CreateCodecs;
 import dev.emythiel.createitemdrawers.CreateItemDrawers;
-import dev.emythiel.createitemdrawers.block.entity.DrawerBlockEntity;
+import dev.emythiel.createitemdrawers.block.entity.DrawerStorageBlockEntity;
 import dev.emythiel.createitemdrawers.network.SyncMountedStoragePacket;
 import dev.emythiel.createitemdrawers.registry.ModMountedStorageTypes;
 import dev.emythiel.createitemdrawers.storage.DrawerItemHandler;
@@ -71,7 +71,7 @@ public class DrawerMountedStorage extends WrapperMountedItemStorage<DrawerItemHa
         return false;
     }
 
-    public static DrawerMountedStorage fromStorage(DrawerBlockEntity be) {
+    public static DrawerMountedStorage fromStorage(DrawerStorageBlockEntity be) {
         DrawerStorage drawerStorage = be.getStorage();
         DrawerItemHandler handler = new DrawerItemHandler(drawerStorage);
 
@@ -99,7 +99,7 @@ public class DrawerMountedStorage extends WrapperMountedItemStorage<DrawerItemHa
 
     @Override
     public void unmount(Level level, BlockState state, BlockPos pos, @Nullable BlockEntity be) {
-        if (be instanceof DrawerBlockEntity drawer) {
+        if (be instanceof DrawerStorageBlockEntity drawer) {
             drawer.setUpgrade(upgradeItem);
             drawer.setRenderItems(renderItem);
             drawer.setRenderCounts(renderCount);

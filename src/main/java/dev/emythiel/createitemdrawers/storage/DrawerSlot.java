@@ -7,16 +7,6 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 
-/**
- * DrawerSlot represents a single storage compartment inside a drawer.
- * Responsibilities:
- *   ✔ Track the stored item type (ItemStack)
- *   ✔ Track the total item count (can exceed 64)
- *   ✔ Handle per-slot filter rules
- *   ✔ Handle void-mode (destroy overflow items)
- *   ✔ Perform insertion and extraction logic
- *   ✔ Save/load its own data to NBT
- */
 public class DrawerSlot {
 
     private ItemStack storedItem = ItemStack.EMPTY;
@@ -26,15 +16,26 @@ public class DrawerSlot {
 
     public DrawerSlot() {}
 
-    /* Getters and Setters */
 
-    public ItemStack getStoredItem() { return storedItem; }
-    public void setStoredItem(ItemStack stack) { storedItem = stack; }
+    /* Getters & Setters */
 
-    public int getCount() { return count; }
-    public void setCount(int c) { count = c; }
+    public ItemStack getStoredItem() {
+        return storedItem;
+    }
+    public void setStoredItem(ItemStack stack) {
+        storedItem = stack;
+    }
 
-    public boolean isLockMode() { return lockMode; }
+    public int getCount() {
+        return count;
+    }
+    public void setCount(int c) {
+        count = c;
+    }
+
+    public boolean isLockMode() {
+        return lockMode;
+    }
     public void setLockMode(boolean v) {
         this.lockMode = v;
 
@@ -44,25 +45,20 @@ public class DrawerSlot {
         }
     }
 
-    public boolean isVoidMode() { return voidMode; }
-    public void setVoidMode(boolean v) { this.voidMode = v; }
+    public boolean isVoidMode() {
+        return voidMode;
+    }
+    public void setVoidMode(boolean v) {
+        this.voidMode = v;
+    }
 
 
     /* Item matching logic */
 
-    /**
-     * True if both stacks represent the same item + NBT (like damage, enchantments, etc.)
-     */
     public boolean matches(ItemStack stack) {
         return ItemStack.isSameItemSameComponents(storedItem, stack);
     }
 
-    /**
-     * Determines whether this slot *can accept* the given stack according to rules:
-     *   ✔ filter blocks items that do not match
-     *   ✔ empty slot can accept any item (unless filter blocks it)
-     *   ✔ non-empty slot must match stored item
-     */
     public boolean canAccept(ItemStack stack) {
         ResourceLocation id = BuiltInRegistries.ITEM.getKey(stack.getItem());
         if (ServerConfig.isBlacklisted(id) || stack.isEmpty())
@@ -80,16 +76,9 @@ public class DrawerSlot {
         return matches(stack);
     }
 
+
     /* Insertion logic */
 
-    /**
-     * Inserts items into this slot.
-     *
-     * @param stack     incoming items
-     * @param capacity  max number allowed in this slot (capacity is calculated elsewhere)
-     * @param simulate  if true, do NOT modify the slot
-     * @return          leftover stack (empty = all items inserted)
-     */
     public ItemStack insert(ItemStack stack, int capacity, boolean simulate) {
         if (!canAccept(stack))
             return stack;
@@ -119,13 +108,6 @@ public class DrawerSlot {
 
     /* Extraction logic */
 
-    /**
-     * Extract items from this slot.
-     *
-     * @param amount    how many items the player wants
-     * @param simulate  if true, do NOT change stored values
-     * @return          items withdrawn (can be more than 64!)
-     */
     public ItemStack extract(int amount, boolean simulate) {
         if (getStoredItem().isEmpty())
             return ItemStack.EMPTY;

@@ -6,12 +6,11 @@ import com.simibubi.create.content.contraptions.behaviour.MovementContext;
 import com.simibubi.create.content.contraptions.render.ContraptionMatrices;
 import com.simibubi.create.foundation.blockEntity.renderer.SafeBlockEntityRenderer;
 import com.simibubi.create.foundation.virtualWorld.VirtualRenderWorld;
-import dev.emythiel.createitemdrawers.block.DrawerBlock;
-import dev.emythiel.createitemdrawers.block.entity.DrawerBlockEntity;
+import dev.emythiel.createitemdrawers.block.DrawerStorageBlock;
+import dev.emythiel.createitemdrawers.block.entity.DrawerStorageBlockEntity;
 import dev.emythiel.createitemdrawers.config.ClientConfig;
 import dev.emythiel.createitemdrawers.storage.DrawerSlot;
 import dev.emythiel.createitemdrawers.util.RenderHelper;
-import net.createmod.catnip.gui.AbstractSimiScreen;
 import net.createmod.ponder.api.level.PonderLevel;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
@@ -31,13 +30,13 @@ import net.minecraft.world.level.LightLayer;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 
-import static dev.emythiel.createitemdrawers.block.base.BaseBlock.HORIZONTAL_FACING;
+import static dev.emythiel.createitemdrawers.block.base.BaseDrawerBlock.HORIZONTAL_FACING;
 
-public class DrawerRenderer extends SafeBlockEntityRenderer<DrawerBlockEntity> {
+public class DrawerRenderer extends SafeBlockEntityRenderer<DrawerStorageBlockEntity> {
     public DrawerRenderer(BlockEntityRendererProvider.Context ctx) {}
 
     @Override
-    protected void renderSafe(DrawerBlockEntity be, float partialTicks,
+    protected void renderSafe(DrawerStorageBlockEntity be, float partialTicks,
                               PoseStack ms, MultiBufferSource buffer, int packedLight, int overlay) {
         int itemDist = ClientConfig.ITEM_RENDER_DISTANCE.get();
         int countDist = ClientConfig.COUNT_RENDER_DISTANCE.get();
@@ -128,7 +127,7 @@ public class DrawerRenderer extends SafeBlockEntityRenderer<DrawerBlockEntity> {
 
     public static void renderFromContraptionContext(MovementContext context, VirtualRenderWorld renderWorld,
                                            ContraptionMatrices matrices, MultiBufferSource buffer) {
-        if (!(context.state.getBlock() instanceof DrawerBlock drawer)) return;
+        if (!(context.state.getBlock() instanceof DrawerStorageBlock drawer)) return;
 
         boolean shouldRenderItem = ClientConfig.ITEM_RENDER.get();
         boolean shouldRenderCount = ClientConfig.COUNT_RENDER.get();

@@ -1,6 +1,6 @@
 package dev.emythiel.createitemdrawers.util;
 
-import dev.emythiel.createitemdrawers.block.entity.DrawerBlockEntity;
+import dev.emythiel.createitemdrawers.block.entity.DrawerStorageBlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.HorizontalDirectionalBlock;
@@ -44,7 +44,7 @@ public class DrawerInteractionHelper {
         return new Vec3(0, shift, 0.031);
     }
 
-    public static int getHitSlot(DrawerBlockEntity be, Vec3 hitPos) {
+    public static int getHitSlot(DrawerStorageBlockEntity be, Vec3 hitPos) {
         Direction facing = be.getBlockState().getValue(HorizontalDirectionalBlock.FACING);
         BlockPos pos = be.getBlockPos();
 
@@ -66,7 +66,7 @@ public class DrawerInteractionHelper {
         };
     }
 
-    public static AABB getSlotAABB(DrawerBlockEntity be, int slot) {
+    public static AABB getSlotAABB(DrawerStorageBlockEntity be, int slot) {
         BlockPos pos = be.getBlockPos();
         int slots = be.getStorage().getSlotCount();
 

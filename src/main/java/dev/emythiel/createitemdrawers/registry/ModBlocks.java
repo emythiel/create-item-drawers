@@ -3,8 +3,8 @@ package dev.emythiel.createitemdrawers.registry;
 import com.simibubi.create.foundation.data.CreateRegistrate;
 import com.tterrag.registrate.util.entry.BlockEntry;
 import dev.emythiel.createitemdrawers.CreateItemDrawers;
-import dev.emythiel.createitemdrawers.block.DrawerBlock;
-import dev.emythiel.createitemdrawers.block.DrawerBlockItem;
+import dev.emythiel.createitemdrawers.block.DrawerStorageBlock;
+import dev.emythiel.createitemdrawers.block.DrawerStorageBlockItem;
 import dev.emythiel.createitemdrawers.contraption.DrawerMountedMovementBehaviour;
 import dev.emythiel.createitemdrawers.util.connection.DrawerCTBehaviour;
 import net.minecraft.world.level.block.SoundType;
@@ -21,8 +21,8 @@ public class ModBlocks {
         REGISTRATE.setCreativeTab(ModTabs.CREATIVE_TAB);
     }
 
-    public static final BlockEntry<DrawerBlock> SINGLE_DRAWER = REGISTRATE
-            .block("single_drawer", p -> new DrawerBlock(p, 1))
+    public static final BlockEntry<DrawerStorageBlock> DRAWER_SINGLE = REGISTRATE
+            .block("item_drawer_single", p -> new DrawerStorageBlock(p, 1))
             .properties(p -> p.mapColor(MapColor.TERRACOTTA_BLUE)
                 .strength(3f)
                 .requiresCorrectToolForDrops()
@@ -34,13 +34,13 @@ public class ModBlocks {
             .tag(ModTags.Blocks.DRAWERS)
             .transform(mountedItemStorage(ModMountedStorageTypes.MOUNTED_DRAWER))
             .onRegister(movementBehaviour(new DrawerMountedMovementBehaviour()))
-            .item(DrawerBlockItem::new)
+            .item(DrawerStorageBlockItem::new)
             .tag(ModTags.Items.DRAWERS)
             .build()
             .register();
 
-    public static final BlockEntry<DrawerBlock> DOUBLE_DRAWER = REGISTRATE
-            .block("double_drawer", p -> new DrawerBlock(p, 2))
+    public static final BlockEntry<DrawerStorageBlock> DRAWER_DOUBLE = REGISTRATE
+            .block("item_drawer_double", p -> new DrawerStorageBlock(p, 2))
             .properties(p -> p.mapColor(MapColor.TERRACOTTA_BLUE)
                 .strength(3f)
                 .requiresCorrectToolForDrops()
@@ -52,13 +52,13 @@ public class ModBlocks {
             .tag(ModTags.Blocks.DRAWERS)
             .transform(mountedItemStorage(ModMountedStorageTypes.MOUNTED_DRAWER))
             .onRegister(movementBehaviour(new DrawerMountedMovementBehaviour()))
-            .item(DrawerBlockItem::new)
+            .item(DrawerStorageBlockItem::new)
             .tag(ModTags.Items.DRAWERS)
             .build()
             .register();
 
-    public static final BlockEntry<DrawerBlock> QUAD_DRAWER = REGISTRATE
-            .block("quad_drawer", p -> new DrawerBlock(p, 4))
+    public static final BlockEntry<DrawerStorageBlock> DRAWER_QUAD = REGISTRATE
+            .block("item_drawer_quad", p -> new DrawerStorageBlock(p, 4))
             .properties(p -> p.mapColor(MapColor.TERRACOTTA_BLUE)
                 .strength(3f)
                 .requiresCorrectToolForDrops()
@@ -70,7 +70,7 @@ public class ModBlocks {
             .tag(ModTags.Blocks.DRAWERS)
             .transform(mountedItemStorage(ModMountedStorageTypes.MOUNTED_DRAWER))
             .onRegister(movementBehaviour(new DrawerMountedMovementBehaviour()))
-            .item(DrawerBlockItem::new)
+            .item(DrawerStorageBlockItem::new)
             .tag(ModTags.Items.DRAWERS)
             .build()
             .register();

@@ -18,20 +18,20 @@ public class ModPonder {
 
             helper.registerTag(CREATE_ITEM_DRAWERS)
                 .addToIndex()
-                .item(ModBlocks.DOUBLE_DRAWER.get(), true, false)
+                .item(ModBlocks.DRAWER_DOUBLE.get(), true, false)
                 .title("Create: Item Drawers")
                 .description("Items and components related to Create: Item Drawers")
                 .register();
 
             HELPER.addToTag(CREATE_ITEM_DRAWERS)
-                .add(ModBlocks.SINGLE_DRAWER)
-                .add(ModBlocks.DOUBLE_DRAWER)
-                .add(ModBlocks.QUAD_DRAWER);
+                .add(ModBlocks.DRAWER_SINGLE)
+                .add(ModBlocks.DRAWER_DOUBLE)
+                .add(ModBlocks.DRAWER_QUAD);
 
             HELPER.addToTag(AllCreatePonderTags.THRESHOLD_SWITCH_TARGETS)
-                .add(ModBlocks.SINGLE_DRAWER)
-                .add(ModBlocks.DOUBLE_DRAWER)
-                .add(ModBlocks.QUAD_DRAWER);
+                .add(ModBlocks.DRAWER_SINGLE)
+                .add(ModBlocks.DRAWER_DOUBLE)
+                .add(ModBlocks.DRAWER_QUAD);
         }
     }
 
@@ -40,9 +40,9 @@ public class ModPonder {
             PonderSceneRegistrationHelper<ItemProviderEntry<?, ?>> HELPER = helper.withKeyFunction(RegistryEntry::getId);
 
             HELPER.forComponents(
-                ModBlocks.SINGLE_DRAWER,
-                ModBlocks.DOUBLE_DRAWER,
-                ModBlocks.QUAD_DRAWER
+                ModBlocks.DRAWER_SINGLE,
+                ModBlocks.DRAWER_DOUBLE,
+                ModBlocks.DRAWER_QUAD
             )
                 .addStoryBoard("drawer/intro", DrawerScenes::intro, CREATE_ITEM_DRAWERS)
                 .addStoryBoard("drawer/connecting", DrawerScenes::connecting, CREATE_ITEM_DRAWERS);
