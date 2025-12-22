@@ -1,5 +1,6 @@
 package dev.emythiel.createitemdrawers.storage;
 
+import dev.emythiel.createitemdrawers.CreateItemDrawers;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.items.ItemStackHandler;
 import org.jetbrains.annotations.NotNull;
@@ -30,18 +31,12 @@ public class DrawerItemHandler extends ItemStackHandler {
 
         DrawerSlot s = storage.getSlot(slot);
 
-        if (!s.getStoredItem().isEmpty()) {
-            ItemStack copy = s.getStoredItem().copy();
+        if (s.getCount() <= 0)
+            return ItemStack.EMPTY;
 
-            if (s.isLockMode() && s.getCount() == 0) {
-                copy.setCount(1);
-            } else {
-                copy.setCount(s.getCount());
-            }
-            return copy;
-        }
-
-        return ItemStack.EMPTY;
+        ItemStack copy = s.getStoredItem().copy();
+        copy.setCount(s.getCount());
+        return copy;
     }
 
     @NotNull
@@ -52,8 +47,6 @@ public class DrawerItemHandler extends ItemStackHandler {
 
         if (slot < 0 || slot >= storage.getSlotCount())
             return stack;
-
-        DrawerSlot s = storage.getSlot(slot);
 
         if (!isItemValid(slot, stack))
             return stack;
