@@ -10,8 +10,6 @@ import java.util.List;
 
 public class ServerConfig extends ConfigBase {
 
-    public final ConfigGroup server = group(0, "server", Comments.server);
-
     public final ConfigGroup storageCapacity = group(1, "storageCapacity", Comments.storageCapacity);
     public final ConfigInt storageCapacitySingle = i(32, 1, 1024, "storageCapacitySingle",
         Comments.storageCapacitySingle);
@@ -35,8 +33,6 @@ public class ServerConfig extends ConfigBase {
     }
 
     private static class Comments {
-        static String server = "Main Item Drawer configuration.";
-
         static String storageCapacity = "Base Item Drawer capacity settings.";
         static String storageCapacitySingle = "Base storage capacity (in stacks) of a Single slotted Item Drawer.";
         static String storageCapacityDouble = "Base storage capacity (in stacks) of a Double slotted Item Drawer.";

@@ -59,10 +59,6 @@ public class CreateItemDrawers {
         ModConfigs.register(modLoadingContext, modContainer);
     }
 
-    static {
-        DrawerSpriteShifts.init();
-    }
-
     @EventBusSubscriber(modid = MODID)
     public static class CommonModEvents {
 

@@ -5,8 +5,6 @@ import org.jetbrains.annotations.NotNull;
 
 public class ClientConfig extends ConfigBase {
 
-    public final ConfigGroup client = group(0, "client", Comments.client);
-
     // No group
     public final ConfigBool goggleTooltip = b(false, "goggleTooltip", Comments.goggleTooltip);
     public final ConfigBool goggleTooltipRequiresWrench = b(false, "goggleTooltipRequiresWrench",
@@ -32,12 +30,10 @@ public class ClientConfig extends ConfigBase {
 
     // Comments
     private static class Comments {
-        static String client = "Client-only settings.";
-
         static String goggleTooltip = "Show goggle overlay while looking at a drawer block.";
         static String goggleTooltipRequiresWrench = "Require holding a wrench to be able to see the goggle overlay for a more minimal HUD while using drawers.";
 
-        static String renderSettings = "Settings for adjusting the rendering of items, counts, upgrades and more.";
+        static String renderSettings = "Settings for adjusting the rendering of items, counts, and more.";
         static String renderItems = "Global setting to enable/disable the rendering of items for all drawers.";
         static String renderItemsDistance = "Sets the distance at which items on the drawers are rendered.";
         static String renderCounts = "Global setting to enable/disable the rendering of item counts for all drawers.";
