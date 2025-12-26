@@ -1,133 +1,86 @@
 package dev.emythiel.createitemdrawers.config;
 
-import dev.emythiel.createitemdrawers.util.CreateItemDrawerLang;
+import net.createmod.catnip.config.ConfigBase;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.neoforge.common.ModConfigSpec;
+import net.neoforged.neoforge.common.ModConfigSpec.Builder;
 
 import java.util.List;
 
-public class ServerConfig {
+public class ServerConfig extends ConfigBase {
 
-    public static final ModConfigSpec SPEC;
+    public final ConfigGroup server = group(0, "server", Comments.server);
 
-    public static ModConfigSpec.IntValue SINGLE_CAPACITY;
-    public static ModConfigSpec.IntValue DOUBLE_CAPACITY;
-    public static ModConfigSpec.IntValue QUAD_CAPACITY;
+    public final ConfigGroup storageCapacity = group(1, "storageCapacity", Comments.storageCapacity);
+    public final ConfigInt storageCapacitySingle = i(32, 1, 1024, "storageCapacitySingle",
+        Comments.storageCapacitySingle);
+    public final ConfigInt storageCapacityDouble = i(16, 1, 1024, "storageCapacityDouble",
+        Comments.storageCapacityDouble);
+    public final ConfigInt storageCapacityQuad = i(8, 1, 1024, "storageCapacityQuad",
+        Comments.storageCapacityQuad);
 
-    public static ModConfigSpec.IntValue CAPACITY_UPGRADE_T1;
-    public static ModConfigSpec.IntValue CAPACITY_UPGRADE_T2;
-    public static ModConfigSpec.IntValue CAPACITY_UPGRADE_T3;
-    public static ModConfigSpec.IntValue CAPACITY_UPGRADE_T4;
-    public static ModConfigSpec.IntValue CAPACITY_UPGRADE_T5;
+    public final ConfigGroup upgradeMultiplier = group(1, "upgradeMultiplier", Comments.upgradeMultiplier);
+    public final ConfigInt upgradeT1 = i(2, 1, 1024, "upgradeT1", Comments.upgradeT1);
+    public final ConfigInt upgradeT2 = i(4, 1, 1024, "upgradeT2", Comments.upgradeT2);
+    public final ConfigInt upgradeT3 = i(8, 1, 1024, "upgradeT3", Comments.upgradeT3);
+    public final ConfigInt upgradeT4 = i(16, 1, 1024, "upgradeT4", Comments.upgradeT4);
+    public final ConfigInt upgradeT5 = i(32, 1, 1024, "upgradeT5", Comments.upgradeT5);
 
-    public static ModConfigSpec.ConfigValue<List<? extends String>> BLACKLIST;
+    public final ConfigGroup blacklist = group(1, "blacklist", Comments.blacklist);
 
-    static {
-        ModConfigSpec.Builder builder = new ModConfigSpec.Builder();
+    @Override
+    public String getName() {
+        return "server";
+    }
 
-        builder.comment(
-            "Storage capacity is based on stacks per slot.",
-            "Upgrades multiplies the base capacity stacks."
-        ).push("storage_settings");
-        SINGLE_CAPACITY = builder
-            .comment("Single slot drawers")
-            .defineInRange("drawer_single_capacity", 32, 1, 1024);
-        DOUBLE_CAPACITY = builder
-            .comment("Double slot drawers")
-            .defineInRange("drawer_double_capacity", 16, 1, 1024);
-        QUAD_CAPACITY = builder
-            .comment("Quad slot drawers")
-            .defineInRange("drawer_quad_capacity", 8, 1, 1024);
+    private static class Comments {
+        static String server = "Main Item Drawer configuration.";
 
-        CAPACITY_UPGRADE_T1 = builder
-            .comment("Tier 1 capacity multiplier")
-            .defineInRange("upgrade_t1_multiplier", 2, 1, 1024);
-        CAPACITY_UPGRADE_T2 = builder
-            .comment("Tier 2 capacity multiplier")
-            .defineInRange("upgrade_t2_multiplier", 4, 1, 1024);
-        CAPACITY_UPGRADE_T3 = builder
-            .comment("Tier 3 capacity multiplier")
-            .defineInRange("upgrade_t3_multiplier", 8, 1, 1024);
-        CAPACITY_UPGRADE_T4 = builder
-            .comment("Tier 4 capacity multiplier")
-            .defineInRange("upgrade_t4_multiplier", 16, 1, 1024);
-        CAPACITY_UPGRADE_T5 = builder
-            .comment("Tier 5 capacity multiplier")
-            .defineInRange("upgrade_t5_multiplier", 32, 1, 1024);
-        builder.pop();
+        static String storageCapacity = "Base Item Drawer capacity settings.";
+        static String storageCapacitySingle = "Base storage capacity (in stacks) of a Single slotted Item Drawer.";
+        static String storageCapacityDouble = "Base storage capacity (in stacks) of a Double slotted Item Drawer.";
+        static String storageCapacityQuad = "Base storage capacity (in stacks) of a Quad slotted Item Drawer.";
 
+        static String upgradeMultiplier = "Upgrade multiplier settings";
+        static String upgradeT1 = "Capacity multiplier for the Tier I upgrade.";
+        static String upgradeT2 = "Capacity multiplier for the Tier II upgrade.";
+        static String upgradeT3 = "Capacity multiplier for the Tier III upgrade.";
+        static String upgradeT4 = "Capacity multiplier for the Tier IV upgrade.";
+        static String upgradeT5 = "Capacity multiplier for the Tier V upgrade.";
+
+        static String blacklist = "List of items which cannot be stored in drawers.";
+    }
+
+    private static ModConfigSpec.ConfigValue<List<? extends String>> BLACKLIST = null;
+
+    @Override
+    public void registerAll(final Builder builder) {
+        super.registerAll(builder);
+
+        // Add blacklist manually
+        builder.push("blacklist");
         BLACKLIST = builder
-            .comment(
-                "List of item IDs that cannot be stored in drawers.",
-                "Example: [\"minecraft:diamond_sword\", \"minecraft:stone\"]"
-            )
+            .comment("Example: [\"minecraft:diamond_sword\", \"minecraft:stone\"]")
             .defineListAllowEmpty(
-                "blacklist",
-                List.of("create_item_drawers:single_drawer",
-                        "create_item_drawers:double_drawer",
-                        "create_item_drawers:quad_drawer"
-                ), () -> "",
-                ServerConfig::validateItemName);
-
-        SPEC = builder.build();
+                "items",
+                List.of(
+                    "create_item_drawers:item_drawer_single",
+                    "create_item_drawers:item_drawer_double",
+                    "create_item_drawers:item_drawer_quad"
+                ),
+                () -> "",
+                ServerConfig::validateItemName
+            );
+        builder.pop();
     }
 
     private static boolean validateItemName(final Object obj) {
-        return obj instanceof String itemName && BuiltInRegistries.ITEM.containsKey(ResourceLocation.parse(itemName));
+        return obj instanceof String itemName &&
+            BuiltInRegistries.ITEM.containsKey(ResourceLocation.parse(itemName));
     }
 
     public static boolean isBlacklisted(ResourceLocation id) {
         return BLACKLIST.get().contains(id.toString());
     }
 }
-
-
-
-/*
-
-package dev.emythiel.createitemdrawers;
-
-import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
-
-import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.Item;
-import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.fml.event.config.ModConfigEvent;
-import net.neoforged.neoforge.common.ModConfigSpec;
-
-// An example config class. This is not required, but it's a good idea to have one to keep your config organized.
-// Demonstrates how to use Neo's config APIs
-public class Config {
-    private static final ModConfigSpec.Builder BUILDER = new ModConfigSpec.Builder();
-
-    public static final ModConfigSpec.BooleanValue LOG_DIRT_BLOCK = BUILDER
-            .comment("Whether to log the dirt block on common setup")
-            .define("logDirtBlock", true);
-
-    public static final ModConfigSpec.IntValue MAGIC_NUMBER = BUILDER
-            .comment("A magic number")
-            .defineInRange("magicNumber", 42, 0, Integer.MAX_VALUE);
-
-    public static final ModConfigSpec.ConfigValue<String> MAGIC_NUMBER_INTRODUCTION = BUILDER
-            .comment("What you want the introduction message to be for the magic number")
-            .define("magicNumberIntroduction", "The magic number is... ");
-
-    // a list of strings that are treated as resource locations for items
-    public static final ModConfigSpec.ConfigValue<List<? extends String>> ITEM_STRINGS = BUILDER
-            .comment("A list of items to log on common setup.")
-            .defineListAllowEmpty("items", List.of("minecraft:iron_ingot"), () -> "", Config::validateItemName);
-
-    static final ModConfigSpec SPEC = BUILDER.build();
-
-    private static boolean validateItemName(final Object obj) {
-        return obj instanceof String itemName && BuiltInRegistries.ITEM.containsKey(ResourceLocation.parse(itemName));
-    }
-}
-
-
- */

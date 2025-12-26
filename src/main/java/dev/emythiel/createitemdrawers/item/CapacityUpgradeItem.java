@@ -1,6 +1,6 @@
 package dev.emythiel.createitemdrawers.item;
 
-import dev.emythiel.createitemdrawers.config.ServerConfig;
+import dev.emythiel.createitemdrawers.registry.ModConfigs;
 import dev.emythiel.createitemdrawers.util.CreateItemDrawerLang;
 import net.createmod.catnip.lang.FontHelper;
 import net.minecraft.network.chat.Component;
@@ -41,11 +41,11 @@ public class CapacityUpgradeItem extends Item {
 
     public int getTierMultiplier() {
         return switch (tier) {
-            case 1 -> ServerConfig.CAPACITY_UPGRADE_T1.get();
-            case 2 -> ServerConfig.CAPACITY_UPGRADE_T2.get();
-            case 3 -> ServerConfig.CAPACITY_UPGRADE_T3.get();
-            case 4 -> ServerConfig.CAPACITY_UPGRADE_T4.get();
-            case 5 -> ServerConfig.CAPACITY_UPGRADE_T5.get();
+            case 1 -> ModConfigs.server().upgradeT1.get();
+            case 2 -> ModConfigs.server().upgradeT2.get();
+            case 3 -> ModConfigs.server().upgradeT3.get();
+            case 4 -> ModConfigs.server().upgradeT4.get();
+            case 5 -> ModConfigs.server().upgradeT5.get();
             default -> 1;
         };
     }

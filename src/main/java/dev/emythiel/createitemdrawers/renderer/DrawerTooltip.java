@@ -1,4 +1,4 @@
-package dev.emythiel.createitemdrawers.client.renderer;
+package dev.emythiel.createitemdrawers.renderer;
 
 import com.simibubi.create.AllItems;
 import com.simibubi.create.CreateClient;

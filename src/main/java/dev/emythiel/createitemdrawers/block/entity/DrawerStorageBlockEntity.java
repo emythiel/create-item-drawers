@@ -4,8 +4,8 @@ import com.simibubi.create.AllItems;
 import com.simibubi.create.api.equipment.goggles.IHaveGoggleInformation;
 import dev.emythiel.createitemdrawers.block.DrawerStorageBlock;
 import dev.emythiel.createitemdrawers.block.base.BaseDrawerBlockEntity;
-import dev.emythiel.createitemdrawers.config.ClientConfig;
 import dev.emythiel.createitemdrawers.item.CapacityUpgradeItem;
+import dev.emythiel.createitemdrawers.registry.ModConfigs;
 import dev.emythiel.createitemdrawers.storage.DrawerItemHandler;
 import dev.emythiel.createitemdrawers.storage.DrawerStorage;
 import dev.emythiel.createitemdrawers.gui.DrawerMenu;
@@ -26,6 +26,8 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -166,11 +168,12 @@ public class DrawerStorageBlockEntity extends BaseDrawerBlockEntity implements M
         return CreateItemDrawerLang.translate("gui.drawer_" + slots).component();
     }
 
-    // Goggle tooltip
+    // Goggle tooltip TODO: is this proper way? Server can't get client configs, but is forcing OnlyIn(Dist.CLIENT) right?
+    @OnlyIn(Dist.CLIENT)
     @Override
     public boolean addToGoggleTooltip(List<Component> tooltip, boolean isPlayerSneaking) {
-        boolean SHOW_GOGGLE_TOOLTIP = ClientConfig.GOGGLE_TOOLTIP.get();
-        boolean GOOGLE_TOOLTIP_REQUIRE_WRENCH = ClientConfig.GOOGLE_TOOLTIP_REQUIRE_WRENCH.get();
+        boolean SHOW_GOGGLE_TOOLTIP = ModConfigs.client().goggleTooltip.get();
+        boolean GOOGLE_TOOLTIP_REQUIRE_WRENCH = ModConfigs.client().goggleTooltipRequiresWrench.get();
 
         if (!SHOW_GOGGLE_TOOLTIP)
             return false;

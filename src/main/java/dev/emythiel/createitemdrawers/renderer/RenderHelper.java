@@ -1,10 +1,10 @@
-package dev.emythiel.createitemdrawers.util;
+package dev.emythiel.createitemdrawers.renderer;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import dev.emythiel.createitemdrawers.CreateItemDrawers;
+import dev.emythiel.createitemdrawers.block.entity.DrawerStorageBlockEntity;
 import dev.emythiel.createitemdrawers.registry.ModItems;
-import net.createmod.catnip.math.VecHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -18,6 +18,8 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.HorizontalDirectionalBlock;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
@@ -25,6 +27,7 @@ import org.joml.Vector3f;
 import java.util.Map;
 
 public class RenderHelper {
+
     public static float getFaceRotation(Direction facing) {
         return switch (facing) {
             case NORTH -> 180;
@@ -33,11 +36,6 @@ public class RenderHelper {
             case EAST -> 90;
             default -> 0;
         };
-    }
-
-    public static Vec3 worldToLocalFace(Vec3 world, BlockPos pos, Direction facing) {
-        Vec3 local = world.subtract(Vec3.atLowerCornerOf(pos));
-        return VecHelper.rotateCentered(local, facing.getOpposite().toYRot(), Direction.Axis.Y);
     }
 
     public static Vec3 faceUVToWorld(BlockPos pos, Direction face, double u, double v, double depth) {
@@ -55,11 +53,34 @@ public class RenderHelper {
         };
     }
 
+    public static AABB getSlotAABB(DrawerStorageBlockEntity be, int slot) {
+        BlockPos pos = be.getBlockPos();
+        int slots = be.getStorage().getSlotCount();
+
+        Vec3 uv = getSlotUV(slot, slots);
+
+        float scale = (slots == 1) ? 0.5f : 0.25f;
+        float half = scale * 0.5f;
+
+        double minX = uv.x - half + 0.5f;
+        double maxX = uv.x + half + 0.5f;
+
+        double minY = uv.y - half + 0.5f;
+        double maxY = uv.y + half + 0.5f;
+
+        Direction facing = be.getBlockState().getValue(HorizontalDirectionalBlock.FACING);
+
+        Vec3 p1 = RenderHelper.faceUVToWorld(pos, facing, minX, minY, 0.035);
+        Vec3 p2 = RenderHelper.faceUVToWorld(pos, facing, maxX, maxY, 0.035);
+
+        return new AABB(p1, p2);
+    }
+
     public static void renderSlotItem(ItemRenderer itemRenderer, ItemStack stack, int slot, int slots,
                                        PoseStack ms, MultiBufferSource buffer, int light) {
         Level level = Minecraft.getInstance().level;
 
-        Vec3 uv = DrawerInteractionHelper.getSlotUV(slot, slots);
+        Vec3 uv = getSlotUV(slot, slots);
 
         ms.pushPose();
         ms.translate(uv.x, uv.y, uv.z);
@@ -75,7 +96,7 @@ public class RenderHelper {
     public static void renderSlotCount(String count, int slot, int slots, PoseStack ms, MultiBufferSource buffer, int light) {
         Font font = Minecraft.getInstance().font;
 
-        Vec3 uv = DrawerInteractionHelper.getCountUV(slot, slots);
+        Vec3 uv = getCountUV(slot, slots);
 
         ms.pushPose();
         ms.translate(uv.x, uv.y, uv.z);
@@ -94,9 +115,9 @@ public class RenderHelper {
         Vec3 uv;
 
         if (mode == DrawerIcon.LOCK)
-            uv = DrawerInteractionHelper.getLockUV(slot, slots);
+            uv = getLockUV(slot, slots);
         else if (mode == DrawerIcon.VOID)
-            uv = DrawerInteractionHelper.getVoidUV(slot, slots);
+            uv = getVoidUV(slot, slots);
         else
             return;
 
@@ -128,7 +149,7 @@ public class RenderHelper {
         if (icon == null)
             return;
 
-        Vec3 uv = DrawerInteractionHelper.getUpgradeUV(slots);
+        Vec3 uv = getUpgradeUV(slots);
 
         ms.pushPose();
         ms.translate(uv.x, uv.y, uv.z);
@@ -209,5 +230,41 @@ public class RenderHelper {
             .setOverlay(overlay)
             .setLight(light)
             .setNormal(normal.x(), normal.y(), normal.z());
+    }
+
+    private static Vec3 getSlotUV(int slot, int slotCount) {
+        return switch (slotCount) {
+            case 1 -> new Vec3(0, 0, 0);
+            case 2 -> new Vec3(0, slot == 0 ? 0.25 : -0.25, 0);
+            case 4 -> {
+                double x = (slot % 2 == 0) ? -0.25 : 0.25;
+                double y = (slot < 2) ? 0.25 : -0.25;
+                yield new Vec3(x, y, 0);
+            }
+            default -> new Vec3(0.5, 0.5, 0);
+        };
+    }
+
+    private static Vec3 getCountUV(int slot, int slotCount) {
+        Vec3 uv = getSlotUV(slot, slotCount);
+        double shift = (slotCount == 1) ? 0.30 : 0.135;
+        return new Vec3(uv.x, uv.y - shift, 0.001);
+    }
+
+    private static Vec3 getLockUV(int slot, int slotCount) {
+        Vec3 uv = getSlotUV(slot, slotCount);
+        double shift = (slotCount == 1) ? 0.35 : 0.165;
+        return new Vec3(uv.x - (shift / 1.5), uv.y + shift, 0.001);
+    }
+
+    private static Vec3 getVoidUV(int slot, int slotCount) {
+        Vec3 uv = getSlotUV(slot, slotCount);
+        double shift = (slotCount == 1) ? 0.35 : 0.165;
+        return new Vec3(uv.x + (shift / 1.5), uv.y + shift, 0.001);
+    }
+
+    private static Vec3 getUpgradeUV(int slotCount) {
+        double shift = (slotCount == 1) ? 0.453 : 0.468;
+        return new Vec3(0, shift, 0.031);
     }
 }

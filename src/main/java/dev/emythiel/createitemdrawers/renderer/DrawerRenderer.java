@@ -1,4 +1,4 @@
-package dev.emythiel.createitemdrawers.client.renderer;
+package dev.emythiel.createitemdrawers.renderer;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
@@ -8,9 +8,8 @@ import com.simibubi.create.foundation.blockEntity.renderer.SafeBlockEntityRender
 import com.simibubi.create.foundation.virtualWorld.VirtualRenderWorld;
 import dev.emythiel.createitemdrawers.block.DrawerStorageBlock;
 import dev.emythiel.createitemdrawers.block.entity.DrawerStorageBlockEntity;
-import dev.emythiel.createitemdrawers.config.ClientConfig;
+import dev.emythiel.createitemdrawers.registry.ModConfigs;
 import dev.emythiel.createitemdrawers.storage.DrawerSlot;
-import dev.emythiel.createitemdrawers.util.RenderHelper;
 import net.createmod.ponder.api.level.PonderLevel;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
@@ -38,12 +37,14 @@ public class DrawerRenderer extends SafeBlockEntityRenderer<DrawerStorageBlockEn
     @Override
     protected void renderSafe(DrawerStorageBlockEntity be, float partialTicks,
                               PoseStack ms, MultiBufferSource buffer, int packedLight, int overlay) {
-        int itemDist = ClientConfig.ITEM_RENDER_DISTANCE.get();
-        int countDist = ClientConfig.COUNT_RENDER_DISTANCE.get();
-        int additionalDist = ClientConfig.ADDITIONAL_RENDER_DISTANCE.get();
-        boolean shouldRenderItem = ClientConfig.ITEM_RENDER.get();
-        boolean shouldRenderCount = ClientConfig.COUNT_RENDER.get();
-        boolean shouldRenderAdditional = ClientConfig.ADDITIONAL_RENDER.get();
+
+        boolean shouldRenderItem = ModConfigs.client().renderItems.get();
+        int itemDist = ModConfigs.client().renderItemsDistance.get();
+        boolean shouldRenderCount = ModConfigs.client().renderCounts.get();
+        int countDist = ModConfigs.client().renderCountsDistance.get();
+        boolean shouldRenderAdditional = ModConfigs.client().renderAdditionals.get();
+        int additionalDist = ModConfigs.client().renderAdditionalsDistance.get();
+
         boolean isPonderScene = be.getLevel() instanceof PonderLevel;
 
         if (!shouldRenderItem && !shouldRenderCount && !shouldRenderAdditional && !isPonderScene)
@@ -129,9 +130,9 @@ public class DrawerRenderer extends SafeBlockEntityRenderer<DrawerStorageBlockEn
                                            ContraptionMatrices matrices, MultiBufferSource buffer) {
         if (!(context.state.getBlock() instanceof DrawerStorageBlock drawer)) return;
 
-        boolean shouldRenderItem = ClientConfig.ITEM_RENDER.get();
-        boolean shouldRenderCount = ClientConfig.COUNT_RENDER.get();
-        boolean shouldRenderAdditional = ClientConfig.ADDITIONAL_RENDER.get();
+        boolean shouldRenderItem = ModConfigs.client().renderItems.get();
+        boolean shouldRenderCount = ModConfigs.client().renderCounts.get();
+        boolean shouldRenderAdditional = ModConfigs.client().renderAdditionals.get();
         if (!shouldRenderItem && !shouldRenderCount && !shouldRenderAdditional)
             return;
 

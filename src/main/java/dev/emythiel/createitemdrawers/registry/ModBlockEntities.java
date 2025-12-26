@@ -4,7 +4,7 @@ import com.simibubi.create.foundation.data.CreateRegistrate;
 import com.tterrag.registrate.util.entry.BlockEntityEntry;
 import dev.emythiel.createitemdrawers.CreateItemDrawers;
 import dev.emythiel.createitemdrawers.block.entity.DrawerStorageBlockEntity;
-import dev.emythiel.createitemdrawers.client.renderer.DrawerRenderer;
+import dev.emythiel.createitemdrawers.renderer.DrawerRenderer;
 
 public class ModBlockEntities {
     private static final CreateRegistrate REGISTRATE = CreateItemDrawers.registrate();

@@ -1,6 +1,6 @@
 package dev.emythiel.createitemdrawers.storage;
 
-import dev.emythiel.createitemdrawers.config.ServerConfig;
+import dev.emythiel.createitemdrawers.registry.ModConfigs;
 import net.minecraft.world.item.ItemStack;
 
 public class DrawerStorage {
@@ -33,9 +33,9 @@ public class DrawerStorage {
     public int getCapacity(int slotIndex, ItemStack itemForCapacity) {
         DrawerSlot slot = slots[slotIndex];
         int baseMultiplier = switch(getSlotCount()) {
-            case 1 -> ServerConfig.SINGLE_CAPACITY.get();
-            case 2 -> ServerConfig.DOUBLE_CAPACITY.get();
-            case 4 -> ServerConfig.QUAD_CAPACITY.get();
+            case 1 -> ModConfigs.server().storageCapacitySingle.get();
+            case 2 -> ModConfigs.server().storageCapacityDouble.get();
+            case 4 -> ModConfigs.server().storageCapacityQuad.get();
             default -> 32;
         };
 

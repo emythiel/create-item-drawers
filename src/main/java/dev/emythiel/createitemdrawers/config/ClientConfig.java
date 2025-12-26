@@ -1,56 +1,48 @@
 package dev.emythiel.createitemdrawers.config;
 
-import net.neoforged.neoforge.common.ModConfigSpec;
+import net.createmod.catnip.config.ConfigBase;
+import org.jetbrains.annotations.NotNull;
 
-public class ClientConfig {
+public class ClientConfig extends ConfigBase {
 
-    public static final ModConfigSpec SPEC;
+    public final ConfigGroup client = group(0, "client", Comments.client);
 
-    public static ModConfigSpec.IntValue ITEM_RENDER_DISTANCE;
-    public static ModConfigSpec.BooleanValue ITEM_RENDER;
-    public static ModConfigSpec.IntValue COUNT_RENDER_DISTANCE;
-    public static ModConfigSpec.BooleanValue COUNT_RENDER;
-    public static ModConfigSpec.IntValue ADDITIONAL_RENDER_DISTANCE;
-    public static ModConfigSpec.BooleanValue ADDITIONAL_RENDER;
+    // No group
+    public final ConfigBool goggleTooltip = b(false, "goggleTooltip", Comments.goggleTooltip);
+    public final ConfigBool goggleTooltipRequiresWrench = b(false, "goggleTooltipRequiresWrench",
+        Comments.goggleTooltipRequiresWrench);
 
-    public static ModConfigSpec.BooleanValue GOGGLE_TOOLTIP;
-    public static ModConfigSpec.BooleanValue GOOGLE_TOOLTIP_REQUIRE_WRENCH;
+    // Rendering group
+    public final ConfigGroup renderSettings = group(1, "renderSettings", Comments.renderSettings);
+    public final ConfigBool renderItems = b(true, "renderItems", Comments.renderItems);
+    public final ConfigInt renderItemsDistance = i(24, 1, 128, "renderItemsDistance",
+        Comments.renderItemsDistance);
+    public final ConfigBool renderCounts = b(true, "renderCounts", Comments.renderCounts);
+    public final ConfigInt renderCountsDistance = i(16, 1, 128, "renderCountsDistance",
+        Comments.renderCountsDistance);
+    public final ConfigBool renderAdditionals = b(true, "renderAdditionals", Comments.renderAdditionals);
+    public final ConfigInt renderAdditionalsDistance = i(6, 1, 128, "renderAdditionalsDistance",
+        Comments.renderAdditionalsDistance);
 
-    static {
-        ModConfigSpec.Builder builder = new ModConfigSpec.Builder();
+    @Override
+    @NotNull
+    public String getName() {
+        return "client";
+    }
 
-        builder.comment().push("render_settings");
-        ITEM_RENDER_DISTANCE = builder
-            .comment("Sets the distance at which items on the drawers are rendered.")
-            .defineInRange("item_render_distance", 24, 1, 128);
-        ITEM_RENDER = builder
-            .comment("Global setting to disable rendering of items for all drawers.")
-            .define("item_render", true);
-        COUNT_RENDER_DISTANCE = builder
-            .comment("Sets the distance at which text on the drawers are rendered.")
-            .defineInRange("count_render_distance", 16, 1, 128);
-        COUNT_RENDER = builder
-            .comment("Global setting to disable rendering of storage counts for all drawers.")
-            .define("count_render", true);
-        ADDITIONAL_RENDER_DISTANCE = builder
-            .comment("Sets the distance at which additional information (such as lock/void mode and upgrades) are rendered.")
-            .defineInRange("additional_render_distance", 4, 1, 128);
-        ADDITIONAL_RENDER = builder
-            .comment("Global setting to disable rendering of lock/void mode as well as upgrades for all drawers.")
-            .define("additional_render", true);
-        builder.pop();
+    // Comments
+    private static class Comments {
+        static String client = "Client-only settings.";
 
-        builder.comment().push("additional_settings");
-        GOGGLE_TOOLTIP = builder
-            .comment("Enable to see drawer information while wearing Engineer's Goggles.")
-            .define("goggle_tooltip", false);
-        GOOGLE_TOOLTIP_REQUIRE_WRENCH = builder
-            .comment(
-                "Enable to require wielding a wrench in addition to wearing Engineer's Goggles to see drawer information.",
-                "If you find the goggle tooltip gets in the way a lot, you can enable this to prevent it from constantly showing, but still being available when needed.")
-            .define("goggle_tooltip_require_wrench", false);
-        builder.pop();
+        static String goggleTooltip = "Show goggle overlay while looking at a drawer block.";
+        static String goggleTooltipRequiresWrench = "Require holding a wrench to be able to see the goggle overlay for a more minimal HUD while using drawers.";
 
-        SPEC = builder.build();
+        static String renderSettings = "Settings for adjusting the rendering of items, counts, upgrades and more.";
+        static String renderItems = "Global setting to enable/disable the rendering of items for all drawers.";
+        static String renderItemsDistance = "Sets the distance at which items on the drawers are rendered.";
+        static String renderCounts = "Global setting to enable/disable the rendering of item counts for all drawers.";
+        static String renderCountsDistance = "Sets the distance at which item counts on the drawers are rendered.";
+        static String renderAdditionals = "Global setting to enable/disable the rendering of locked mode, voiding mode, and upgrades";
+        static String renderAdditionalsDistance = "Sets the distance at which the icons for locked mode, voiding mode, and upgrades are rendered.";
     }
 }

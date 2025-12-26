@@ -12,17 +12,17 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.MenuAccess;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 
-public class ModMenus {
+public class ModMenuTypes {
 
     private static final CreateRegistrate REGISTRATE = CreateItemDrawers.registrate();
 
     public static final MenuEntry<DrawerMenu> DRAWER_MENU =
-        register(DrawerMenu::new, () -> DrawerScreen::new);
+        register("drawer_menu", DrawerMenu::new, () -> DrawerScreen::new);
 
     private static <C extends AbstractContainerMenu, S extends Screen & MenuAccess<C>> MenuEntry<C> register(
-        ForgeMenuFactory<C> factory, NonNullSupplier<ScreenFactory<C, S>> screenFactory) {
+        String name, ForgeMenuFactory<C> factory, NonNullSupplier<ScreenFactory<C, S>> screenFactory) {
         return REGISTRATE
-            .menu("drawer_gui", factory, screenFactory)
+            .menu(name, factory, screenFactory)
             .register();
     }
 

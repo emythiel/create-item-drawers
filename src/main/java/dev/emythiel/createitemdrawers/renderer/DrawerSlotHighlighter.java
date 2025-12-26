@@ -1,4 +1,4 @@
-package dev.emythiel.createitemdrawers.client.renderer;
+package dev.emythiel.createitemdrawers.renderer;
 
 import com.simibubi.create.AllSpecialTextures;
 import dev.emythiel.createitemdrawers.block.entity.DrawerStorageBlockEntity;
@@ -24,7 +24,7 @@ public class DrawerSlotHighlighter {
         Direction front = be.getBlockState().getValue(HorizontalDirectionalBlock.FACING);
         if (face != front) return;
 
-        AABB box = DrawerInteractionHelper.getSlotAABB(be, slot);
+        AABB box = RenderHelper.getSlotAABB(be, slot);
 
         // See if we're over capacity (render red warning instead)
         int capacity = be.getStorage().getCapacity(slot, be.getStorage().getSlot(slot).getStoredItem());
