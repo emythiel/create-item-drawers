@@ -9,8 +9,8 @@ import dev.emythiel.createitemdrawers.renderer.DrawerRenderer;
 public class ModBlockEntities {
     private static final CreateRegistrate REGISTRATE = CreateItemDrawers.registrate();
 
-    public static final BlockEntityEntry<DrawerStorageBlockEntity> DRAWER_BLOCK_ENTITY = REGISTRATE
-            .blockEntity("drawer_block_entity", DrawerStorageBlockEntity::new)
+    public static final BlockEntityEntry<DrawerStorageBlockEntity> DRAWER_STORAGE_BLOCK_ENTITY = REGISTRATE
+            .blockEntity("drawer_storage_block_entity", DrawerStorageBlockEntity::new)
             .validBlocks(
                 ModBlocks.DRAWER_SINGLE,
                 ModBlocks.DRAWER_DOUBLE,

@@ -39,11 +39,7 @@ public class ModPonder {
         public static void register(PonderSceneRegistrationHelper<ResourceLocation> helper) {
             PonderSceneRegistrationHelper<ItemProviderEntry<?, ?>> HELPER = helper.withKeyFunction(RegistryEntry::getId);
 
-            HELPER.forComponents(
-                ModBlocks.DRAWER_SINGLE,
-                ModBlocks.DRAWER_DOUBLE,
-                ModBlocks.DRAWER_QUAD
-            )
+            HELPER.forComponents(ModBlocks.DRAWER_SINGLE, ModBlocks.DRAWER_DOUBLE, ModBlocks.DRAWER_QUAD)
                 .addStoryBoard("drawer/intro", DrawerScenes::intro, CREATE_ITEM_DRAWERS)
                 .addStoryBoard("drawer/connecting", DrawerScenes::connecting, CREATE_ITEM_DRAWERS);
         }

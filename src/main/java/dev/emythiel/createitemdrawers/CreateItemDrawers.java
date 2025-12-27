@@ -64,7 +64,7 @@ public class CreateItemDrawers {
 
         @SubscribeEvent
         public static void registerCapabilities(RegisterCapabilitiesEvent event) {
-            DrawerStorageBlockEntity.registerCapabilities(event, ModBlockEntities.DRAWER_BLOCK_ENTITY.get());
+            DrawerStorageBlockEntity.registerCapabilities(event, ModBlockEntities.DRAWER_STORAGE_BLOCK_ENTITY.get());
         }
     }
 

@@ -47,7 +47,7 @@ public class DrawerStorageBlock extends BaseDrawerBlock implements IWrenchable, 
 
     @Override
     public BlockEntityType<? extends DrawerStorageBlockEntity> getBlockEntityType() {
-        return ModBlockEntities.DRAWER_BLOCK_ENTITY.get();
+        return ModBlockEntities.DRAWER_STORAGE_BLOCK_ENTITY.get();
     }
 
     // Getter for slots the drawer has
