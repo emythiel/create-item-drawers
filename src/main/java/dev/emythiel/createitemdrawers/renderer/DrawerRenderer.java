@@ -38,16 +38,16 @@ public class DrawerRenderer extends SafeBlockEntityRenderer<DrawerStorageBlockEn
     protected void renderSafe(DrawerStorageBlockEntity be, float partialTicks,
                               PoseStack ms, MultiBufferSource buffer, int packedLight, int overlay) {
 
-        boolean shouldRenderItem = ModConfigs.client().renderItems.get();
+        boolean shouldRenderItems = ModConfigs.client().renderItems.get();
         int itemDist = ModConfigs.client().renderItemsDistance.get();
-        boolean shouldRenderCount = ModConfigs.client().renderCounts.get();
+        boolean shouldRenderCounts = ModConfigs.client().renderCounts.get();
         int countDist = ModConfigs.client().renderCountsDistance.get();
-        boolean shouldRenderAdditional = ModConfigs.client().renderAdditionals.get();
-        int additionalDist = ModConfigs.client().renderAdditionalsDistance.get();
+        boolean shouldRenderIcons = ModConfigs.client().renderIcons.get();
+        int iconDist = ModConfigs.client().renderIconsDistance.get();
 
         boolean isPonderScene = be.getLevel() instanceof PonderLevel;
 
-        if (!shouldRenderItem && !shouldRenderCount && !shouldRenderAdditional && !isPonderScene)
+        if (!shouldRenderItems && !shouldRenderCounts && !shouldRenderIcons && !isPonderScene)
             return; // All renders disabled and not ponder, just exit
 
         Minecraft mc = Minecraft.getInstance();
@@ -61,18 +61,18 @@ public class DrawerRenderer extends SafeBlockEntityRenderer<DrawerStorageBlockEn
             be.getBlockPos().getZ() + 0.5
         );
 
-        boolean renderItem = be.getRenderItems() && distSq <= itemDist * itemDist && shouldRenderItem;
-        boolean renderCount = be.getRenderCounts() && distSq <= countDist * countDist && shouldRenderCount;
-        boolean renderAdditional = be.getRenderAdditional() && distSq <= additionalDist * additionalDist && shouldRenderAdditional;
+        boolean renderItems = be.getRenderItems() && distSq <= itemDist * itemDist && shouldRenderItems;
+        boolean renderCounts = be.getRenderCounts() && distSq <= countDist * countDist && shouldRenderCounts;
+        boolean renderIcons = be.getRenderIcons() && distSq <= iconDist * iconDist && shouldRenderIcons;
 
         // If ponder scene, overwrite to force render
         if (isPonderScene) {
-            renderItem = true;
-            renderCount = true;
-            renderAdditional = true;
+            renderItems = true;
+            renderCounts = true;
+            renderIcons = true;
         }
 
-        if (!renderItem && !renderCount && !renderAdditional)
+        if (!renderItems && !renderCounts && !renderIcons)
             return;
 
         // Check if player is in front of block (don't render if behind)
@@ -104,7 +104,7 @@ public class DrawerRenderer extends SafeBlockEntityRenderer<DrawerStorageBlockEn
 
         int slotCount = be.getStorage().getSlotCount();
 
-        if (renderAdditional && !be.getUpgrade().isEmpty())
+        if (renderIcons && !be.getUpgrade().isEmpty())
             RenderHelper.renderDrawerUpgrade(be.getUpgrade(), slotCount, ms, buffer, light);
 
         for (int slot = 0; slot < slotCount; slot++) {
@@ -113,13 +113,13 @@ public class DrawerRenderer extends SafeBlockEntityRenderer<DrawerStorageBlockEn
             int count = currentSlot.getCount();
             boolean lockMode = currentSlot.isLockMode();
             boolean voidMode = currentSlot.isVoidMode();
-            if (!storedItem.isEmpty() && renderItem)
+            if (!storedItem.isEmpty() && renderItems)
                 RenderHelper.renderSlotItem(mc.getItemRenderer(), storedItem, slot, slotCount, ms, buffer, light);
-            if (count > 0 && renderCount)
+            if (count > 0 && renderCounts)
                 RenderHelper.renderSlotCount(String.valueOf(count), slot, slotCount, ms, buffer, light);
-            if (lockMode && renderAdditional)
+            if (lockMode && renderIcons)
                 RenderHelper.renderSlotMode(RenderHelper.DrawerIcon.LOCK, slot, slotCount, ms, buffer, light);
-            if (voidMode && renderAdditional)
+            if (voidMode && renderIcons)
                 RenderHelper.renderSlotMode(RenderHelper.DrawerIcon.VOID, slot, slotCount, ms, buffer, light);
         }
 
@@ -130,10 +130,10 @@ public class DrawerRenderer extends SafeBlockEntityRenderer<DrawerStorageBlockEn
                                            ContraptionMatrices matrices, MultiBufferSource buffer) {
         if (!(context.state.getBlock() instanceof DrawerStorageBlock drawer)) return;
 
-        boolean shouldRenderItem = ModConfigs.client().renderItems.get();
-        boolean shouldRenderCount = ModConfigs.client().renderCounts.get();
-        boolean shouldRenderAdditional = ModConfigs.client().renderAdditionals.get();
-        if (!shouldRenderItem && !shouldRenderCount && !shouldRenderAdditional)
+        boolean shouldRenderItems = ModConfigs.client().renderItems.get();
+        boolean shouldRenderCounts = ModConfigs.client().renderCounts.get();
+        boolean shouldRenderIcons = ModConfigs.client().renderIcons.get();
+        if (!shouldRenderItems && !shouldRenderCounts && !shouldRenderIcons)
             return;
 
         int slotCount = drawer.getSlotCount();
@@ -145,10 +145,10 @@ public class DrawerRenderer extends SafeBlockEntityRenderer<DrawerStorageBlockEn
         LocalPlayer player = mc.player;
         if (player == null) return;
 
-        boolean renderItem = !tag.contains("RenderItem") || tag.getBoolean("RenderItem") && shouldRenderItem;
-        boolean renderCount = !tag.contains("RenderCount") || tag.getBoolean("RenderCount") && shouldRenderCount;
-        boolean renderAdditional = !tag.contains("RenderAdditional") || tag.getBoolean("RenderAdditional") && shouldRenderAdditional;
-        if (!renderItem && !renderCount && !renderAdditional) return;
+        boolean renderItems = !tag.contains("RenderItems") || tag.getBoolean("RenderItems") && shouldRenderItems;
+        boolean renderCounts = !tag.contains("RenderCounts") || tag.getBoolean("RenderCounts") && shouldRenderCounts;
+        boolean renderIcons = !tag.contains("RenderIcons") || tag.getBoolean("RenderIcons") && shouldRenderIcons;
+        if (!renderItems && !renderCounts && !renderIcons) return;
 
         double distance = context.position != null
             ? Math.sqrt(player.distanceToSqr(context.position))
@@ -189,7 +189,7 @@ public class DrawerRenderer extends SafeBlockEntityRenderer<DrawerStorageBlockEn
         ms.mulPose(Axis.YP.rotationDegrees(RenderHelper.getFaceRotation(facing)));
         ms.translate(0, 0, 0.47);
 
-        if (tag.contains("Upgrade") && renderAdditional) {
+        if (tag.contains("Upgrade") && renderIcons) {
             ItemStack upgrade = tag.getCompound("Upgrade").isEmpty()
                 ? ItemStack.EMPTY
                 : ItemStack.parseOptional(renderWorld.registryAccess(), tag.getCompound("Upgrade"));
@@ -202,25 +202,25 @@ public class DrawerRenderer extends SafeBlockEntityRenderer<DrawerStorageBlockEn
             ListTag list = tag.getList("Slots", Tag.TAG_COMPOUND);
             for (int slot = 0; slot < Math.min(list.size(), slotCount); slot++) {
                 CompoundTag slotTag = list.getCompound(slot);
-                if (slotTag.contains("Item") && renderItem) {
+                if (slotTag.contains("Item") && renderItems) {
                     ItemStack storedItem = slotTag.getCompound("Item").isEmpty()
                         ? ItemStack.EMPTY
                         : ItemStack.parseOptional(renderWorld.registryAccess(), slotTag.getCompound("Item"));
                     if (!storedItem.isEmpty())
                         RenderHelper.renderSlotItem(mc.getItemRenderer(), storedItem, slot, slotCount, ms, buffer, light);
                 }
-                if (slotTag.contains("Count") && renderCount) {
+                if (slotTag.contains("Count") && renderCounts) {
                     int count = slotTag.getInt("Count");
                     if (count > 0)
                         RenderHelper.renderSlotCount(String.valueOf(count), slot, slotCount, ms, buffer, light);
                 }
-                if (slotTag.contains("Locked") && renderAdditional) {
+                if (slotTag.contains("Locked") && renderIcons) {
                     boolean lockMode = slotTag.getBoolean("Locked");
                     if (lockMode) {
                         RenderHelper.renderSlotMode(RenderHelper.DrawerIcon.LOCK, slot, slotCount, ms, buffer, light);
                     }
                 }
-                if (slotTag.contains("Void") && renderAdditional) {
+                if (slotTag.contains("Void") && renderIcons) {
                     boolean voidMode = slotTag.getBoolean("Void");
                     if (voidMode) {
                         RenderHelper.renderSlotMode(RenderHelper.DrawerIcon.VOID, slot, slotCount, ms, buffer, light);

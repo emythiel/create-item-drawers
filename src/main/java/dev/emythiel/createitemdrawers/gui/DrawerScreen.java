@@ -239,13 +239,13 @@ public class DrawerScreen extends AbstractContainerScreen<DrawerMenu> {
             TOGGLE_OFF_X, TOGGLE_OFF_Y,
             TOGGLE_ON_X, TOGGLE_ON_Y,
             TOGGLE_W, TOGGLE_H,
-            be::getRenderAdditional,
+            be::getRenderIcons,
             newVal -> {
-                be.setRenderAdditional(newVal);
-                sendTogglePacket(be.getBlockPos(), 0, SETTINGS, newVal);
+                be.setRenderIcons(newVal);
+                sendTogglePacket(be.getBlockPos(), 0, ICONS, newVal);
             }
         ).withMultiLineTooltip(() -> {
-            String headerKey = be.getRenderAdditional()
+            String headerKey = be.getRenderIcons()
                 ? "gui.tooltip.settings_hide"
                 : "gui.tooltip.settings_show";
             return createFormattedTooltip(headerKey, "gui.tooltip.settings_description");

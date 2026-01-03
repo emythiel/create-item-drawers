@@ -18,9 +18,9 @@ public class ClientConfig extends ConfigBase {
     public final ConfigBool renderCounts = b(true, "renderCounts", Comments.renderCounts);
     public final ConfigInt renderCountsDistance = i(16, 1, 128, "renderCountsDistance",
         Comments.renderCountsDistance);
-    public final ConfigBool renderAdditionals = b(true, "renderAdditionals", Comments.renderAdditionals);
-    public final ConfigInt renderAdditionalsDistance = i(6, 1, 128, "renderAdditionalsDistance",
-        Comments.renderAdditionalsDistance);
+    public final ConfigBool renderIcons = b(true, "renderIcons", Comments.renderIcons);
+    public final ConfigInt renderIconsDistance = i(6, 1, 128, "renderIconsDistance",
+        Comments.renderIconsDistance);
 
     @Override
     @NotNull
@@ -38,7 +38,7 @@ public class ClientConfig extends ConfigBase {
         static String renderItemsDistance = "Sets the distance at which items on the drawers are rendered.";
         static String renderCounts = "Global setting to enable/disable the rendering of item counts for all drawers.";
         static String renderCountsDistance = "Sets the distance at which item counts on the drawers are rendered.";
-        static String renderAdditionals = "Global setting to enable/disable the rendering of locked mode, voiding mode, and upgrades";
-        static String renderAdditionalsDistance = "Sets the distance at which the icons for locked mode, voiding mode, and upgrades are rendered.";
+        static String renderIcons = "Global setting to enable/disable the rendering of lock, void, and upgrade icons";
+        static String renderIconsDistance = "Sets the distance at which the icons for locked mode, voiding mode, and upgrades are rendered.";
     }
 }

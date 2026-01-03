@@ -44,9 +44,9 @@ public class DrawerMountedStorage extends WrapperMountedItemStorage<DrawerItemHa
     private @Nullable Contraption currentContraption = null;
 
     private int slotCount = 0;
-    private boolean renderItem = true;
-    private boolean renderCount = true;
-    private boolean renderAdditional = true;
+    private boolean renderItems = true;
+    private boolean renderCounts = true;
+    private boolean renderIcons = true;
     private ItemStack upgradeItem = ItemStack.EMPTY;
     private List<DrawerSlotData> slotData = new ArrayList<>();
 
@@ -78,9 +78,9 @@ public class DrawerMountedStorage extends WrapperMountedItemStorage<DrawerItemHa
         DrawerMountedStorage storage = new DrawerMountedStorage(handler);
 
         storage.slotCount = be.getStorage().getSlotCount();
-        storage.renderItem = be.getRenderItems();
-        storage.renderCount = be.getRenderCounts();
-        storage.renderAdditional = be.getRenderAdditional();
+        storage.renderItems = be.getRenderItems();
+        storage.renderCounts = be.getRenderCounts();
+        storage.renderIcons = be.getRenderIcons();
         storage.upgradeItem = be.getUpgrade().copy();
 
         storage.slotData.clear();
@@ -101,9 +101,9 @@ public class DrawerMountedStorage extends WrapperMountedItemStorage<DrawerItemHa
     public void unmount(Level level, BlockState state, BlockPos pos, @Nullable BlockEntity be) {
         if (be instanceof DrawerStorageBlockEntity drawer) {
             drawer.setUpgrade(upgradeItem);
-            drawer.setRenderItems(renderItem);
-            drawer.setRenderCounts(renderCount);
-            drawer.setRenderAdditional(renderAdditional);
+            drawer.setRenderItems(renderItems);
+            drawer.setRenderCounts(renderCounts);
+            drawer.setRenderIcons(renderIcons);
 
             for (int i = 0; i < Math.min(slotData.size(), drawer.getStorage().getSlotCount()); i++) {
                 DrawerSlotData data = slotData.get(i);
@@ -161,9 +161,9 @@ public class DrawerMountedStorage extends WrapperMountedItemStorage<DrawerItemHa
             tag.put("Upgrade", upgradeItem.save(provider));
         }
 
-        tag.putBoolean("RenderItem", renderItem);
-        tag.putBoolean("RenderCount", renderCount);
-        tag.putBoolean("RenderAdditional", renderAdditional);
+        tag.putBoolean("RenderItems", renderItems);
+        tag.putBoolean("RenderCounts", renderCounts);
+        tag.putBoolean("RenderIcons", renderIcons);
 
         ListTag slotsTag = new ListTag();
         for (DrawerSlotData data : slotData) {
@@ -197,9 +197,9 @@ public class DrawerMountedStorage extends WrapperMountedItemStorage<DrawerItemHa
         CompoundTag tag = new CompoundTag();
 
         tag.putInt("SlotCount", slotCount);
-        tag.putBoolean("RenderItem", renderItem);
-        tag.putBoolean("RenderCount", renderCount);
-        tag.putBoolean("RenderAdditional", renderAdditional);
+        tag.putBoolean("RenderItems", renderItems);
+        tag.putBoolean("RenderCounts", renderCounts);
+        tag.putBoolean("RenderIcons", renderIcons);
 
         if (!upgradeItem.isEmpty()) {
             tag.put("Upgrade", upgradeItem.save(context.world.registryAccess()));

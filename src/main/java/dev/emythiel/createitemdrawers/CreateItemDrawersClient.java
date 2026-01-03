@@ -26,14 +26,14 @@ import java.util.function.Supplier;
 public class CreateItemDrawersClient {
 
     public CreateItemDrawersClient(IEventBus modEventBus) {
-        modEventBus.addListener(this::onClientSetup);
+        onClientSetup(modEventBus);
     }
 
-    private void onClientSetup(FMLClientSetupEvent event) {
-        event.enqueueWork(CreateItemDrawersClient::clientInit);
+    private void onClientSetup(IEventBus modEventBus) {
+        modEventBus.addListener(CreateItemDrawersClient::clientInit);
     }
 
-    private static void clientInit() {
+    private static void clientInit(final FMLClientSetupEvent event) {
         PonderIndex.addPlugin(new CreateItemDrawersPonderPlugin());
 
         DrawerSpriteShifts.init();

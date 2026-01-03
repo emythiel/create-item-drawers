@@ -156,11 +156,12 @@ public class DrawerStorageBlock extends BaseDrawerBlock implements IWrenchable, 
 
     @Override
     public InteractionResult onWrenched(BlockState state, UseOnContext context) {
-        // If top/bottom is wrenched, ensure connection is broken with the rotation
+        // If sides are wrenched, just return (no rotation can happen)
         Direction hitFace = context.getClickedFace();
-        if (hitFace == Direction.UP || hitFace == Direction.DOWN)
-            ConnectedGroupHandler.connectionGroupCleanup(state, context.getLevel(), context.getClickedPos());
+        if (hitFace != Direction.UP && hitFace != Direction.DOWN)
+            return InteractionResult.PASS;
 
+        ConnectedGroupHandler.connectionGroupCleanup(state, context.getLevel(), context.getClickedPos());
         return IWrenchable.super.onWrenched(state, context);
     }
 

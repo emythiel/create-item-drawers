@@ -37,9 +37,9 @@ public class DrawerStorageBlockEntity extends BaseDrawerBlockEntity implements M
     private final DrawerItemHandler itemHandler;
 
     private ItemStack upgrade = ItemStack.EMPTY;
-    private boolean renderItem = true;
-    private boolean renderCount = true;
-    private boolean renderAdditional = true;
+    private boolean renderItems = true;
+    private boolean renderCounts = true;
+    private boolean renderIcons = true;
 
     public DrawerStorageBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
         super(type, pos, state);
@@ -86,24 +86,24 @@ public class DrawerStorageBlockEntity extends BaseDrawerBlockEntity implements M
     }
 
     public boolean getRenderItems() {
-        return renderItem;
+        return renderItems;
     }
     public void setRenderItems(boolean v) {
-        this.renderItem = v;
+        this.renderItems = v;
     }
 
     public boolean getRenderCounts() {
-        return renderCount;
+        return renderCounts;
     }
     public void setRenderCounts(boolean v) {
-        this.renderCount = v;
+        this.renderCounts = v;
     }
 
-    public boolean getRenderAdditional() {
-        return renderAdditional;
+    public boolean getRenderIcons() {
+        return renderIcons;
     }
-    public void setRenderAdditional(boolean v) {
-        this.renderAdditional = v;
+    public void setRenderIcons(boolean v) {
+        this.renderIcons = v;
     }
 
     @Override
@@ -114,9 +114,9 @@ public class DrawerStorageBlockEntity extends BaseDrawerBlockEntity implements M
             tag.put("Upgrade", upgrade.save(provider));
         }
 
-        tag.putBoolean("RenderItem", renderItem);
-        tag.putBoolean("RenderCount", renderCount);
-        tag.putBoolean("RenderAdditional", renderAdditional);
+        tag.putBoolean("RenderItems", renderItems);
+        tag.putBoolean("RenderCounts", renderCounts);
+        tag.putBoolean("RenderIcons", renderIcons);
 
         // save slots
         ListTag list = new ListTag();
@@ -144,9 +144,9 @@ public class DrawerStorageBlockEntity extends BaseDrawerBlockEntity implements M
             storage.setUpgradeMultiplier(1);
         }
 
-        renderItem = tag.getBoolean("RenderItem");
-        renderCount = tag.getBoolean("RenderCount");
-        renderAdditional = tag.getBoolean("RenderAdditional");
+        renderItems = tag.getBoolean("RenderItems");
+        renderCounts = tag.getBoolean("RenderCounts");
+        renderIcons = tag.getBoolean("RenderIcons");
 
         // load slots
         ListTag list = tag.getList("Slots", Tag.TAG_COMPOUND);

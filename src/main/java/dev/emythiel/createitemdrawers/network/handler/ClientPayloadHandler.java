@@ -39,9 +39,9 @@ public class ClientPayloadHandler {
                     newTag.remove("Upgrade");
                 }
 
-                newTag.putBoolean("RenderItem", packetTag.getBoolean("RenderItem"));
-                newTag.putBoolean("RenderCount", packetTag.getBoolean("RenderCount"));
-                newTag.putBoolean("RenderAdditional", packetTag.getBoolean("RenderAdditional"));
+                newTag.putBoolean("RenderItems", packetTag.getBoolean("RenderItems"));
+                newTag.putBoolean("RenderCounts", packetTag.getBoolean("RenderCounts"));
+                newTag.putBoolean("RenderIcons", packetTag.getBoolean("RenderIcons"));
 
                 if (packetTag.contains("Slots", CompoundTag.TAG_LIST)) {
                     ListTag slotsTag = packetTag.getList("Slots", CompoundTag.TAG_COMPOUND);

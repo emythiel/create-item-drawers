@@ -6,7 +6,6 @@ import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
 
 public record SlotTogglePacket(BlockPos pos, int slot, ToggleMode mode, boolean value) implements CustomPacketPayload {
@@ -33,7 +32,7 @@ public record SlotTogglePacket(BlockPos pos, int slot, ToggleMode mode, boolean 
     }
 
     public enum ToggleMode {
-        LOCK, VOID, ITEMS, COUNTS, SETTINGS;
+        LOCK, VOID, ITEMS, COUNTS, ICONS;
 
         public static ToggleMode fromString(String name) {
             return ToggleMode.valueOf(name.toUpperCase());
