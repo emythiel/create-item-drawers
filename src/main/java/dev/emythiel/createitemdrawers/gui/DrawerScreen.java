@@ -9,11 +9,13 @@ import dev.emythiel.createitemdrawers.network.SlotTogglePacket;
 import dev.emythiel.createitemdrawers.storage.DrawerSlot;
 import dev.emythiel.createitemdrawers.util.CreateItemDrawerLang;
 import net.createmod.catnip.lang.FontHelper;
+import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
@@ -88,23 +90,24 @@ public class DrawerScreen extends AbstractContainerScreen<DrawerMenu> {
     @Override
     protected void renderLabels(GuiGraphics graphics, int mouseX, int mouseY) {
         // Drawer Title text
-        graphics.drawString(this.font, this.title, 8, 4, 0x404040, false);
+        graphics.drawString(this.font, this.title, 87 - font.width(this.title) / 2, 4, 0x404040, false);
 
         // Player inventory title
         graphics.drawString(this.font, playerInventoryTitle, 8, 119, 0x404040, false);
 
         // Upgrade slot title
         {
+            Component text = CreateItemDrawerLang.translate("gui.upgrade_slot").component();
             float scale = 0.70f;
             graphics.pose().pushPose();
             graphics.pose().scale(scale, scale, 1f);
-            int drawX = (int)(17 / scale);
+            int drawX = (int)(31.5 / scale) - font.width(text) / 2;
             int drawY = (int)(26 / scale);
             graphics.drawString(
                 this.font,
-                CreateItemDrawerLang.translate("gui.upgrade_slot").component(),
+                text,
                 drawX, drawY,
-                0x404040,
+                0x582424,
                 false
             );
 
