@@ -16,7 +16,13 @@ public class ReadOnlySlotItemHandler extends SlotItemHandler {
         return false;
     }
 
+    @Override
     public boolean mayPickup(Player player) {
+        return false;
+    }
+
+    @Override
+    public boolean isHighlightable() {
         return false;
     }
 }
