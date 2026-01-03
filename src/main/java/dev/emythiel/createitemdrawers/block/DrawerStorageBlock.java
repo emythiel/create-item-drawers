@@ -13,6 +13,7 @@ import dev.emythiel.createitemdrawers.util.DrawerInteractionHelper;
 import dev.emythiel.createitemdrawers.util.connection.ConnectedGroupHandler;
 import dev.emythiel.createitemdrawers.util.connection.ConnectionHelper;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.ItemInteractionResult;
@@ -155,7 +156,11 @@ public class DrawerStorageBlock extends BaseDrawerBlock implements IWrenchable, 
 
     @Override
     public InteractionResult onWrenched(BlockState state, UseOnContext context) {
-        ConnectedGroupHandler.connectionGroupCleanup(state, context.getLevel(), context.getClickedPos());
+        // If top/bottom is wrenched, ensure connection is broken with the rotation
+        Direction hitFace = context.getClickedFace();
+        if (hitFace == Direction.UP || hitFace == Direction.DOWN)
+            ConnectedGroupHandler.connectionGroupCleanup(state, context.getLevel(), context.getClickedPos());
+
         return IWrenchable.super.onWrenched(state, context);
     }
 
