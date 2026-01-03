@@ -1,12 +1,7 @@
 package dev.emythiel.createitemdrawers.config;
 
 import net.createmod.catnip.config.ConfigBase;
-import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
-import net.neoforged.neoforge.common.ModConfigSpec;
-import net.neoforged.neoforge.common.ModConfigSpec.Builder;
-
-import java.util.List;
+import org.jetbrains.annotations.NotNull;
 
 public class ServerConfig extends ConfigBase {
 
@@ -25,9 +20,8 @@ public class ServerConfig extends ConfigBase {
     public final ConfigInt upgradeT4 = i(16, 1, 1024, "upgradeT4", Comments.upgradeT4);
     public final ConfigInt upgradeT5 = i(32, 1, 1024, "upgradeT5", Comments.upgradeT5);
 
-    public final ConfigGroup blacklist = group(1, "blacklist", Comments.blacklist);
-
     @Override
+    @NotNull
     public String getName() {
         return "server";
     }
@@ -44,39 +38,5 @@ public class ServerConfig extends ConfigBase {
         static String upgradeT3 = "Capacity multiplier for the Tier III upgrade.";
         static String upgradeT4 = "Capacity multiplier for the Tier IV upgrade.";
         static String upgradeT5 = "Capacity multiplier for the Tier V upgrade.";
-
-        static String blacklist = "List of items which cannot be stored in drawers.";
-    }
-
-    private static ModConfigSpec.ConfigValue<List<? extends String>> BLACKLIST = null;
-
-    @Override
-    public void registerAll(final Builder builder) {
-        super.registerAll(builder);
-
-        // Add blacklist manually
-        builder.push("blacklist");
-        BLACKLIST = builder
-            .comment("Example: [\"minecraft:diamond_sword\", \"minecraft:stone\"]")
-            .defineListAllowEmpty(
-                "items",
-                List.of(
-                    "create_item_drawers:item_drawer_single",
-                    "create_item_drawers:item_drawer_double",
-                    "create_item_drawers:item_drawer_quad"
-                ),
-                () -> "",
-                ServerConfig::validateItemName
-            );
-        builder.pop();
-    }
-
-    private static boolean validateItemName(final Object obj) {
-        return obj instanceof String itemName &&
-            BuiltInRegistries.ITEM.containsKey(ResourceLocation.parse(itemName));
-    }
-
-    public static boolean isBlacklisted(ResourceLocation id) {
-        return BLACKLIST.get().contains(id.toString());
     }
 }
