@@ -5,6 +5,7 @@ import org.jetbrains.annotations.NotNull;
 
 public class ServerConfig extends ConfigBase {
 
+    // Capacity group
     public final ConfigGroup storageCapacity = group(1, "storageCapacity", Comments.storageCapacity);
     public final ConfigInt storageCapacitySingle = i(32, 1, 1024, "storageCapacitySingle",
         Comments.storageCapacitySingle);
@@ -13,6 +14,7 @@ public class ServerConfig extends ConfigBase {
     public final ConfigInt storageCapacityQuad = i(8, 1, 1024, "storageCapacityQuad",
         Comments.storageCapacityQuad);
 
+    // Upgrade group
     public final ConfigGroup upgradeMultiplier = group(1, "upgradeMultiplier", Comments.upgradeMultiplier);
     public final ConfigInt upgradeT1 = i(2, 1, 1024, "upgradeT1", Comments.upgradeT1);
     public final ConfigInt upgradeT2 = i(4, 1, 1024, "upgradeT2", Comments.upgradeT2);

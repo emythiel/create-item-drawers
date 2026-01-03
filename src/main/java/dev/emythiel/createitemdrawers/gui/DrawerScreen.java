@@ -249,9 +249,9 @@ public class DrawerScreen extends AbstractContainerScreen<DrawerMenu> {
             }
         ).withMultiLineTooltip(() -> {
             String headerKey = be.getRenderIcons()
-                ? "gui.tooltip.settings_hide"
-                : "gui.tooltip.settings_show";
-            return createFormattedTooltip(headerKey, "gui.tooltip.settings_description");
+                ? "gui.tooltip.icons_hide"
+                : "gui.tooltip.icons_show";
+            return createFormattedTooltip(headerKey, "gui.tooltip.icons_description");
         }));
 
         // Per slot void/lock toggles
