@@ -1,5 +1,6 @@
 package dev.emythiel.createitemdrawers.storage;
 
+import dev.emythiel.createitemdrawers.CreateItemDrawers;
 import dev.emythiel.createitemdrawers.registry.ModConfigs;
 import net.minecraft.world.item.ItemStack;
 
@@ -47,6 +48,25 @@ public class DrawerStorage {
             return 64 * baseMultiplier * upgradeMultiplier;  // fallback
 
         return baseMultiplier * item.getMaxStackSize() * upgradeMultiplier;
+    }
+
+
+    /* Combined slot capacity and counts for Create Threshold Switches */
+
+    public int getCombinedSlotCapacity() {
+        int combinedCapacity = 0;
+        for (int i = 0; i < getSlotCount(); i++) {
+            combinedCapacity += getCapacity(i, getSlot(i).getStoredItem());
+        }
+        return combinedCapacity;
+    }
+
+    public int getCombinedSlotCount() {
+        int combinedCount = 0;
+        for (int i = 0; i < getSlotCount(); i++) {
+            combinedCount += getSlot(i).getCount();
+        }
+        return combinedCount;
     }
 
 

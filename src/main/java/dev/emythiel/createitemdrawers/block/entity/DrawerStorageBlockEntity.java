@@ -2,6 +2,8 @@ package dev.emythiel.createitemdrawers.block.entity;
 
 import com.simibubi.create.AllItems;
 import com.simibubi.create.api.equipment.goggles.IHaveGoggleInformation;
+import com.simibubi.create.content.redstone.thresholdSwitch.ThresholdSwitchObservable;
+import com.simibubi.create.foundation.utility.CreateLang;
 import dev.emythiel.createitemdrawers.block.DrawerStorageBlock;
 import dev.emythiel.createitemdrawers.block.base.BaseDrawerBlockEntity;
 import dev.emythiel.createitemdrawers.item.CapacityUpgradeItem;
@@ -19,6 +21,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -32,7 +35,9 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-public class DrawerStorageBlockEntity extends BaseDrawerBlockEntity implements MenuProvider, IHaveGoggleInformation {
+public class DrawerStorageBlockEntity extends BaseDrawerBlockEntity
+                                      implements MenuProvider, IHaveGoggleInformation, ThresholdSwitchObservable {
+
     private final DrawerStorage storage;
     private final DrawerItemHandler itemHandler;
 
@@ -233,5 +238,26 @@ public class DrawerStorageBlockEntity extends BaseDrawerBlockEntity implements M
         }
 
         return true;
+    }
+
+    // Threshold Swtich Observable
+    @Override
+    public int getMaxValue() {
+        return this.getStorage().getCombinedSlotCapacity();
+    }
+
+    @Override
+    public int getMinValue() {
+        return 0;
+    }
+
+    @Override
+    public int getCurrentValue() {
+        return this.getStorage().getCombinedSlotCount();
+    }
+
+    @Override
+    public MutableComponent format(int i) {
+        return CreateLang.translateDirect("create.gui.threshold_switch.currently", i);
     }
 }
