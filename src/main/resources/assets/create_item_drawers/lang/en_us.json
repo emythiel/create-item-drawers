@@ -114,5 +114,11 @@
 
   "tag.item.create_item_drawers.drawers": "Item Drawers",
   "tag.block.create_item_drawers.drawers": "Item Drawers",
-  "tag.item.create_item_drawers.upgrades": "Item Drawer Upgrades"
+  "tag.item.create_item_drawers.upgrades": "Item Drawer Upgrades",
+
+  "config.jade.plugin_create_item_drawers.main": "Show Stored Inventory",
+  "config.jade.plugin_create_item_drawers.display.upgrade": "Show Upgrades",
+  "config.jade.plugin_create_item_drawers.display.empty": "Show Empty Slots",
+  "create_item_drawers.compat.waila.empty": "<Empty>"
+
 }
