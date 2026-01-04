@@ -56,7 +56,7 @@ I will try and see if I can at least keep it updated for the latest Create versi
 Otherwise, feel free to fork it and do whatever you wish, no need to ask for permission.
 
 ### New features / Suggestions
-You're more then welcome to suggest things, but as mentioned above this was mainly made for myself and some friends, so I can't promise I'll dedicate a lot of effort to add suggested features.
+You're welcome to suggest things, but as mentioned above this was mainly made for myself and some friends, so I can't promise I'll dedicate a lot of effort to add suggested features.
 
 ## Credits
 A general huge thanks to the modding community for all the open source tools to use and projects to learn from!  
