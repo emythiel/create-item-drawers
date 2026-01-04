@@ -173,7 +173,7 @@ public class DrawerStorageBlockEntity extends BaseDrawerBlockEntity
         return CreateItemDrawerLang.translate("gui.drawer_" + slots).component();
     }
 
-    // Goggle tooltip TODO: is this proper way? Server can't get client configs, but is forcing OnlyIn(Dist.CLIENT) right?
+    // Goggle tooltip
     @OnlyIn(Dist.CLIENT)
     @Override
     public boolean addToGoggleTooltip(List<Component> tooltip, boolean isPlayerSneaking) {
