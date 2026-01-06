@@ -99,7 +99,7 @@ public class DrawerScenes {
             .pointAt(util.vector().topOf(doubleDrawer));
         scene.idle(30);
         scene.overlay().showControls(new Vec3(3.5, 1.10,2), Pointing.UP, 25)
-            .rightClick();
+            .leftClick();
         scene.idle(5);
         scene.world().modifyBlockEntity(singleDrawer, DrawerStorageBlockEntity.class, (be) -> {
             be.getStorage().getSlot(0).setCount(419);
@@ -111,7 +111,7 @@ public class DrawerScenes {
             .pointAt(util.vector().topOf(doubleDrawer));
         scene.idle(30);
         scene.overlay().showControls(new Vec3(3.5, 1.10, 2), Pointing.UP, 25)
-            .rightClick()
+            .leftClick()
             .whileSneaking();
         scene.idle(5);
         scene.world().modifyBlockEntity(singleDrawer, DrawerStorageBlockEntity.class, (be) -> {
