@@ -2,6 +2,7 @@ package dev.emythiel.createitemdrawers.gui;
 
 import com.simibubi.create.foundation.gui.menu.MenuBase;
 import dev.emythiel.createitemdrawers.block.entity.DrawerStorageBlockEntity;
+import dev.emythiel.createitemdrawers.item.CapacityUpgradeItem;
 import dev.emythiel.createitemdrawers.registry.ModMenuTypes;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
@@ -12,6 +13,7 @@ import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import org.jetbrains.annotations.NotNull;
 
 public class DrawerMenu extends MenuBase<DrawerStorageBlockEntity> {
 
@@ -43,30 +45,14 @@ public class DrawerMenu extends MenuBase<DrawerStorageBlockEntity> {
 
     @Override
     protected void addSlots() {
-        // Player inventory (9x3)
-        for (int row = 0; row < 3; row++) {
-            for (int col = 0; col < 9; col++) {
-                this.addSlot(new Slot(
-                    this.player.getInventory(),
-                    col + row * 9 + 9,
-                    8 + col * 18,
-                    131 + row * 18
-                ));
-            }
-        }
+        // Player inventory
+        this.addPlayerSlots(8, 131);
 
-        // Hotbar (9)
-        for (int i = 0; i < 9; i++) {
-            this.addSlot(new Slot(
-                this.player.getInventory(),
-                i,
-                8 + i * 18,
-                189
-            ));
-        }
+        // Upgrade slot
+        DrawerStorageBlockEntity be = contentHolder;
+        this.addSlot(new UpgradeSlot(be, 24, 39));
 
         // Drawer slots
-        DrawerStorageBlockEntity be = contentHolder;
         int count = be.getStorage().getSlotCount();
 
         if (count == 1) {
@@ -82,16 +68,45 @@ public class DrawerMenu extends MenuBase<DrawerStorageBlockEntity> {
             this.addSlot(new ReadOnlySlotItemHandler(be.getLocalHandler(), 2, 98, 51));
             this.addSlot(new ReadOnlySlotItemHandler(be.getLocalHandler(), 3, 122, 51));
         }
-
-        // Upgrade slot
-        this.addSlot(new UpgradeSlot(be, 24, 39));
     }
 
     @Override
     protected void saveData(DrawerStorageBlockEntity be) {}
 
     @Override
-    public ItemStack quickMoveStack(Player player, int i) {
-        return ItemStack.EMPTY;
+    @NotNull
+    public ItemStack quickMoveStack(@NotNull Player player, int index) {
+        Slot slot = this.slots.get(index);
+        if (!slot.hasItem()) return ItemStack.EMPTY;
+
+        ItemStack slotStack = slot.getItem();
+        ItemStack originalStack = slotStack.copy(); // Keeping copy for return value
+
+        // Player slots at indices 0-35, Upgrade slot at 36, Storage slots at 37+
+        int upgradeSlot = 36;
+
+        if (index < upgradeSlot) {
+            // Clicked player slot, try to move to upgrade slot
+            if (!(slotStack.getItem() instanceof CapacityUpgradeItem))
+                return ItemStack.EMPTY;
+
+            if (!this.moveItemStackTo(slotStack, 36, 37, false))
+                return ItemStack.EMPTY;
+        } else if (index == upgradeSlot) {
+            // Clicked upgrade slot, try to move to player slot
+            if (!this.moveItemStackTo(slotStack, 0, 36, false))
+                return ItemStack.EMPTY;
+        } else {
+            // Clicked on drawer slot, do nothing
+            return ItemStack.EMPTY;
+        }
+
+        if (slotStack.isEmpty()) {
+            slot.set(ItemStack.EMPTY);
+        } else {
+            slot.setChanged();
+        }
+
+        return originalStack;
     }
 }
