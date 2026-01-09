@@ -28,6 +28,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.loot.LootParams;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.phys.BlockHitResult;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Collections;
 import java.util.List;
@@ -54,7 +55,7 @@ public class DrawerStorageBlock extends BaseDrawerBlock implements IWrenchable, 
     // Getter for slots the drawer has
     public int getSlotCount() { return slotCount; }
 
-    @Override
+    @Override @NotNull
     protected ItemInteractionResult useItemOn(ItemStack held, BlockState state, Level level, BlockPos pos,
                                               Player player, InteractionHand hand, BlockHitResult hit) {
         if (!(level.getBlockEntity(pos) instanceof DrawerStorageBlockEntity be))
@@ -133,7 +134,7 @@ public class DrawerStorageBlock extends BaseDrawerBlock implements IWrenchable, 
         return ItemInteractionResult.SUCCESS;
     }
 
-    @Override
+    @Override @NotNull
     public List<ItemStack> getDrops(BlockState state, LootParams.Builder builder) {
         BlockEntity be = builder.getOptionalParameter(LootContextParams.BLOCK_ENTITY);
 

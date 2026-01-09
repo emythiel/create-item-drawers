@@ -73,8 +73,7 @@ public class DrawerMenu extends MenuBase<DrawerStorageBlockEntity> {
     @Override
     protected void saveData(DrawerStorageBlockEntity be) {}
 
-    @Override
-    @NotNull
+    @Override @NotNull
     public ItemStack quickMoveStack(@NotNull Player player, int index) {
         Slot slot = this.slots.get(index);
         if (!slot.hasItem()) return ItemStack.EMPTY;

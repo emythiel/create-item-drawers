@@ -166,16 +166,14 @@ public class DrawerStorageBlockEntity extends BaseDrawerBlockEntity
         return DrawerMenu.create(id, inv, this);
     }
 
-    @NotNull
-    @Override
+    @Override @NotNull
     public Component getDisplayName() {
         int slots = storage.getSlotCount();
         return CreateItemDrawerLang.translate("gui.drawer_" + slots).component();
     }
 
     // Goggle tooltip
-    @OnlyIn(Dist.CLIENT)
-    @Override
+    @Override @OnlyIn(Dist.CLIENT)
     public boolean addToGoggleTooltip(List<Component> tooltip, boolean isPlayerSneaking) {
         boolean SHOW_GOGGLE_TOOLTIP = ModConfigs.client().goggleTooltip.get();
         boolean GOOGLE_TOOLTIP_REQUIRE_WRENCH = ModConfigs.client().goggleTooltipRequiresWrench.get();

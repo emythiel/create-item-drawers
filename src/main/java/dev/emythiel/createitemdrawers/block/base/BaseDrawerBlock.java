@@ -39,14 +39,12 @@ public abstract class BaseDrawerBlock extends Block {
             .setValue(HorizontalDirectionalBlock.FACING, context.getHorizontalDirection().getOpposite());
     }
 
-    @NotNull
-    @Override
+    @Override @NotNull
     public BlockState rotate(BlockState state, Rotation rot) {
         return state.setValue(HORIZONTAL_FACING, rot.rotate(state.getValue(HORIZONTAL_FACING)));
     }
 
-    @NotNull
-    @Override
+    @Override @NotNull
     @SuppressWarnings("deprecation")
     public BlockState mirror(BlockState state, Mirror mirrorIn) {
         return state.rotate(mirrorIn.getRotation(state.getValue(HORIZONTAL_FACING)));

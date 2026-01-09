@@ -1,11 +1,8 @@
 package dev.emythiel.createitemdrawers.storage;
 
-import dev.emythiel.createitemdrawers.config.ServerConfig;
 import dev.emythiel.createitemdrawers.registry.ModTags;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 
 public class DrawerSlot {

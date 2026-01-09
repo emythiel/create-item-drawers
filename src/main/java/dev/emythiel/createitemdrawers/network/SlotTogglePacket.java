@@ -25,8 +25,7 @@ public record SlotTogglePacket(BlockPos pos, int slot, ToggleMode mode, boolean 
             SlotTogglePacket::new
         );
 
-    @NotNull
-    @Override
+    @Override @NotNull
     public Type<? extends CustomPacketPayload> type() {
         return TYPE;
     }

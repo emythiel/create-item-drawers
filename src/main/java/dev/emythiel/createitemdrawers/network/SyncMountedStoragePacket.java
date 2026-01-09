@@ -12,8 +12,7 @@ import org.jetbrains.annotations.NotNull;
 public record SyncMountedStoragePacket(int contraptionId, BlockPos localPos, CompoundTag tag) implements CustomPacketPayload {
     public static final Type<SyncMountedStoragePacket> TYPE = new Type<>(CreateItemDrawers.asResource("sync_mounted_storage"));
 
-    @NotNull
-    @Override
+    @Override @NotNull
     public Type<? extends CustomPacketPayload> type() { return TYPE; }
 
     public static final StreamCodec<RegistryFriendlyByteBuf, SyncMountedStoragePacket> STREAM_CODEC =

@@ -10,8 +10,7 @@ import org.jetbrains.annotations.NotNull;
 
 public class CreateItemDrawersPonderPlugin implements PonderPlugin {
 
-    @NotNull
-    @Override
+    @Override @NotNull
     public String getModId() {
         return CreateItemDrawers.MODID;
     }

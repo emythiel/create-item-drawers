@@ -22,8 +22,7 @@ public class ClientConfig extends ConfigBase {
     public final ConfigInt renderIconsDistance = i(6, 1, 128, "renderIconsDistance",
         Comments.renderIconsDistance);
 
-    @Override
-    @NotNull
+    @Override @NotNull
     public String getName() {
         return "client";
     }

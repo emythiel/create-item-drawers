@@ -22,8 +22,7 @@ public class DrawerItemHandler extends ItemStackHandler {
         return storage.getSlotCount();
     }
 
-    @NotNull
-    @Override
+    @Override @NotNull
     public ItemStack getStackInSlot(int slot) {
         if (slot < 0 || slot >= storage.getSlotCount())
             return ItemStack.EMPTY;
@@ -38,8 +37,7 @@ public class DrawerItemHandler extends ItemStackHandler {
         return copy;
     }
 
-    @NotNull
-    @Override
+    @Override @NotNull
     public ItemStack insertItem(int slot, ItemStack stack, boolean simulate) {
         if (stack.isEmpty())
             return ItemStack.EMPTY;
@@ -58,8 +56,7 @@ public class DrawerItemHandler extends ItemStackHandler {
         return remaining;
     }
 
-    @NotNull
-    @Override
+    @Override @NotNull
     public ItemStack extractItem(int slot, int amount, boolean simulate) {
         if (amount <= 0)
             return ItemStack.EMPTY;

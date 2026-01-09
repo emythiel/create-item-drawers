@@ -22,8 +22,7 @@ public class ServerConfig extends ConfigBase {
     public final ConfigInt upgradeT4 = i(16, 1, 1024, "upgradeT4", Comments.upgradeT4);
     public final ConfigInt upgradeT5 = i(32, 1, 1024, "upgradeT5", Comments.upgradeT5);
 
-    @Override
-    @NotNull
+    @Override @NotNull
     public String getName() {
         return "server";
     }

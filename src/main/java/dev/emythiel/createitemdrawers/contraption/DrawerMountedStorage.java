@@ -123,8 +123,8 @@ public class DrawerMountedStorage extends WrapperMountedItemStorage<DrawerItemHa
         currentContraption = null;
     }
 
-    @Override
-    public ItemStack insertItem(int slot, ItemStack stack, boolean simulate) {
+    @Override @NotNull
+    public ItemStack insertItem(int slot, @NotNull ItemStack stack, boolean simulate) {
         if (slot < 0 || slot >= wrapped.getSlots()) {
             return stack;
         }
@@ -137,7 +137,7 @@ public class DrawerMountedStorage extends WrapperMountedItemStorage<DrawerItemHa
         return result;
     }
 
-    @Override
+    @Override @NotNull
     public ItemStack extractItem(int slot, int amount, boolean simulate) {
         if (slot < 0 || slot >= wrapped.getSlots()) {
             return ItemStack.EMPTY;

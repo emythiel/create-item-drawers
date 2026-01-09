@@ -28,8 +28,7 @@ public class ModBlockLootTableProvider extends BlockLootSubProvider {
         dropSelf(ModBlocks.DRAWER_QUAD.get());
     }
 
-    @NotNull
-    @Override
+    @Override @NotNull
     protected Iterable<Block> getKnownBlocks() {
         return REGISTRATE
             .getAll(Registries.BLOCK)

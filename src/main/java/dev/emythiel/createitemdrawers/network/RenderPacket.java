@@ -21,8 +21,7 @@ public record RenderPacket(BlockPos pos, Boolean renderMode) implements CustomPa
             RenderPacket::new
         );
 
-    @NotNull
-    @Override
+    @Override @NotNull
     public Type<? extends CustomPacketPayload> type() {
         return TYPE;
     }

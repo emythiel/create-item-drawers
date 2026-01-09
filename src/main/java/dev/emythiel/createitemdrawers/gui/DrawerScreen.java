@@ -121,7 +121,8 @@ public class DrawerScreen extends AbstractContainerScreen<DrawerMenu> {
     }
 
     @Override
-    protected void renderSlotContents(GuiGraphics graphics, @NotNull ItemStack stack, Slot slot, String countString) {
+    protected void renderSlotContents(@NotNull GuiGraphics graphics, @NotNull ItemStack stack,
+                                      Slot slot, String countString) {
         int hash = slot.x + slot.y * this.imageWidth;
         boolean isTemplateItem = false;
 

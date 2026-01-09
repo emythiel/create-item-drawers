@@ -42,7 +42,7 @@ public class DrawerExtractionHandler {
         boolean sneaking = player.isShiftKeyDown();
 
         BlockHitResult hit = (BlockHitResult) player.pick(5.0D, 0.0F, false);
-        if (hit == null || !hit.getBlockPos().equals(pos))
+        if (!hit.getBlockPos().equals(pos))
             return;
 
         int slot = DrawerInteractionHelper.getHitSlot(drawer, hit.getLocation());
@@ -52,7 +52,8 @@ public class DrawerExtractionHandler {
         extractFromSlot(drawer, slot, player, sneaking, level, pos);
     }
 
-    private static void extractFromSlot(DrawerStorageBlockEntity drawer, int slot, Player player, boolean sneaking, Level level, BlockPos pos) {
+    private static void extractFromSlot(DrawerStorageBlockEntity drawer, int slot, Player player, boolean sneaking,
+                                        Level level, BlockPos pos) {
         var storage = drawer.getStorage();
         var drawerSlot = storage.getSlot(slot);
 

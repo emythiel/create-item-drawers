@@ -160,22 +160,6 @@ public class DrawerRenderer extends SafeBlockEntityRenderer<DrawerStorageBlockEn
 
         Direction facing = state.getValue(HORIZONTAL_FACING);
 
-        // Checking if player is in front not reliable on contraptions, at least not with same method as normal render
-        /*Vec3 frontNormal = new Vec3(
-            facing.getStepX(),
-            facing.getStepY(),
-            facing.getStepZ()
-        ).normalize();
-
-        Vec3 toPlayer = new Vec3(
-            player.getX() - (context.localPos.getX() + 0.5),
-            player.getY() - (context.localPos.getY() + 0.5),
-            player.getZ() - (context.localPos.getZ() + 0.5)
-        ).normalize();
-
-        if (frontNormal.dot(toPlayer) <= 0)
-            return;*/
-
         BlockPos lightPos = context.contraption.entity.blockPosition().offset(context.localPos).relative(facing);
 
         int blockLight = context.world.getBrightness(LightLayer.BLOCK, lightPos);
