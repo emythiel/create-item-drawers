@@ -33,16 +33,16 @@ If you remove an upgrade and max capacity ends up being less than what is curren
 Comes with 5 tiers of upgrades.
 
 ### Networks
-By using a wrench on two drawers next to each other, you can connect them (similar to Mechanical Crafters from base Create). This let's you create Drawer networks where components that can insert/extract items can do so from a single point.
+By using a wrench on two drawers next to each other, you can connect them (similar to Mechanical Crafters from base Create). This lets you create Drawer networks where components that can insert/extract items can do so from a single point.
 
 ### Configuration
 **Client Side**:  
 - Settings to configure the distance at which items, counts, and icons (lock/void/upgrade) are shown.  
-Also able to disable the rendering of these globally if you wish for some reason.  
+Also able to disable the rendering of these globally if you wish to for some reason.  
 - Setting to enable Engineer's Goggles overlay to see details such as stored items, lock/void modes etc. while wearing the goggles. Can additionally set it to require holding a Wrench as well if you wish. Both are disabled by default to not clutter the HUD too much.
 
 **Server Side**:  
-- Settings to adjust the base capacity of each of the three drawer types. The capacity measured in stacks - eg. a base capacity of 32 means it can store 32 stacks (A stack of Cobblestone is 64, so 32\*64=2048, while a stack of Ender Pearls is 16, so 32\*16=512)  
+- Settings to adjust the base capacity of each of the three drawer types. The capacity is measured in stacks - eg. a base capacity of 32 means it can store 32 stacks (A stack of Cobblestone is 64, so 32\*64=2048, while a stack of Ender Pearls is 16, so 32\*16=512)  
 - Settings to adjust the upgrade multipliers. Pretty straightforward, they multiply the base capacity.
 
 ## Other Info
@@ -53,7 +53,7 @@ You're more than welcome to include it in your modpack.
 This was mainly made for myself and some friends, and as such I have no plans to port to other modloaders, or port to previous versions.  
 I will try and see if I can at least keep it updated for the latest Create version on the most recent Minecraft version (At the moment, 1.21.1).
 
-Otherwise, feel free to fork it and do whatever you wish, no need to ask for permission.
+Otherwise, feel free to fork it and port yourself.
 
 ### New features / Suggestions
 You're welcome to suggest things, but as mentioned above this was mainly made for myself and some friends, so I can't promise I'll dedicate a lot of effort to add suggested features.
