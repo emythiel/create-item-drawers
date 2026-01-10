@@ -10,8 +10,10 @@ public class DrawerSpriteShifts {
 
     public static final CTSpriteShiftEntry
         DRAWER_BACK = omni("back"),
-        DRAWER_SIDE = vertical("side"),
-        DRAWER_OTHERSIDE = horizontal("side");
+        DRAWER_SIDE_VER = vertical("side"),
+        DRAWER_SIDE_HOR = horizontal("side"),
+        DRAWER_TRIM_VER = vertical("trim"),
+        DRAWER_TRIM_HOR = horizontal("trim");
 
     private static CTSpriteShiftEntry omni(String name) {
         return getCT(AllCTTypes.OMNIDIRECTIONAL, name);

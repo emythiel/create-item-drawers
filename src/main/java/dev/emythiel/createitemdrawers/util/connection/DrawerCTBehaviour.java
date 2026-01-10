@@ -48,6 +48,6 @@ public class DrawerCTBehaviour extends ConnectedTextureBehaviour.Base {
         boolean isVertical = direction.getAxis().isVertical();
         boolean facingX = facing.getAxis() == Axis.X;
         return isFront ? DrawerSpriteShifts.DRAWER_BACK
-            : isVertical && !facingX ? DrawerSpriteShifts.DRAWER_OTHERSIDE : DrawerSpriteShifts.DRAWER_SIDE;
+            : isVertical && !facingX ? DrawerSpriteShifts.DRAWER_SIDE_HOR : DrawerSpriteShifts.DRAWER_SIDE_VER;
     }
 }
