@@ -22,6 +22,12 @@ public class ServerConfig extends ConfigBase {
     public final ConfigInt upgradeT4 = i(16, 1, 1024, "upgradeT4", Comments.upgradeT4);
     public final ConfigInt upgradeT5 = i(32, 1, 1024, "upgradeT5", Comments.upgradeT5);
 
+    // Misc
+    public final ConfigGroup miscSettings = group(1, "misc", Comments.miscSettings);
+    public final ConfigBool slowness = b(true, "slowness", Comments.slowness);
+    public final ConfigInt slownessAmount = i(2, 1, 36, "slownessAmount", Comments.slownessAmount);
+    public final ConfigBool slownessCreative = b(false, "slownessCreative", Comments.slownessCreative);
+
     @Override @NotNull
     public String getName() {
         return "server";
@@ -39,5 +45,10 @@ public class ServerConfig extends ConfigBase {
         static String upgradeT3 = "Capacity multiplier for the Tier III upgrade.";
         static String upgradeT4 = "Capacity multiplier for the Tier IV upgrade.";
         static String upgradeT5 = "Capacity multiplier for the Tier V upgrade.";
+
+        static String miscSettings = "Miscellaneous settings";
+        static String slowness = "Apply slowness when a certain amount of filled drawers are in the players inventory.";
+        static String slownessAmount = "Slowness effect increases by one tier for every X filled drawers in the inventory.";
+        static String slownessCreative = "If the slowness effect should apply to players in creative mode.";
     }
 }

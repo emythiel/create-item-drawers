@@ -4,13 +4,16 @@ import com.simibubi.create.foundation.data.CreateRegistrate;
 import com.simibubi.create.foundation.item.ItemDescription;
 import dev.emythiel.createitemdrawers.block.entity.DrawerStorageBlockEntity;
 import dev.emythiel.createitemdrawers.registry.*;
+import dev.emythiel.createitemdrawers.util.DrawerSlownessDebuff;
 import net.createmod.catnip.lang.FontHelper;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.CreativeModeTab;
 import net.neoforged.fml.ModLoadingContext;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
+import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 import org.slf4j.Logger;
 
 import com.mojang.logging.LogUtils;
@@ -54,6 +57,11 @@ public class CreateItemDrawers {
         @SubscribeEvent
         public static void registerCapabilities(RegisterCapabilitiesEvent event) {
             DrawerStorageBlockEntity.registerCapabilities(event, ModBlockEntities.DRAWER_STORAGE_BLOCK_ENTITY.get());
+        }
+
+        @SubscribeEvent
+        public static void onPlayerTick(PlayerTickEvent.Post event) {
+            DrawerSlownessDebuff.tick(event);
         }
     }
 
