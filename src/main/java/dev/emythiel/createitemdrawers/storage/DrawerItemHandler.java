@@ -78,7 +78,7 @@ public class DrawerItemHandler extends ItemStackHandler {
     }
 
     @Override
-    public int getStackLimit(int slot, ItemStack stack) {
+    public int getStackLimit(int slot, @NotNull ItemStack stack) {
         if (slot < storage.getSlotCount()) {
             return storage.getCapacity(slot, stack);
         }

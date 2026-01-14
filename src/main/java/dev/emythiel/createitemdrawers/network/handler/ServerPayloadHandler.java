@@ -14,6 +14,7 @@ public class ServerPayloadHandler {
         return INSTANCE;
     }
 
+    @SuppressWarnings("resource")
     public void handleDrawerConfig(final RenderPacket packet, final IPayloadContext ctx) {
         ctx.enqueueWork(() -> {
             ServerPlayer player = (ServerPlayer) ctx.player();
@@ -29,6 +30,7 @@ public class ServerPayloadHandler {
         });
     }
 
+    @SuppressWarnings("resource")
     public void handleSlotToggle(final SlotTogglePacket packet, final IPayloadContext ctx) {
         ctx.enqueueWork(() -> {
             ServerPlayer player = (ServerPlayer) ctx.player();

@@ -14,6 +14,7 @@ public class ClientPayloadHandler {
 
     public static ClientPayloadHandler getInstance() { return INSTANCE; }
 
+    @SuppressWarnings("resource")
     public void handleSyncMountedStorage(final SyncMountedStoragePacket packet, final IPayloadContext ctx) {
         ctx.enqueueWork(() -> {
             var level = ctx.player().level();

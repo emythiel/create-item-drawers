@@ -41,12 +41,17 @@ public class DrawerCTBehaviour extends ConnectedTextureBehaviour.Base {
         return isNegative;
     }
 
-    @Override
+    @Override @SuppressWarnings("resource")
     public CTSpriteShiftEntry getShift(BlockState state, Direction direction, @Nullable TextureAtlasSprite sprite) {
         Direction facing = state.getValue(HORIZONTAL_FACING);
         boolean isFront = facing.getAxis() == direction.getAxis();
         boolean isVertical = direction.getAxis().isVertical();
         boolean facingX = facing.getAxis() == Axis.X;
+
+        if (sprite != null && sprite.contents().name().getPath().contains("trim")) {
+            return DrawerSpriteShifts.DRAWER_TRIM;
+        }
+
         return isFront ? DrawerSpriteShifts.DRAWER_BACK
             : isVertical && !facingX ? DrawerSpriteShifts.DRAWER_SIDE_HOR : DrawerSpriteShifts.DRAWER_SIDE_VER;
     }

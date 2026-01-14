@@ -13,7 +13,7 @@ import javax.annotation.Nullable;
 
 public class DrawerMountedMovementBehaviour implements MovementBehaviour {
 
-    @Override
+    @Override @SuppressWarnings("resource")
     public void tick(MovementContext context) {
         if (context.world.isClientSide()) return;
 

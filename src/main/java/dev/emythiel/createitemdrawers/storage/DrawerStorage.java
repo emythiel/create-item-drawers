@@ -1,6 +1,5 @@
 package dev.emythiel.createitemdrawers.storage;
 
-import dev.emythiel.createitemdrawers.CreateItemDrawers;
 import dev.emythiel.createitemdrawers.registry.ModConfigs;
 import net.minecraft.world.item.ItemStack;
 
