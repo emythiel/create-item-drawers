@@ -9,22 +9,10 @@ import dev.emythiel.createitemdrawers.CreateItemDrawers;
 public class DrawerSpriteShifts {
 
     public static final CTSpriteShiftEntry
-        DRAWER_BACK = omni("back"),
-        DRAWER_SIDE_HOR = horizontal("side"),
-        DRAWER_SIDE_VER = vertical("side"),
-        DRAWER_TRIM = omni("trim");
-
-    private static CTSpriteShiftEntry omni(String name) {
-        return getCT(AllCTTypes.OMNIDIRECTIONAL, name);
-    }
-
-    private static CTSpriteShiftEntry horizontal(String name) {
-        return getCT(AllCTTypes.HORIZONTAL, name);
-    }
-
-    private static CTSpriteShiftEntry vertical(String name) {
-        return getCT(AllCTTypes.VERTICAL, name);
-    }
+        DRAWER_BACK = getCT(AllCTTypes.OMNIDIRECTIONAL, "back"),
+        DRAWER_SIDE_HOR = getCT(AllCTTypes.HORIZONTAL, "side"),
+        DRAWER_SIDE_VER = getCT(AllCTTypes.VERTICAL, "side"),
+        DRAWER_TRIM = getCT(AllCTTypes.OMNIDIRECTIONAL, "trim");
 
     private static CTSpriteShiftEntry getCT(CTType type, String blockTextureName, String connectedTextureName) {
         return CTSpriteShifter.getCT(type, CreateItemDrawers.asResource("block/" + blockTextureName),

@@ -7,8 +7,8 @@
 		"side": "create_item_drawers:block/side",
 		"back": "create_item_drawers:block/back",
 		"slot": "create_item_drawers:block/double_slot",
-    "trim": "create_item_drawers:block/trim"
-  },
+		"trim": "create_item_drawers:block/trim"
+	},
 	"elements": [
 		{
 			"name": "main_body",
@@ -47,7 +47,7 @@
 				"east": {"uv": [0, 0, 0.5, 0.5], "texture": "#missing"},
 				"south": {"uv": [0, 0, 15, 0.5], "texture": "#slot"},
 				"west": {"uv": [0, 0, 0.5, 0.5], "texture": "#missing"},
-				"up": {"uv": [15.5, 0.5, 16, 15.5], "rotation": 270, "texture": "#trim"},
+				"up": {"uv": [0.5, 0, 15.5, 0.5], "texture": "#side"},
 				"down": {"uv": [0.5, 0, 15.5, 0.5], "rotation": 180, "texture": "#slot"}
 			}
 		},
@@ -59,9 +59,9 @@
 				"north": {"uv": [15.5, 0, 16, 16], "texture": "#trim"},
 				"east": {"uv": [0, 15.5, 16, 16], "rotation": 90, "texture": "#slot"},
 				"south": {"uv": [0, 0, 0.5, 16], "texture": "#slot"},
-				"west": {"uv": [15.5, 0, 16, 16], "texture": "#trim"},
-				"up": {"uv": [15.5, 0, 16, 0.5], "texture": "#trim"},
-				"down": {"uv": [15.5, 15.5, 16, 16], "rotation": 180, "texture": "#trim"}
+				"west": {"uv": [0, 15.5, 16, 16], "rotation": 90, "texture": "#side"},
+				"up": {"uv": [0, 0, 0.5, 0.5], "texture": "#side"},
+				"down": {"uv": [15.5, 0, 16, 0.5], "rotation": 180, "texture": "#side"}
 			}
 		},
 		{
@@ -71,11 +71,11 @@
 			"rotation": {"angle": 0, "axis": "y", "origin": [15, 0, 0]},
 			"faces": {
 				"north": {"uv": [0, 0, 0.5, 16], "texture": "#trim"},
-				"east": {"uv": [0, 0, 0.5, 16], "texture": "#trim"},
+				"east": {"uv": [0, 0, 16, 0.5], "rotation": 90, "texture": "#side"},
 				"south": {"uv": [0, 0, 0.5, 16], "texture": "#slot"},
 				"west": {"uv": [0, 0, 16, 0.5], "rotation": 90, "texture": "#slot"},
-				"up": {"uv": [15.5, 15.5, 16, 16], "texture": "#trim"},
-				"down": {"uv": [15.5, 0, 16, 0.5], "rotation": 180, "texture": "#trim"}
+				"up": {"uv": [15.5, 0, 16, 0.5], "texture": "#side"},
+				"down": {"uv": [0, 0, 0.5, 0.5], "rotation": 180, "texture": "#side"}
 			}
 		},
 		{
@@ -89,7 +89,7 @@
 				"south": {"uv": [0, 0, 15, 0.5], "texture": "#slot"},
 				"west": {"uv": [0, 0, 0.5, 0.5], "texture": "#missing"},
 				"up": {"uv": [0.5, 0, 15.5, 0.5], "texture": "#slot"},
-				"down": {"uv": [0, 0.5, 0.5, 15.5], "rotation": 90, "texture": "#trim"}
+				"down": {"uv": [0.5, 0, 15.5, 0.5], "rotation": 180, "texture": "#side"}
 			}
 		},
 		{
