@@ -99,6 +99,7 @@
   "create_item_drawers.gui.tooltip.icons_description": "Toggle whether icons like _void_, _lock_ or _upgrades_ are shown on the drawer block.",
 
   "create_item_drawers.ponder.tag.drawers": "Create: Item Drawers",
+  "create_item_drawers.ponder.tag.drawers.description": "Drawers for storing a lot of a few items",
   "create_item_drawers.ponder.drawer_intro.header": "Item Drawers",
   "create_item_drawers.ponder.drawer_intro.text_1": "Item Drawers can be used to store a large amount of a few items",
   "create_item_drawers.ponder.drawer_intro.text_2": "Depending on the drawer type, you can store up to 1, 2, or 4 different items.",
