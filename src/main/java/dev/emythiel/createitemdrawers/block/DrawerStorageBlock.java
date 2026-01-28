@@ -1,5 +1,6 @@
 package dev.emythiel.createitemdrawers.block;
 
+import com.simibubi.create.AllBlocks;
 import com.simibubi.create.AllItems;
 import com.simibubi.create.AllSoundEvents;
 import com.simibubi.create.content.equipment.wrench.IWrenchable;
@@ -62,6 +63,10 @@ public class DrawerStorageBlock extends BaseDrawerBlock implements IWrenchable, 
             return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
 
         if (!isFrontFace(state, hit.getDirection()))
+            return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+
+        // Pass to default interaction if holding mechanical arm
+        if (held.is(AllBlocks.MECHANICAL_ARM.asItem()))
             return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
 
         boolean sneaking = player.isShiftKeyDown();

@@ -5,6 +5,7 @@ import com.simibubi.create.foundation.item.ItemDescription;
 import dev.emythiel.createitemdrawers.block.entity.DrawerStorageBlockEntity;
 import dev.emythiel.createitemdrawers.registry.*;
 import dev.emythiel.createitemdrawers.util.DrawerSlownessDebuff;
+import dev.emythiel.createitemdrawers.util.MechArmInteractionPoint;
 import net.createmod.catnip.lang.FontHelper;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
@@ -13,6 +14,7 @@ import net.neoforged.fml.ModLoadingContext;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.event.tick.PlayerTickEvent;
+import net.neoforged.neoforge.registries.RegisterEvent;
 import org.slf4j.Logger;
 
 import com.mojang.logging.LogUtils;
@@ -47,6 +49,8 @@ public class CreateItemDrawers {
         ModMenuTypes.register();
         ModMountedStorageTypes.register();
 
+        modEventBus.addListener(CreateItemDrawers::onRegister);
+
         ModConfigs.register(modLoadingContext, modContainer);
     }
 
@@ -62,6 +66,10 @@ public class CreateItemDrawers {
         public static void onPlayerTick(PlayerTickEvent.Post event) {
             DrawerSlownessDebuff.tick(event);
         }
+    }
+
+    public static void onRegister(final RegisterEvent event) {
+        MechArmInteractionPoint.init();
     }
 
     public static ResourceLocation asResource(String path) {
