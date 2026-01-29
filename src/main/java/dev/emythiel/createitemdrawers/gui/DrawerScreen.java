@@ -52,14 +52,6 @@ public class DrawerScreen extends AbstractContainerScreen<DrawerMenu> {
     // Lock/Void widget size (width, height)
     private static final int LOCK_VOID_W = 9;
     private static final int LOCK_VOID_H = 9;
-    // Render mode text
-    private static final Component RENDER_MODE_LABEL =
-        CreateItemDrawerLang.translate("gui.render_mode").component();
-    private static final Component[] RENDER_OPTIONS = new Component[] {
-        CreateItemDrawerLang.translate("gui.render_all").component(),
-        CreateItemDrawerLang.translate("gui.render_item").component(),
-        CreateItemDrawerLang.translate("gui.render_none").component()
-    };
 
     private static final ResourceLocation TEXTURE =
         CreateItemDrawers.asResource("textures/gui/drawer.png");
