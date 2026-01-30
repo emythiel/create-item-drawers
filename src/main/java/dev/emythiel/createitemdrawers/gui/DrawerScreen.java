@@ -209,7 +209,7 @@ public class DrawerScreen extends AbstractSimiContainerScreen<DrawerMenu> {
         renderCountsButton.setToolTip(CreateItemDrawerLang.translate("gui.tooltip.counts_header").component());
         addRenderableWidget(renderCountsButton);
 
-        renderIconsButton = new IconButton(leftPos + 44, topPos + 85, AllIcons.I_PLACEMENT_SETTINGS);
+        renderIconsButton = new IconButton(leftPos + 44, topPos + 85, AllIcons.I_SKIP_BLOCK_ENTITIES);
         renderIconsButton.withCallback(() -> {
             boolean newVal = !be.getRenderIcons();
             be.setRenderIcons(newVal);
