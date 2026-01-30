@@ -1,16 +1,19 @@
 package dev.emythiel.createitemdrawers.gui;
 
 import com.simibubi.create.foundation.gui.AllIcons;
+import com.simibubi.create.foundation.gui.menu.AbstractSimiContainerScreen;
 import com.simibubi.create.foundation.gui.widget.IconButton;
+import com.simibubi.create.foundation.item.TooltipHelper;
 import dev.emythiel.createitemdrawers.CreateItemDrawers;
 import dev.emythiel.createitemdrawers.block.entity.DrawerStorageBlockEntity;
-import dev.emythiel.createitemdrawers.gui.widgets.ToggleButton;
+import dev.emythiel.createitemdrawers.gui.widgets.SmallIconButton;
 import dev.emythiel.createitemdrawers.network.SlotTogglePacket;
 import dev.emythiel.createitemdrawers.storage.DrawerSlot;
 import dev.emythiel.createitemdrawers.util.CreateItemDrawerLang;
 import net.createmod.catnip.lang.FontHelper;
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
+import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -24,34 +27,25 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static dev.emythiel.createitemdrawers.network.SlotTogglePacket.ToggleMode.*;
-import static net.createmod.catnip.lang.FontHelper.styleFromColor;
 
-public class DrawerScreen extends AbstractContainerScreen<DrawerMenu> {
+public class DrawerScreen extends AbstractSimiContainerScreen<DrawerMenu> {
 
     // Inventory slot widget (x, y, size)
     private static final int INV_SLOT_WIDGET_X = 238;
     private static final int INV_SLOT_WIDGET_Y = 0;
     private static final int INV_SLOT_WIDGET_SIZE = 18;
-    // Toggle widget (x, y, width, height)
-    private static final int TOGGLE_OFF_X = 244;
-    private static final int TOGGLE_OFF_Y = 36;
-    private static final int TOGGLE_ON_X = 244;
-    private static final int TOGGLE_ON_Y = 43;
-    private static final int TOGGLE_W = 12;
-    private static final int TOGGLE_H = 7;
-    // Lock widget (x, y, width, height)
-    private static final int LOCK_ON_X = 247;
-    private static final int LOCK_ON_Y = 27;
-    private static final int LOCK_OFF_X = 238;
-    private static final int LOCK_OFF_Y = 27;
-    // Void widget (x, y, width, height)
-    private static final int VOID_ON_X = 247;
-    private static final int VOID_ON_Y = 18;
-    private static final int VOID_OFF_X = 238;
-    private static final int VOID_OFF_Y = 18;
     // Lock/Void widget size (width, height)
     private static final int LOCK_VOID_W = 9;
     private static final int LOCK_VOID_H = 9;
+
+    protected IconButton renderItemsButton;
+    protected IconButton renderCountsButton;
+    protected IconButton renderIconsButton;
+
+    protected List<AbstractWidget> settingsWidgets;
+
+    private final Component optionEnabled = CreateItemDrawerLang.translate("gui.tooltip.option_enabled").component();
+    private final Component optionDisabled = CreateItemDrawerLang.translate("gui.tooltip.option_disabled").component();
 
     private static final ResourceLocation TEXTURE =
         CreateItemDrawers.asResource("textures/gui/drawer.png");
@@ -61,6 +55,8 @@ public class DrawerScreen extends AbstractContainerScreen<DrawerMenu> {
 
         this.imageWidth = 176;
         this.imageHeight = 213;
+
+        settingsWidgets = new ArrayList<>();
     }
 
     @Override
@@ -185,6 +181,9 @@ public class DrawerScreen extends AbstractContainerScreen<DrawerMenu> {
     protected void init() {
         super.init();
 
+        removeWidgets(settingsWidgets);
+        settingsWidgets.clear();
+
         DrawerStorageBlockEntity be = menu.contentHolder;
 
         IconButton closeMenuBtn =
@@ -192,58 +191,36 @@ public class DrawerScreen extends AbstractContainerScreen<DrawerMenu> {
         closeMenuBtn.withCallback(this::onClose);
         addRenderableWidget(closeMenuBtn);
 
-        // Render settings
-        addRenderableWidget(new ToggleButton(
-            leftPos + 126, topPos + 82,
-            TEXTURE,
-            TOGGLE_OFF_X, TOGGLE_OFF_Y,
-            TOGGLE_ON_X, TOGGLE_ON_Y,
-            TOGGLE_W, TOGGLE_H,
-            be::getRenderItems,
-            newVal -> {
-                be.setRenderItems(newVal);
-                sendTogglePacket(be.getBlockPos(), 0, ITEMS, newVal);
-            }
-        ).withMultiLineTooltip(() -> {
-            String headerKey = be.getRenderItems()
-                ? "gui.tooltip.items_hide"
-                : "gui.tooltip.items_show";
-            return createFormattedTooltip(headerKey, "gui.tooltip.items_description");
-        }));
-        addRenderableWidget(new ToggleButton(
-            leftPos + 126, topPos + 90,
-            TEXTURE,
-            TOGGLE_OFF_X, TOGGLE_OFF_Y,
-            TOGGLE_ON_X, TOGGLE_ON_Y,
-            TOGGLE_W, TOGGLE_H,
-            be::getRenderCounts,
-            newVal -> {
-                be.setRenderCounts(newVal);
-                sendTogglePacket(be.getBlockPos(), 0, COUNTS, newVal);
-            }
-        ).withMultiLineTooltip(() -> {
-            String headerKey = be.getRenderCounts()
-                ? "gui.tooltip.counts_hide"
-                : "gui.tooltip.counts_show";
-            return createFormattedTooltip(headerKey, "gui.tooltip.counts_description");
-        }));
-        addRenderableWidget(new ToggleButton(
-            leftPos + 126, topPos + 98,
-            TEXTURE,
-            TOGGLE_OFF_X, TOGGLE_OFF_Y,
-            TOGGLE_ON_X, TOGGLE_ON_Y,
-            TOGGLE_W, TOGGLE_H,
-            be::getRenderIcons,
-            newVal -> {
-                be.setRenderIcons(newVal);
-                sendTogglePacket(be.getBlockPos(), 0, ICONS, newVal);
-            }
-        ).withMultiLineTooltip(() -> {
-            String headerKey = be.getRenderIcons()
-                ? "gui.tooltip.icons_hide"
-                : "gui.tooltip.icons_show";
-            return createFormattedTooltip(headerKey, "gui.tooltip.icons_description");
-        }));
+        renderItemsButton = new IconButton(leftPos + 8, topPos + 85, AllIcons.I_FX_SURFACE_ON);
+        renderItemsButton.withCallback(() -> {
+            boolean newVal = !be.getRenderItems();
+            be.setRenderItems(newVal);
+            sendTogglePacket(be.getBlockPos(), 0, ITEMS, newVal);
+        });
+        renderItemsButton.setToolTip(CreateItemDrawerLang.translate("gui.tooltip.items_header").component());
+        addRenderableWidget(renderItemsButton);
+
+        renderCountsButton = new IconButton(leftPos + 26, topPos + 85, AllIcons.I_HOUR_HAND_FIRST_24);
+        renderCountsButton.withCallback(() -> {
+            boolean newVal = !be.getRenderCounts();
+            be.setRenderCounts(newVal);
+            sendTogglePacket(be.getBlockPos(), 0, COUNTS, newVal);
+        });
+        renderCountsButton.setToolTip(CreateItemDrawerLang.translate("gui.tooltip.counts_header").component());
+        addRenderableWidget(renderCountsButton);
+
+        renderIconsButton = new IconButton(leftPos + 44, topPos + 85, AllIcons.I_PLACEMENT_SETTINGS);
+        renderIconsButton.withCallback(() -> {
+            boolean newVal = !be.getRenderIcons();
+            be.setRenderIcons(newVal);
+            sendTogglePacket(be.getBlockPos(), 0, ICONS, newVal);
+        });
+        renderIconsButton.setToolTip(CreateItemDrawerLang.translate("gui.tooltip.icons_header").component());
+        addRenderableWidget(renderIconsButton);
+
+        settingsWidgets.add(renderItemsButton);
+        settingsWidgets.add(renderCountsButton);
+        settingsWidgets.add(renderIconsButton);
 
         // Per slot void/lock toggles
         for (Slot slot : this.menu.slots) {
@@ -251,6 +228,8 @@ public class DrawerScreen extends AbstractContainerScreen<DrawerMenu> {
             int slotCount = be.getStorage().getSlotCount();
 
             int slotIndex = roSlot.getSlotIndex();
+
+            DrawerSlot drawerSlot = be.getStorage().getSlot(slotIndex);
 
             int sx = leftPos + slot.x;
             int sy = topPos + slot.y;
@@ -267,66 +246,81 @@ public class DrawerScreen extends AbstractContainerScreen<DrawerMenu> {
             int voidY = lockY + LOCK_VOID_H;
 
             // Lock mode
-            addRenderableWidget(new ToggleButton(
-                toggleX, lockY,
-                TEXTURE,
-                LOCK_OFF_X, LOCK_OFF_Y,
-                LOCK_ON_X, LOCK_ON_Y,
-                LOCK_VOID_W, LOCK_VOID_H,
-                () -> be.getStorage().getSlot(slotIndex).isLockMode(),
-                newVal -> {
-                    be.getStorage().getSlot(slotIndex).setLockMode(newVal);
-                    sendTogglePacket(be.getBlockPos(), slotIndex, LOCK, newVal);
-                }
-            ).withMultiLineTooltip(() -> {
-                String headerKey = be.getStorage().getSlot(slotIndex).isLockMode()
-                    ? "gui.tooltip.lock_disable"
-                    : "gui.tooltip.lock_enable";
-                return createFormattedTooltip(headerKey, "gui.tooltip.lock_description");
-            }));
+            SmallIconButton lockButton = new SmallIconButton(toggleX, lockY, AllIcons.I_CONFIG_LOCKED)
+                .withGreen(drawerSlot::isLockMode)
+                .withTooltipKey("lock");
+            lockButton.withCallback(() -> {
+                boolean newVal = !drawerSlot.isLockMode();
+                drawerSlot.setLockMode(newVal);
+                sendTogglePacket(be.getBlockPos(), slotIndex, LOCK, newVal);
+            });
+            lockButton.setToolTip(CreateItemDrawerLang.translate("gui.tooltip.lock_header").component());
+            addRenderableWidget(lockButton);
 
             // Void mode
-            addRenderableWidget(new ToggleButton(
-                toggleX, voidY,
-                TEXTURE,
-                VOID_OFF_X, VOID_OFF_Y,
-                VOID_ON_X, VOID_ON_Y,
-                LOCK_VOID_W, LOCK_VOID_H,
-                () -> be.getStorage().getSlot(slotIndex).isVoidMode(),
-                newVal -> {
-                    be.getStorage().getSlot(slotIndex).setVoidMode(newVal);
-                    sendTogglePacket(be.getBlockPos(), slotIndex, VOID, newVal);
-                }
-            ).withMultiLineTooltip(() -> {
-                String headerKey = be.getStorage().getSlot(slotIndex).isVoidMode()
-                    ? "gui.tooltip.void_disable"
-                    : "gui.tooltip.void_enable";
-                return createFormattedTooltip(headerKey, "gui.tooltip.void_description");
-            }));
+            SmallIconButton voidButton = new SmallIconButton(toggleX, voidY, AllIcons.I_CONFIG_DISCARD)
+                .withGreen(drawerSlot::isVoidMode)
+                .withTooltipKey("void");
+            voidButton.withCallback(() -> {
+                boolean newVal = !drawerSlot.isVoidMode();
+                drawerSlot.setVoidMode(newVal);
+                sendTogglePacket(be.getBlockPos(), slotIndex, VOID, newVal);
+            });
+            voidButton.setToolTip(CreateItemDrawerLang.translate("gui.tooltip.void_header").component());
+            addRenderableWidget(voidButton);
+
+            settingsWidgets.add(lockButton);
+            settingsWidgets.add(voidButton);
         }
     }
 
-    private List<Component> createFormattedTooltip(String headerKey, String descriptionKey) {
-        FontHelper.Palette HEADER_PALETTE = new FontHelper.Palette(styleFromColor(0x5391e1), styleFromColor(0x5391e1));
-        FontHelper.Palette DESCRIPTION_PALETTE = new FontHelper.Palette(styleFromColor(0x6B9AD6), styleFromColor(0xBFD7F5));
+    @Override
+    protected void containerTick() {
+        super.containerTick();
 
-        List<Component> tooltip = new ArrayList<>();
+        DrawerStorageBlockEntity be = menu.contentHolder;
 
-        Component header = CreateItemDrawerLang.translate(headerKey).component();
-        List<Component> headerLines = FontHelper.cutTextComponent(
-            header,
-            HEADER_PALETTE
-        );
-        tooltip.addAll(headerLines);
+        renderItemsButton.green = be.getRenderItems();
+        renderCountsButton.green = be.getRenderCounts();
+        renderIconsButton.green = be.getRenderIcons();
 
-        Component description = CreateItemDrawerLang.translate(descriptionKey).component();
-        List<Component> descriptionLines = FontHelper.cutTextComponent(
-            description,
-            DESCRIPTION_PALETTE
-        );
-        tooltip.addAll(descriptionLines);
+        handleTooltips();
+    }
 
-        return tooltip;
+    protected void handleTooltips() {
+        for (AbstractWidget widget : settingsWidgets)
+            if (widget instanceof IconButton button) {
+                if (!button.getToolTip().isEmpty()) {
+                    button.setToolTip(button.getToolTip().get(0));
+                    button.getToolTip().add(TooltipHelper.holdShift(FontHelper.Palette.BLUE, hasShiftDown()));
+                }
+
+                if (hasShiftDown()) {
+                    if (button instanceof SmallIconButton smallBtn && smallBtn.getTooltipKey() != null) {
+                        fillTooltip(button, smallBtn.getTooltipKey());
+                    }
+                }
+            }
+
+        if (hasShiftDown()) {
+            fillTooltip(renderItemsButton, "items");
+            fillTooltip(renderCountsButton, "counts");
+            fillTooltip(renderIconsButton, "icons");
+        }
+    }
+
+    private void fillTooltip(IconButton button, String tooltipKey) {
+        if (!button.isHovered())
+            return;
+
+        boolean enabled = button.green;
+        List<Component> tooltip = button.getToolTip();
+        tooltip.add((enabled ? optionEnabled : optionDisabled).plainCopy()
+            .withStyle(enabled ? ChatFormatting.DARK_GREEN : ChatFormatting.RED));
+        tooltip.addAll(TooltipHelper.cutTextComponent(
+            CreateItemDrawerLang.translate("gui.tooltip." + tooltipKey + "_description").component(),
+            FontHelper.Palette.ALL_GRAY
+        ));
     }
 
     private void drawSlotBackgrounds(GuiGraphics graphics) {
