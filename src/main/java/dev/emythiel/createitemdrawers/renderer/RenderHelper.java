@@ -1,19 +1,15 @@
 package dev.emythiel.createitemdrawers.renderer;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
-import dev.emythiel.createitemdrawers.CreateItemDrawers;
 import dev.emythiel.createitemdrawers.block.entity.DrawerStorageBlockEntity;
 import dev.emythiel.createitemdrawers.registry.ModItems;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
@@ -21,8 +17,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.HorizontalDirectionalBlock;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
-import org.joml.Matrix4f;
-import org.joml.Vector3f;
 
 import java.util.Map;
 
@@ -110,13 +104,16 @@ public class RenderHelper {
         ms.popPose();
     }
 
-    public static void renderSlotMode(RenderHelper.DrawerIcon mode, int slot, int slots,
+    public static void renderSlotMode(DrawerIcons.Icon icon, int slot, int slots,
                                       PoseStack ms, MultiBufferSource buffer, int light) {
+        if (icon == null)
+            return;
+
         Vec3 uv;
 
-        if (mode == DrawerIcon.LOCK)
+        if (icon == DrawerIcons.LOCK)
             uv = getLockUV(slot, slots);
-        else if (mode == DrawerIcon.VOID)
+        else if (icon == DrawerIcons.VOID)
             uv = getVoidUV(slot, slots);
         else
             return;
@@ -126,26 +123,22 @@ public class RenderHelper {
         float scale = slots == 1 ? 0.15f : 0.08f;
         ms.scale(scale, scale, scale);
 
-        Matrix4f matrix = ms.last().pose();
-        Vector3f normal = new Vector3f(0, 0, 1);
-
-        renderIconFromAtlas(matrix, buffer, light, OverlayTexture.NO_OVERLAY, normal,
-            0, 0, 0, 1f, mode);
+        icon.renderWorld(ms, buffer, light, OverlayTexture.NO_OVERLAY, 1f);
 
         ms.popPose();
     }
 
     public static void renderDrawerUpgrade(ItemStack upgrade, int slots,
                                             PoseStack ms, MultiBufferSource buffer, int light) {
-        Map<Item, DrawerIcon> UPGRADE_ICONS = Map.of(
-            ModItems.CAPACITY_UPGRADE_T1.get(), DrawerIcon.TIER_1,
-            ModItems.CAPACITY_UPGRADE_T2.get(), DrawerIcon.TIER_2,
-            ModItems.CAPACITY_UPGRADE_T3.get(), DrawerIcon.TIER_3,
-            ModItems.CAPACITY_UPGRADE_T4.get(), DrawerIcon.TIER_4,
-            ModItems.CAPACITY_UPGRADE_T5.get(), DrawerIcon.TIER_5
+        Map<Item, DrawerIcons.Icon> UPGRADE_ICONS = Map.of(
+            ModItems.CAPACITY_UPGRADE_T1.get(), DrawerIcons.UPGRADE_TIER_1,
+            ModItems.CAPACITY_UPGRADE_T2.get(), DrawerIcons.UPGRADE_TIER_2,
+            ModItems.CAPACITY_UPGRADE_T3.get(), DrawerIcons.UPGRADE_TIER_3,
+            ModItems.CAPACITY_UPGRADE_T4.get(), DrawerIcons.UPGRADE_TIER_4,
+            ModItems.CAPACITY_UPGRADE_T5.get(), DrawerIcons.UPGRADE_TIER_5
         );
 
-        DrawerIcon icon = UPGRADE_ICONS.get(upgrade.getItem());
+        DrawerIcons.Icon icon = UPGRADE_ICONS.get(upgrade.getItem());
         if (icon == null)
             return;
 
@@ -156,80 +149,9 @@ public class RenderHelper {
         float scale = slots == 1 ? 0.12f : 0.08f;
         ms.scale(scale, scale, scale);
 
-        Matrix4f matrix = ms.last().pose();
-        Vector3f normal = new Vector3f(0, 0, 1);
-
-        renderIconFromAtlas(matrix, buffer, light, OverlayTexture.NO_OVERLAY, normal,
-            0, 0, 0, 1f, icon);
+        icon.renderWorld(ms, buffer, light, OverlayTexture.NO_OVERLAY, 1f);
 
         ms.popPose();
-    }
-
-    public enum DrawerIcon {
-        TIER_1(0, 0),
-        TIER_2(16,0),
-        TIER_3(32, 0),
-        TIER_4(48, 0),
-        TIER_5(64, 0),
-        LOCK(0, 16),
-        VOID(16, 16);
-
-        private static final float ATLAS_SIZE = 256f;
-        private static final float ICON_SIZE = 16f;
-
-        private final float uMin;
-        private final float uMax;
-        private final float vMin;
-        private final float vMax;
-
-        DrawerIcon (int x, int y) {
-            this.uMin = x / ATLAS_SIZE;
-            this.uMax = (x + ICON_SIZE) / ATLAS_SIZE;
-            this.vMin = y / ATLAS_SIZE;
-            this.vMax = (y + ICON_SIZE) / ATLAS_SIZE;
-        }
-
-        public float getUMin() { return uMin; }
-        public float getUMax() { return uMax; }
-        public float getVMin() { return vMin; }
-        public float getVMax() { return vMax; }
-    }
-
-    private static final ResourceLocation ATLAS = CreateItemDrawers.asResource("textures/sprite/icons.png");
-    public static void renderIconFromAtlas(Matrix4f matrix, MultiBufferSource buffer, int light, int overlay,
-                                           Vector3f normal, float x, float y, float z, float size,
-                                           DrawerIcon icon) {
-        VertexConsumer vertexConsumer = buffer.getBuffer(RenderType.entityCutout(ATLAS));
-        float halfSize = size / 2f;
-
-        renderTextureRegion(matrix, vertexConsumer, light, overlay,
-            x - halfSize, x + halfSize, y - halfSize, y + halfSize, z,
-            icon.getUMin(), icon.getUMax(), icon.getVMin(), icon.getVMax(), normal);
-    }
-
-    private static void renderTextureRegion(Matrix4f matrix, VertexConsumer vertexConsumer, int light, int overlay,
-                                           float minX, float maxX, float minY, float maxY, float z,
-                                           float uMin, float uMax, float vMin, float vMax, Vector3f normal) {
-        addQuad(matrix, vertexConsumer, light, overlay, minX, maxX, minY, maxY, z, uMin, uMax, vMin, vMax, normal);
-    }
-
-    private static void addQuad(Matrix4f matrix, VertexConsumer vertexConsumer, int light, int overlay,
-                               float x1, float x2, float y1, float y2, float z,
-                               float uMin, float uMax, float vMin, float vMax, Vector3f normal) {
-        addVertex(matrix, vertexConsumer, light, overlay, x2, y1, z, uMax, vMax, normal);
-        addVertex(matrix, vertexConsumer, light, overlay, x2, y2, z, uMax, vMin, normal);
-        addVertex(matrix, vertexConsumer, light, overlay, x1, y2, z, uMin, vMin, normal);
-        addVertex(matrix, vertexConsumer, light, overlay, x1, y1, z, uMin, vMax, normal);
-    }
-
-    private static void addVertex(Matrix4f matrix, VertexConsumer vertexConsumer, int light, int overlay,
-                                 float x, float y, float z, float u, float v, Vector3f normal) {
-        vertexConsumer.addVertex(matrix, x, y, z)
-            .setColor(1f, 1f, 1f, 1f)
-            .setUv(u, v)
-            .setOverlay(overlay)
-            .setLight(light)
-            .setNormal(normal.x(), normal.y(), normal.z());
     }
 
     private static Vec3 getSlotUV(int slot, int slotCount) {

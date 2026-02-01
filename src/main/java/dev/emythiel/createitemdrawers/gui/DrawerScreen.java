@@ -8,6 +8,7 @@ import dev.emythiel.createitemdrawers.CreateItemDrawers;
 import dev.emythiel.createitemdrawers.block.entity.DrawerStorageBlockEntity;
 import dev.emythiel.createitemdrawers.gui.widgets.SmallIconButton;
 import dev.emythiel.createitemdrawers.network.SlotTogglePacket;
+import dev.emythiel.createitemdrawers.renderer.DrawerIcons;
 import dev.emythiel.createitemdrawers.storage.DrawerSlot;
 import dev.emythiel.createitemdrawers.util.CreateItemDrawerLang;
 import net.createmod.catnip.lang.FontHelper;
@@ -191,7 +192,7 @@ public class DrawerScreen extends AbstractSimiContainerScreen<DrawerMenu> {
         closeMenuBtn.withCallback(this::onClose);
         addRenderableWidget(closeMenuBtn);
 
-        renderItemsButton = new IconButton(leftPos + 8, topPos + 85, AllIcons.I_FX_SURFACE_ON);
+        renderItemsButton = new IconButton(leftPos + 8, topPos + 85, DrawerIcons.ITEMS);
         renderItemsButton.withCallback(() -> {
             boolean newVal = !be.getRenderItems();
             be.setRenderItems(newVal);
@@ -200,7 +201,7 @@ public class DrawerScreen extends AbstractSimiContainerScreen<DrawerMenu> {
         renderItemsButton.setToolTip(CreateItemDrawerLang.translate("gui.tooltip.items_header").component());
         addRenderableWidget(renderItemsButton);
 
-        renderCountsButton = new IconButton(leftPos + 26, topPos + 85, AllIcons.I_HOUR_HAND_FIRST_24);
+        renderCountsButton = new IconButton(leftPos + 26, topPos + 85, DrawerIcons.COUNTS);
         renderCountsButton.withCallback(() -> {
             boolean newVal = !be.getRenderCounts();
             be.setRenderCounts(newVal);
@@ -209,7 +210,7 @@ public class DrawerScreen extends AbstractSimiContainerScreen<DrawerMenu> {
         renderCountsButton.setToolTip(CreateItemDrawerLang.translate("gui.tooltip.counts_header").component());
         addRenderableWidget(renderCountsButton);
 
-        renderIconsButton = new IconButton(leftPos + 44, topPos + 85, AllIcons.I_SKIP_BLOCK_ENTITIES);
+        renderIconsButton = new IconButton(leftPos + 44, topPos + 85, DrawerIcons.MODES);
         renderIconsButton.withCallback(() -> {
             boolean newVal = !be.getRenderIcons();
             be.setRenderIcons(newVal);
@@ -246,7 +247,7 @@ public class DrawerScreen extends AbstractSimiContainerScreen<DrawerMenu> {
             int voidY = lockY + LOCK_VOID_H;
 
             // Lock mode
-            SmallIconButton lockButton = new SmallIconButton(toggleX, lockY, AllIcons.I_CONFIG_LOCKED)
+            SmallIconButton lockButton = new SmallIconButton(toggleX, lockY, DrawerIcons.LOCK)
                 .withGreen(drawerSlot::isLockMode)
                 .withTooltipKey("lock");
             lockButton.withCallback(() -> {
@@ -258,7 +259,7 @@ public class DrawerScreen extends AbstractSimiContainerScreen<DrawerMenu> {
             addRenderableWidget(lockButton);
 
             // Void mode
-            SmallIconButton voidButton = new SmallIconButton(toggleX, voidY, AllIcons.I_CONFIG_DISCARD)
+            SmallIconButton voidButton = new SmallIconButton(toggleX, voidY, DrawerIcons.VOID)
                 .withGreen(drawerSlot::isVoidMode)
                 .withTooltipKey("void");
             voidButton.withCallback(() -> {

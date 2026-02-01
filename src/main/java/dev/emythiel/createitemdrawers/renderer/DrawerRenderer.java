@@ -118,9 +118,9 @@ public class DrawerRenderer extends SafeBlockEntityRenderer<DrawerStorageBlockEn
             if (count > 0 && renderCounts)
                 RenderHelper.renderSlotCount(String.valueOf(count), slot, slotCount, ms, buffer, light);
             if (lockMode && renderIcons)
-                RenderHelper.renderSlotMode(RenderHelper.DrawerIcon.LOCK, slot, slotCount, ms, buffer, light);
+                RenderHelper.renderSlotMode(DrawerIcons.LOCK, slot, slotCount, ms, buffer, light);
             if (voidMode && renderIcons)
-                RenderHelper.renderSlotMode(RenderHelper.DrawerIcon.VOID, slot, slotCount, ms, buffer, light);
+                RenderHelper.renderSlotMode(DrawerIcons.VOID, slot, slotCount, ms, buffer, light);
         }
 
         ms.popPose();
@@ -201,13 +201,13 @@ public class DrawerRenderer extends SafeBlockEntityRenderer<DrawerStorageBlockEn
                 if (slotTag.contains("Locked") && renderIcons) {
                     boolean lockMode = slotTag.getBoolean("Locked");
                     if (lockMode) {
-                        RenderHelper.renderSlotMode(RenderHelper.DrawerIcon.LOCK, slot, slotCount, ms, buffer, light);
+                        RenderHelper.renderSlotMode(DrawerIcons.LOCK, slot, slotCount, ms, buffer, light);
                     }
                 }
                 if (slotTag.contains("Void") && renderIcons) {
                     boolean voidMode = slotTag.getBoolean("Void");
                     if (voidMode) {
-                        RenderHelper.renderSlotMode(RenderHelper.DrawerIcon.VOID, slot, slotCount, ms, buffer, light);
+                        RenderHelper.renderSlotMode(DrawerIcons.VOID, slot, slotCount, ms, buffer, light);
                     }
                 }
             }
