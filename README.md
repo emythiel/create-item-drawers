@@ -44,6 +44,7 @@ Also able to disable the rendering of these globally if you wish to for some rea
 **Server Side**:  
 - Settings to adjust the base capacity of each of the three drawer types. The capacity is measured in stacks - eg. a base capacity of 32 means it can store 32 stacks (A stack of Cobblestone is 64, so 32\*64=2048, while a stack of Ender Pearls is 16, so 32\*16=512)  
 - Settings to adjust the upgrade multipliers. Pretty straightforward, they multiply the base capacity.
+- Settings to adjust slowness debuff when having Drawers with items stored in the player inventory.
 
 ## Other Info
 ### Modpack permission
