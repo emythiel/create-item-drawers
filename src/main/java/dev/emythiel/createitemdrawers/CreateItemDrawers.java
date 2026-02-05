@@ -12,6 +12,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.CreativeModeTab;
 import net.neoforged.fml.ModLoadingContext;
 import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 import net.neoforged.neoforge.registries.RegisterEvent;
@@ -49,6 +50,7 @@ public class CreateItemDrawers {
         ModMenuTypes.register();
         ModMountedStorageTypes.register();
 
+        modEventBus.addListener(CreateItemDrawers::commonSetup);
         modEventBus.addListener(CreateItemDrawers::onRegister);
 
         ModConfigs.register(modLoadingContext, modContainer);
@@ -68,7 +70,11 @@ public class CreateItemDrawers {
         }
     }
 
-    public static void onRegister(final RegisterEvent event) {
+    private static void commonSetup(final FMLCommonSetupEvent event) {
+        event.enqueueWork(ModUnpackers::register);
+    }
+
+    private static void onRegister(final RegisterEvent event) {
         MechArmInteractionPoint.init();
     }
 
