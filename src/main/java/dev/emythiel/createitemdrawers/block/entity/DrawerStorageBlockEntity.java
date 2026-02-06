@@ -9,6 +9,7 @@ import dev.emythiel.createitemdrawers.block.base.BaseDrawerBlockEntity;
 import dev.emythiel.createitemdrawers.item.CapacityUpgradeItem;
 import dev.emythiel.createitemdrawers.registry.ModConfigs;
 import dev.emythiel.createitemdrawers.storage.DrawerItemHandler;
+import dev.emythiel.createitemdrawers.storage.DrawerSlot;
 import dev.emythiel.createitemdrawers.storage.DrawerStorage;
 import dev.emythiel.createitemdrawers.gui.DrawerMenu;
 import dev.emythiel.createitemdrawers.util.CreateItemDrawerLang;
@@ -22,6 +23,8 @@ import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -45,6 +48,8 @@ public class DrawerStorageBlockEntity extends BaseDrawerBlockEntity
     private boolean renderItems = true;
     private boolean renderCounts = true;
     private boolean renderIcons = true;
+
+    private int extractCooldown = 0;
 
     public DrawerStorageBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
         super(type, pos, state);
@@ -160,6 +165,47 @@ public class DrawerStorageBlockEntity extends BaseDrawerBlockEntity
         }
     }
 
+    // Extraction handling
+    @Override
+    public void tick() {
+        super.tick();
+
+        if (level == null || level.isClientSide())
+            return;
+
+        if (extractCooldown > 0)
+            extractCooldown--;
+    }
+
+    public void handleLeftClick(Player player, int slot) {
+        if (extractCooldown > 0)
+            return;
+
+        extractCooldown = 4;
+
+        DrawerSlot drawerSlot = storage.getSlot(slot);
+        if (drawerSlot.getStoredItem().isEmpty())
+            return;
+
+        int amount = player.isShiftKeyDown()
+            ? drawerSlot.getStoredItem().getMaxStackSize()
+            : 1;
+
+        ItemStack extracted = storage.extract(slot, amount, false);
+        if (extracted.isEmpty())
+            return;
+
+        player.getInventory().placeItemBackInInventory(extracted);
+
+        CreateItemDrawerLang.translate(
+            player.isShiftKeyDown() ? "interaction.extract_stack" : "interaction.extract_one"
+        ).sendStatus(player);
+
+        level.playSound(null, worldPosition, SoundEvents.ITEM_PICKUP, SoundSource.BLOCKS, 0.2f, 0.2f);
+
+        setChangedAndSync();
+    }
+
     // GUI handling
     @Override
     public AbstractContainerMenu createMenu(int id, @NotNull Inventory inv, @NotNull Player player) {
@@ -238,7 +284,7 @@ public class DrawerStorageBlockEntity extends BaseDrawerBlockEntity
         return true;
     }
 
-    // Threshold Swtich Observable
+    // Threshold Switch Observable
     @Override
     public int getMaxValue() {
         return this.getStorage().getCombinedSlotCapacity();

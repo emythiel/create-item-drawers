@@ -3,13 +3,12 @@ package dev.emythiel.createitemdrawers.util;
 import dev.emythiel.createitemdrawers.block.entity.DrawerStorageBlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.sounds.SoundEvents;
-import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.HorizontalDirectionalBlock;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.HitResult;
 import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
@@ -20,57 +19,33 @@ public class DrawerExtractionHandler {
 
     @SubscribeEvent(priority = EventPriority.HIGH)
     public static void onLeftClickBlock(PlayerInteractEvent.LeftClickBlock event) {
-        var level = event.getLevel();
-        var pos = event.getPos();
-        var be = level.getBlockEntity(pos);
+        Player player = event.getEntity();
+        Level level = event.getLevel();
+        BlockPos pos = event.getPos();
 
-        if (!(be instanceof DrawerStorageBlockEntity drawer))
+        if (!(level.getBlockEntity(pos) instanceof DrawerStorageBlockEntity drawerBE))
             return;
 
-        var state = drawer.getBlockState();
+        BlockState state = level.getBlockState(pos);
         Direction front = state.getValue(HorizontalDirectionalBlock.FACING);
 
         if (event.getFace() != front)
             return;
 
-        event.setCanceled(true);  // Prevent block breaking
+        // Prevent block breaking
+        event.setCanceled(true);
 
         if (level.isClientSide())
             return;
 
-        Player player = event.getEntity();
-        boolean sneaking = player.isShiftKeyDown();
-
         BlockHitResult hit = (BlockHitResult) player.pick(5.0D, 0.0F, false);
-        if (!hit.getBlockPos().equals(pos))
+        if (hit.getType() != HitResult.Type.BLOCK || !hit.getBlockPos().equals(pos))
             return;
 
-        int slot = DrawerInteractionHelper.getHitSlot(drawer, hit.getLocation());
+        int slot = DrawerInteractionHelper.getHitSlot(drawerBE, hit.getLocation());
         if (slot < 0)
             return;
 
-        extractFromSlot(drawer, slot, player, sneaking, level, pos);
-    }
-
-    private static void extractFromSlot(DrawerStorageBlockEntity drawer, int slot, Player player, boolean sneaking,
-                                        Level level, BlockPos pos) {
-        var storage = drawer.getStorage();
-        var drawerSlot = storage.getSlot(slot);
-
-        if (drawerSlot.getStoredItem().isEmpty())
-            return;
-
-        int amount = sneaking ? drawerSlot.getStoredItem().getMaxStackSize() : 1;
-
-        ItemStack extracted = storage.extract(slot, amount, false);
-        if (extracted.isEmpty())
-            return;
-
-        player.getInventory().placeItemBackInInventory(extracted);
-
-        CreateItemDrawerLang.translate(sneaking ? "interaction.extract_stack" : "interaction.extract_one")
-            .sendStatus(player);
-        level.playSound(null, pos, SoundEvents.ITEM_PICKUP, SoundSource.BLOCKS, 0.2f, 0.2f);
-        drawer.setChangedAndSync();
+        drawerBE.handleLeftClick(player, slot);
     }
 }
