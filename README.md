@@ -1,10 +1,7 @@
-<div align="center">
-  <img src=".idea/icon.png" width="192" height="192" alt="Mod icon">
-  <h1>Create: Item Drawers</h1>
-  <a href="https://modrinth.com/project/3H1Rxv8i"><img alt="modrinth" height="56" src="https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/cozy/available/modrinth_vector.svg"></a>
-  <a href="https://www.curseforge.com/minecraft/mc-mods/create-item-drawers"><img alt="curseforge" height="56" src="https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/cozy/available/curseforge_vector.svg"></a>
-</div>
-<br>
+# Create: Item Drawers
+
+[![modrinth](https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/cozy/available/modrinth_vector.svg)](https://modrinth.com/project/3H1Rxv8i)
+[![curseforge](https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/cozy/available/curseforge_vector.svg)](https://www.curseforge.com/minecraft/mc-mods/create-item-drawers)
 
 **Create: Item Drawers** is a Create addon which adds the usual drawers for storage, but with a Create flair.  
 
