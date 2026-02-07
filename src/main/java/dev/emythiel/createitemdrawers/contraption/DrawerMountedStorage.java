@@ -1,6 +1,8 @@
 package dev.emythiel.createitemdrawers.contraption;
 
+import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.simibubi.create.api.contraption.storage.item.MountedItemStorageType;
 import com.simibubi.create.api.contraption.storage.item.WrapperMountedItemStorage;
 import com.simibubi.create.content.contraptions.Contraption;
@@ -35,9 +37,15 @@ import java.util.List;
 
 public class DrawerMountedStorage extends WrapperMountedItemStorage<DrawerItemHandler> {
 
-    public static final MapCodec<DrawerMountedStorage> CODEC = CreateCodecs.ITEM_STACK_HANDLER.xmap(
-        DrawerMountedStorage::new, storage -> storage.wrapped
-    ).fieldOf("value");
+    public static final MapCodec<DrawerMountedStorage> CODEC =
+        RecordCodecBuilder.mapCodec(instance -> instance.group(
+            Codec.INT.fieldOf("SlotCount").forGetter(s -> s.slotCount),
+            ItemStack.CODEC.optionalFieldOf("Upgrade", ItemStack.EMPTY).forGetter(s -> s.upgradeItem),
+            Codec.BOOL.fieldOf("RenderItems").forGetter(s -> s.renderItems),
+            Codec.BOOL.fieldOf("RenderCounts").forGetter(s -> s.renderCounts),
+            Codec.BOOL.fieldOf("RenderIcons").forGetter(s -> s.renderIcons),
+            DrawerSlotData.CODEC.listOf().fieldOf("Slots").forGetter(s -> s.slotData)
+        ).apply(instance, DrawerMountedStorage::fromCodec));
 
     public boolean initialized = false;
     private boolean dirty = false;
@@ -50,13 +58,6 @@ public class DrawerMountedStorage extends WrapperMountedItemStorage<DrawerItemHa
     private ItemStack upgradeItem = ItemStack.EMPTY;
     private List<DrawerSlotData> slotData = new ArrayList<>();
 
-    private static class DrawerSlotData {
-        public ItemStack storedItem = ItemStack.EMPTY;
-        public int count = 0;
-        public boolean lockMode = false;
-        public boolean voidMode = false;
-    }
-
     protected DrawerMountedStorage(MountedItemStorageType<?> type, DrawerItemHandler wrapped) {
         super(type, wrapped);
     }
@@ -65,36 +66,97 @@ public class DrawerMountedStorage extends WrapperMountedItemStorage<DrawerItemHa
         super(ModMountedStorageTypes.MOUNTED_DRAWER.get(), (DrawerItemHandler) handler);
     }
 
+    private static class DrawerSlotData {
+        static final Codec<DrawerSlotData> CODEC =
+            RecordCodecBuilder.create(instance -> instance.group(
+                ItemStack.CODEC.optionalFieldOf("Item", ItemStack.EMPTY).forGetter(d -> d.storedItem),
+                Codec.INT.fieldOf("Count").forGetter(d -> d.count),
+                Codec.BOOL.fieldOf("Locked").forGetter(d -> d.lockMode),
+                Codec.BOOL.fieldOf("Void").forGetter(d -> d.voidMode)
+            ).apply(instance, DrawerSlotData::new));
+
+        ItemStack storedItem;
+        int count;
+        boolean lockMode;
+        boolean voidMode;
+
+        public DrawerSlotData(ItemStack storedItem, int count, boolean lockMode, boolean voidMode) {
+            this.storedItem = storedItem;
+            this.count = count;
+            this.lockMode = lockMode;
+            this.voidMode = voidMode;
+        }
+
+        public DrawerSlotData() {
+            this(ItemStack.EMPTY, 0, false, false);
+        }
+    }
+
+    private static DrawerMountedStorage fromCodec(int slotCount, ItemStack upgrade,
+                                                  boolean renderItems, boolean renderCounts, boolean renderIcons,
+                                                  List<DrawerSlotData> slots) {
+        DrawerStorage storage = new DrawerStorage(slotCount);
+
+        for (int i = 0; i < Math.min(slotCount, slots.size()); i++) {
+            DrawerSlotData data = slots.get(i);
+            DrawerSlot slot = storage.getSlot(i);
+
+            slot.setStoredItem(data.storedItem.copy());
+            slot.setCount(data.count);
+            slot.setLockMode(data.lockMode);
+            slot.setVoidMode(data.voidMode);
+        }
+
+        DrawerItemHandler handler = new DrawerItemHandler(storage);
+        DrawerMountedStorage mounted = new DrawerMountedStorage(ModMountedStorageTypes.MOUNTED_DRAWER.get(), handler);
+
+        mounted.slotCount = slotCount;
+        mounted.upgradeItem = upgrade;
+        mounted.renderItems = renderItems;
+        mounted.renderCounts = renderCounts;
+        mounted.renderIcons = renderIcons;
+        mounted.slotData = new ArrayList<>(slots);
+
+        return mounted;
+    }
+
     @Override
     public boolean handleInteraction(ServerPlayer player, Contraption contraption, StructureBlockInfo info) {
         // TODO: Player interaction with mounted drawer
         return false;
     }
 
-    public static DrawerMountedStorage fromStorage(DrawerStorageBlockEntity be) {
-        DrawerStorage drawerStorage = be.getStorage();
-        DrawerItemHandler handler = new DrawerItemHandler(drawerStorage);
+    public static DrawerMountedStorage fromStorage(DrawerStorageBlockEntity drawerBE) {
+        DrawerStorage drawerStorage = drawerBE.getStorage();
+        DrawerStorage storage = new DrawerStorage(drawerStorage.getSlotCount());
 
-        DrawerMountedStorage storage = new DrawerMountedStorage(handler);
+        DrawerMountedStorage mounted = new DrawerMountedStorage(new DrawerItemHandler(storage));
 
-        storage.slotCount = be.getStorage().getSlotCount();
-        storage.renderItems = be.getRenderItems();
-        storage.renderCounts = be.getRenderCounts();
-        storage.renderIcons = be.getRenderIcons();
-        storage.upgradeItem = be.getUpgrade().copy();
+        mounted.slotCount = drawerBE.getStorage().getSlotCount();
+        mounted.renderItems = drawerBE.getRenderItems();
+        mounted.renderCounts = drawerBE.getRenderCounts();
+        mounted.renderIcons = drawerBE.getRenderIcons();
+        mounted.upgradeItem = drawerBE.getUpgrade().copy();
 
-        storage.slotData.clear();
-        for (int i = 0; i < storage.slotCount; i++) {
-            DrawerSlotData data = new DrawerSlotData();
-            DrawerSlot slot = be.getStorage().getSlot(i);
-            data.storedItem = slot.getStoredItem().copy();
-            data.count = slot.getCount();
-            data.lockMode = slot.isLockMode();
-            data.voidMode = slot.isVoidMode();
-            storage.slotData.add(data);
+        mounted.slotData.clear();
+        for (int i = 0; i < mounted.slotCount; i++) {
+            DrawerSlot blockSlot = drawerStorage.getSlot(i);
+            DrawerSlotData data = new DrawerSlotData(
+                blockSlot.getStoredItem().copy(),
+                blockSlot.getCount(),
+                blockSlot.isLockMode(),
+                blockSlot.isVoidMode()
+            );
+            mounted.slotData.add(data);
+
+            DrawerSlot slot = storage.getSlot(i);
+            slot.setStoredItem(data.storedItem.copy());
+            slot.setCount(data.count);
+            slot.setLockMode(data.lockMode);
+            slot.setVoidMode(data.voidMode);
         }
 
-        return storage;
+        return mounted;
     }
 
     @Override
@@ -125,9 +187,9 @@ public class DrawerMountedStorage extends WrapperMountedItemStorage<DrawerItemHa
 
     @Override @NotNull
     public ItemStack insertItem(int slot, @NotNull ItemStack stack, boolean simulate) {
-        if (slot < 0 || slot >= wrapped.getSlots()) {
+        if (slot < 0 || slot >= wrapped.getSlots())
             return stack;
-        }
+
         ItemStack result = wrapped.insertItem(slot, stack, simulate);
 
         if (!simulate && (result.isEmpty() || result.getCount() != stack.getCount())) {
@@ -139,9 +201,8 @@ public class DrawerMountedStorage extends WrapperMountedItemStorage<DrawerItemHa
 
     @Override @NotNull
     public ItemStack extractItem(int slot, int amount, boolean simulate) {
-        if (slot < 0 || slot >= wrapped.getSlots()) {
+        if (slot < 0 || slot >= wrapped.getSlots())
             return ItemStack.EMPTY;
-        }
 
         ItemStack result = wrapped.extractItem(slot, amount, simulate);
 
@@ -192,8 +253,6 @@ public class DrawerMountedStorage extends WrapperMountedItemStorage<DrawerItemHa
     public void initBlockEntityData(MovementContext context) {
         if (initialized || context.world.isClientSide()) return;
 
-        CreateItemDrawers.LOGGER.debug("Group tag: {}", context.blockEntityData.getCompound("ConnectedGroup"));
-
         CompoundTag tag = new CompoundTag();
 
         tag.putInt("SlotCount", slotCount);
@@ -240,7 +299,6 @@ public class DrawerMountedStorage extends WrapperMountedItemStorage<DrawerItemHa
                 tag.copy()
             )
         );
-        CreateItemDrawers.LOGGER.debug("Group tag: {}", context.blockEntityData.getCompound("ConnectedGroup"));
         initialized = true;
     }
 
