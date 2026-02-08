@@ -3,14 +3,12 @@ package dev.emythiel.createitemdrawers.events;
 import dev.emythiel.createitemdrawers.CreateItemDrawers;
 import dev.emythiel.createitemdrawers.block.entity.DrawerStorageBlockEntity;
 import dev.emythiel.createitemdrawers.registry.ModBlockEntities;
-import dev.emythiel.createitemdrawers.registry.ModConfigs;
 import dev.emythiel.createitemdrawers.util.DrawerInteractionHelper;
 import dev.emythiel.createitemdrawers.util.DrawerSlownessDebuff;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.HorizontalDirectionalBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
@@ -20,7 +18,6 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
-import net.neoforged.neoforge.event.level.BlockEvent;
 import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 
 @EventBusSubscriber(modid = CreateItemDrawers.MODID)
@@ -66,22 +63,5 @@ public class CommonEvents {
             return;
 
         drawerBE.handleLeftClick(player, slot);
-    }
-
-    @SubscribeEvent
-    public static void onBlockBreak(BlockEvent.BreakEvent event) {
-        Player player = event.getPlayer();
-        LevelAccessor accessor = event.getLevel();
-
-        if (!(accessor instanceof Level level) || level.isClientSide())
-            return;
-
-        BlockPos pos = event.getPos();
-
-        if (!(level.getBlockEntity(pos) instanceof DrawerStorageBlockEntity drawer))
-            return;
-
-        if (player.isCreative() && !ModConfigs.server().creativeBreaking.get())
-            drawer.markForCreativeDeletion();
     }
 }

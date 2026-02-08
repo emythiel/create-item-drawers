@@ -8,14 +8,11 @@ import com.simibubi.create.foundation.block.IBE;
 import dev.emythiel.createitemdrawers.block.base.BaseDrawerBlock;
 import dev.emythiel.createitemdrawers.block.entity.DrawerStorageBlockEntity;
 import dev.emythiel.createitemdrawers.registry.ModBlockEntities;
-import dev.emythiel.createitemdrawers.registry.ModConfigs;
 import dev.emythiel.createitemdrawers.storage.DrawerSlot;
 import dev.emythiel.createitemdrawers.storage.DrawerStorage;
 import dev.emythiel.createitemdrawers.util.CreateItemDrawerLang;
 import dev.emythiel.createitemdrawers.util.DrawerInteractionHelper;
 import dev.emythiel.createitemdrawers.util.connection.ConnectedGroupHandler;
-import dev.emythiel.createitemdrawers.util.connection.ConnectionHelper;
-import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionHand;
@@ -25,7 +22,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
@@ -34,8 +30,7 @@ import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.phys.BlockHitResult;
 import org.jetbrains.annotations.NotNull;
 
-import javax.annotation.Nullable;
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.List;
 
 public class DrawerStorageBlock extends BaseDrawerBlock implements IWrenchable, IBE<DrawerStorageBlockEntity> {
@@ -159,8 +154,18 @@ public class DrawerStorageBlock extends BaseDrawerBlock implements IWrenchable, 
         BlockEntity be = builder.getOptionalParameter(LootContextParams.BLOCK_ENTITY);
 
         if (be instanceof DrawerStorageBlockEntity drawer) {
-            if (hasStoredItems(drawer))
-                return Collections.emptyList();
+            if (hasStoredItems(drawer)) {
+                // If items are stored in drawer, drop drawer with items in
+                ItemStack stack = new ItemStack(this);
+                drawer.saveToItem(stack, builder.getLevel().registryAccess());
+                return List.of(stack);
+            } else if (!drawer.getUpgrade().isEmpty()) {
+                // If no items, but upgrade is stored, drop drawer + upgrade
+                List<ItemStack> drops = new ArrayList<>();
+                drops.add(new ItemStack(this));
+                drops.add(drawer.getUpgrade().copy());
+                return drops;
+            }
         }
 
         return super.getDrops(state, builder);
@@ -169,26 +174,11 @@ public class DrawerStorageBlock extends BaseDrawerBlock implements IWrenchable, 
     @Override
     public void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean isMoving) {
         if (state.hasBlockEntity() && !state.is(newState.getBlock())) {
-            DrawerStorageBlockEntity drawer = (DrawerStorageBlockEntity) ConnectionHelper.getDrawer(level, pos);
+            BlockEntity be = level.getBlockEntity(pos);
 
-            if (drawer != null && !level.isClientSide() && !isMoving) {
+            if (!level.isClientSide() && !isMoving && (be instanceof DrawerStorageBlockEntity)) {
                 ConnectedGroupHandler.connectionGroupCleanup(state, level, pos);
-
-                // Creative delete
-                if (drawer.shouldDeleteOnBreak()) {
-                    IBE.onRemove(state, level, pos, newState);
-                    return;
-                }
-
-                if (hasStoredItems(drawer)) {
-                    ItemStack drawerStack = new ItemStack(this);
-                    drawer.saveToItem(drawerStack, level.registryAccess());
-                    Block.popResource(level, pos, drawerStack);
-                } else if (!drawer.getUpgrade().isEmpty()) {
-                    Block.popResource(level, pos, drawer.getUpgrade());
-                }
             }
-
             IBE.onRemove(state, level, pos, newState);
             return;
         }

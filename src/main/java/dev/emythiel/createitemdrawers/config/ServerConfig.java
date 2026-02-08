@@ -27,7 +27,6 @@ public class ServerConfig extends ConfigBase {
     public final ConfigBool slowness = b(true, "slowness", Comments.slowness);
     public final ConfigInt slownessAmount = i(2, 1, 36, "slownessAmount", Comments.slownessAmount);
     public final ConfigBool slownessCreative = b(false, "slownessCreative", Comments.slownessCreative);
-    public final ConfigBool creativeBreaking = b(false, "creativeBreaking", Comments.creativeBreaking);
 
     @Override @NotNull
     public String getName() {
@@ -51,6 +50,5 @@ public class ServerConfig extends ConfigBase {
         static String slowness = "Apply slowness when a certain amount of filled drawers are in the players inventory.";
         static String slownessAmount = "Slowness effect increases by one tier for every X filled drawers in the inventory.";
         static String slownessCreative = "If the slowness effect should apply to players in creative mode.";
-        static String creativeBreaking = "If breaking drawers with items stored in them should drop when in creative mode.";
     }
 }

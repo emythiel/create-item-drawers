@@ -50,7 +50,6 @@ public class DrawerStorageBlockEntity extends BaseDrawerBlockEntity
     private boolean renderIcons = true;
 
     private int extractCooldown = 0;
-    private boolean creativeDelete;
 
     public DrawerStorageBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
         super(type, pos, state);
@@ -205,15 +204,6 @@ public class DrawerStorageBlockEntity extends BaseDrawerBlockEntity
         level.playSound(null, worldPosition, SoundEvents.ITEM_PICKUP, SoundSource.BLOCKS, 0.2f, 0.2f);
 
         setChangedAndSync();
-    }
-
-    // Creative block break handling
-    public void markForCreativeDeletion() {
-        creativeDelete = true;
-    }
-
-    public boolean shouldDeleteOnBreak() {
-        return creativeDelete;
     }
 
     // GUI handling
