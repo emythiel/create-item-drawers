@@ -3,8 +3,8 @@
   "category": "misc",
   "group": "capacity_upgrade",
   "key": {
-    "D": {
-      "item": "minecraft:diamond"
+    "P": {
+      "item": "create:polished_rose_quartz"
     },
     "S": {
       "item": "create:sturdy_sheet"
@@ -14,9 +14,9 @@
     }
   },
   "pattern": [
-    "DDD",
+    "PPP",
     "USU",
-    "DDD"
+    "PPP"
   ],
   "result": {
     "count": 1,

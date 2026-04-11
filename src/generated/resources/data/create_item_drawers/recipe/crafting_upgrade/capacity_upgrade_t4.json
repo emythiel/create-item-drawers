@@ -3,20 +3,20 @@
   "category": "misc",
   "group": "capacity_upgrade",
   "key": {
-    "E": {
+    "B": {
       "item": "create:experience_block"
     },
-    "N": {
-      "item": "minecraft:netherite_ingot"
+    "D": {
+      "item": "minecraft:diamond"
     },
     "U": {
       "item": "create_item_drawers:capacity_upgrade_t3"
     }
   },
   "pattern": [
-    "NNN",
-    "UEU",
-    "NNN"
+    "DDD",
+    "UBU",
+    "DDD"
   ],
   "result": {
     "count": 1,

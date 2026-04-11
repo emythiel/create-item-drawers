@@ -6,17 +6,17 @@
     "H": {
       "item": "minecraft:heavy_core"
     },
-    "S": {
-      "item": "minecraft:shulker_shell"
+    "N": {
+      "item": "minecraft:netherite_ingot"
     },
     "U": {
       "item": "create_item_drawers:capacity_upgrade_t4"
     }
   },
   "pattern": [
-    "SSS",
+    "NNN",
     "UHU",
-    "SSS"
+    "NNN"
   ],
   "result": {
     "count": 1,

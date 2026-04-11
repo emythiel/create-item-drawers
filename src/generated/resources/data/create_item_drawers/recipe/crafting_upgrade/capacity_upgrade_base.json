@@ -6,14 +6,14 @@
     "B": {
       "item": "create:crafting_blueprint"
     },
-    "V": {
-      "item": "create:item_vault"
+    "Z": {
+      "item": "create:zinc_ingot"
     }
   },
   "pattern": [
-    " V ",
-    "VBV",
-    " V "
+    "ZZZ",
+    " B ",
+    "ZZZ"
   ],
   "result": {
     "count": 1,
