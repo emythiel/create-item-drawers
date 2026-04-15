@@ -3,17 +3,17 @@
   "category": "misc",
   "group": "capacity_upgrade",
   "key": {
+    "A": {
+      "item": "create:andesite_alloy"
+    },
     "B": {
       "item": "create:crafting_blueprint"
-    },
-    "Z": {
-      "item": "create:zinc_ingot"
     }
   },
   "pattern": [
-    "ZZZ",
+    "AAA",
     " B ",
-    "ZZZ"
+    "AAA"
   ],
   "result": {
     "count": 1,

@@ -3,20 +3,20 @@
   "category": "misc",
   "group": "capacity_upgrade",
   "key": {
-    "B": {
-      "item": "create:brass_ingot"
-    },
     "P": {
       "item": "create:precision_mechanism"
+    },
+    "Q": {
+      "item": "minecraft:quartz"
     },
     "U": {
       "item": "create_item_drawers:capacity_upgrade_t1"
     }
   },
   "pattern": [
-    "BBB",
+    "QQQ",
     "UPU",
-    "BBB"
+    "QQQ"
   ],
   "result": {
     "count": 1,

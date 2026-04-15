@@ -3,20 +3,20 @@
   "category": "misc",
   "group": "capacity_upgrade",
   "key": {
-    "B": {
-      "item": "create:experience_block"
+    "P": {
+      "item": "create:polished_rose_quartz"
     },
-    "D": {
-      "item": "minecraft:diamond"
+    "S": {
+      "item": "create:sturdy_sheet"
     },
     "U": {
       "item": "create_item_drawers:capacity_upgrade_t3"
     }
   },
   "pattern": [
-    "DDD",
-    "UBU",
-    "DDD"
+    "PPP",
+    "USU",
+    "PPP"
   ],
   "result": {
     "count": 1,

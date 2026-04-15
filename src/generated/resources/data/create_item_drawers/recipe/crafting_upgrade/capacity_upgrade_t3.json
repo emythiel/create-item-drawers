@@ -3,20 +3,20 @@
   "category": "misc",
   "group": "capacity_upgrade",
   "key": {
-    "P": {
-      "item": "create:polished_rose_quartz"
+    "B": {
+      "item": "create:brass_ingot"
     },
-    "S": {
-      "item": "create:sturdy_sheet"
+    "E": {
+      "item": "create:experience_block"
     },
     "U": {
       "item": "create_item_drawers:capacity_upgrade_t2"
     }
   },
   "pattern": [
-    "PPP",
-    "USU",
-    "PPP"
+    "BBB",
+    "UEU",
+    "BBB"
   ],
   "result": {
     "count": 1,
