@@ -4,7 +4,7 @@
   "group": "capacity_upgrade",
   "key": {
     "B": {
-      "item": "create:brass_ingot"
+      "item": "create:brass_sheet"
     },
     "E": {
       "item": "create:experience_block"

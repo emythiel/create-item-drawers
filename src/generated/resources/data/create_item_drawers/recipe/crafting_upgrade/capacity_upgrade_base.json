@@ -12,7 +12,7 @@
   },
   "pattern": [
     "AAA",
-    " B ",
+    "ABA",
     "AAA"
   ],
   "result": {

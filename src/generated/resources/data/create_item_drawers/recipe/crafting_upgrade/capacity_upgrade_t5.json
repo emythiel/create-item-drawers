@@ -3,8 +3,8 @@
   "category": "misc",
   "group": "capacity_upgrade",
   "key": {
-    "H": {
-      "item": "minecraft:heavy_core"
+    "D": {
+      "item": "minecraft:diamond"
     },
     "N": {
       "item": "minecraft:netherite_ingot"
@@ -14,9 +14,9 @@
     }
   },
   "pattern": [
-    "NNN",
-    "UHU",
-    "NNN"
+    "DDD",
+    "UNU",
+    "DDD"
   ],
   "result": {
     "count": 1,
