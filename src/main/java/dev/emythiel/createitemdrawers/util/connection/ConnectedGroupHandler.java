@@ -32,6 +32,9 @@ public class ConnectedGroupHandler {
         Direction refDirection = refState.getValue(HORIZONTAL_FACING);
         if (direction.getAxis() == refDirection.getAxis())
             return false;
+        // TODO: Remove block below to allow connecting via front.
+        //  Should only be done after drawer block visuals have been updated,
+        //  and update "area" to open gui to match visuals better.
         if (face == refDirection)
             return false;
         BlockState neighbour = world.getBlockState(pos.relative(direction));
