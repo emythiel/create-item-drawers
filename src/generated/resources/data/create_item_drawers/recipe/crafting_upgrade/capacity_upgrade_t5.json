@@ -6,8 +6,8 @@
     "D": {
       "item": "minecraft:diamond"
     },
-    "N": {
-      "item": "minecraft:netherite_ingot"
+    "E": {
+      "item": "create:experience_block"
     },
     "U": {
       "item": "create_item_drawers:capacity_upgrade_t4"
@@ -15,7 +15,7 @@
   },
   "pattern": [
     "DDD",
-    "UNU",
+    "UEU",
     "DDD"
   ],
   "result": {

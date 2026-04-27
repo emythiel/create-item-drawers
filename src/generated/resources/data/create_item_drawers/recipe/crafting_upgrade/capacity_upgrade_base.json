@@ -3,17 +3,17 @@
   "category": "misc",
   "group": "capacity_upgrade",
   "key": {
-    "A": {
-      "item": "create:andesite_alloy"
-    },
     "B": {
       "item": "create:crafting_blueprint"
+    },
+    "P": {
+      "item": "minecraft:paper"
     }
   },
   "pattern": [
-    "AAA",
-    "ABA",
-    "AAA"
+    "PPP",
+    "PBP",
+    "PPP"
   ],
   "result": {
     "count": 1,

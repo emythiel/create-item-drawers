@@ -3,20 +3,20 @@
   "category": "misc",
   "group": "capacity_upgrade",
   "key": {
-    "G": {
-      "item": "create:golden_sheet"
+    "A": {
+      "item": "create:andesite_alloy"
     },
-    "I": {
-      "item": "create:iron_sheet"
+    "F": {
+      "item": "minecraft:flint"
     },
     "U": {
       "item": "create_item_drawers:capacity_upgrade_base"
     }
   },
   "pattern": [
-    "III",
-    "UGU",
-    "III"
+    "FFF",
+    "UAU",
+    "FFF"
   ],
   "result": {
     "count": 1,

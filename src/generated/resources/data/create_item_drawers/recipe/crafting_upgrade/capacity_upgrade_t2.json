@@ -3,20 +3,20 @@
   "category": "misc",
   "group": "capacity_upgrade",
   "key": {
-    "P": {
-      "item": "create:precision_mechanism"
+    "C": {
+      "item": "create:copper_sheet"
     },
-    "Q": {
-      "item": "minecraft:quartz"
+    "I": {
+      "item": "create:iron_sheet"
     },
     "U": {
       "item": "create_item_drawers:capacity_upgrade_t1"
     }
   },
   "pattern": [
-    "QQQ",
-    "UPU",
-    "QQQ"
+    "III",
+    "UCU",
+    "III"
   ],
   "result": {
     "count": 1,

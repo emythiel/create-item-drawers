@@ -3,8 +3,8 @@
   "category": "misc",
   "group": "capacity_upgrade",
   "key": {
-    "P": {
-      "item": "create:polished_rose_quartz"
+    "B": {
+      "item": "create:brass_sheet"
     },
     "S": {
       "item": "create:sturdy_sheet"
@@ -14,9 +14,9 @@
     }
   },
   "pattern": [
-    "PPP",
+    "BBB",
     "USU",
-    "PPP"
+    "BBB"
   ],
   "result": {
     "count": 1,
