@@ -6,13 +6,16 @@
     "B": {
       "item": "create:crafting_blueprint"
     },
+    "C": {
+      "item": "minecraft:chest"
+    },
     "P": {
       "item": "minecraft:paper"
     }
   },
   "pattern": [
     "PPP",
-    "PBP",
+    "CBC",
     "PPP"
   ],
   "result": {
