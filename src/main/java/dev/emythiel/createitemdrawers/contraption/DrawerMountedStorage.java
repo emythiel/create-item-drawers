@@ -5,6 +5,7 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.simibubi.create.api.contraption.storage.item.MountedItemStorageType;
 import com.simibubi.create.api.contraption.storage.item.WrapperMountedItemStorage;
+import com.simibubi.create.content.contraptions.AbstractContraptionEntity;
 import com.simibubi.create.content.contraptions.Contraption;
 import com.simibubi.create.content.contraptions.behaviour.MovementContext;
 import com.simibubi.create.foundation.codec.CreateCodecs;
@@ -16,17 +17,23 @@ import dev.emythiel.createitemdrawers.storage.DrawerItemHandler;
 import dev.emythiel.createitemdrawers.storage.DrawerSlot;
 import dev.emythiel.createitemdrawers.storage.DrawerStorage;
 import dev.emythiel.createitemdrawers.util.connection.ConnectedGroupHandler;
+import net.createmod.catnip.math.VecHelper;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.HorizontalDirectionalBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate.StructureBlockInfo;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.items.ItemStackHandler;
 import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
@@ -122,8 +129,88 @@ public class DrawerMountedStorage extends WrapperMountedItemStorage<DrawerItemHa
 
     @Override
     public boolean handleInteraction(ServerPlayer player, Contraption contraption, StructureBlockInfo info) {
-        // TODO: Player interaction with mounted drawer
-        return false;
+        ItemStack heldItem = player.getItemInHand(InteractionHand.MAIN_HAND);
+        boolean sneaking = player.isShiftKeyDown();
+
+        if (heldItem.isEmpty() && !sneaking)
+            return false;
+
+        int slot = getTargetedSlot(player, contraption, info);
+        if (slot < 0)
+            return false;
+
+        boolean anyInserted = false;
+
+        if (!heldItem.isEmpty()) {
+            int before = heldItem.getCount();
+            ItemStack leftover = wrapped.insertItemAsPlayer(slot, heldItem, false);
+            anyInserted = leftover.getCount() < before;
+            player.setItemInHand(InteractionHand.MAIN_HAND, leftover);
+
+            // If not sneaking, stop here
+            if (!sneaking) {
+                if (anyInserted) markDirty();
+                return anyInserted;
+            }
+        }
+
+        if (sneaking) {
+            DrawerSlot drawerSlot = wrapped.getDrawerSlot(slot);
+            if (drawerSlot != null && !drawerSlot.getStoredItem().isEmpty()) {
+                ItemStack stored = drawerSlot.getStoredItem();
+
+                for (int i = 0; i < player.getInventory().getContainerSize(); i++) {
+                    ItemStack inv = player.getInventory().getItem(i);
+                    if (inv.isEmpty()) continue;
+                    if (!ItemStack.isSameItemSameComponents(inv, stored)) continue;
+
+                    int before = inv.getCount();
+                    ItemStack leftover = wrapped.insertItemAsPlayer(slot, inv, false);
+                    if (leftover.getCount() < before) {
+                        anyInserted = true;
+                        player.getInventory().setItem(i, leftover);
+                    }
+                }
+            }
+        }
+
+        if (anyInserted) markDirty();
+        return anyInserted;
+    }
+
+    private int getTargetedSlot(ServerPlayer player, Contraption contraption, StructureBlockInfo info) {
+        AbstractContraptionEntity entity = contraption.entity;
+        if (entity == null) return -1;
+
+        Vec3 eyePos = player.getEyePosition();
+        Vec3 localEye = entity.toLocalVector(eyePos, 1.0f);
+        Vec3 localTarget = entity.toLocalVector(eyePos.add(player.getLookAngle().scale(5.0)), 1.0f);
+
+        BlockPos localPos = info.pos();
+        java.util.Optional<Vec3> hit = new AABB(localPos).clip(localEye, localTarget);
+        if (hit.isEmpty()) return -1;
+
+        Direction facing = info.state().getValue(HorizontalDirectionalBlock.FACING);
+        return getSlotFromLocalHit(hit.get(), localPos, facing, wrapped.getSlots());
+    }
+
+    private static int getSlotFromLocalHit(Vec3 hitPos, BlockPos localPos, Direction facing, int slotCount) {
+        Vec3 local = hitPos.subtract(Vec3.atLowerCornerOf(localPos));
+        Vec3 faceLocal = VecHelper.rotateCentered(local, facing.getOpposite().toYRot(), Direction.Axis.Y);
+
+        double x = faceLocal.x();
+        double y = faceLocal.y();
+
+        return switch (slotCount) {
+            case 1 -> 0;
+            case 2 -> (y > 0.5) ? 0 : 1;
+            case 4 -> {
+                int row = (y > 0.5) ? 0 : 1;
+                int col = (x > 0.5) ? 0 : 1;
+                yield row * 2 + col;
+            }
+            default -> -1;
+        };
     }
 
     public static DrawerMountedStorage fromStorage(DrawerStorageBlockEntity drawerBE) {

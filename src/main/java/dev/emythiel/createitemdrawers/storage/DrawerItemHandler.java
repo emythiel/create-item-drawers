@@ -3,6 +3,7 @@ package dev.emythiel.createitemdrawers.storage;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.items.ItemStackHandler;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class DrawerItemHandler extends ItemStackHandler {
 
@@ -35,6 +36,36 @@ public class DrawerItemHandler extends ItemStackHandler {
         ItemStack copy = s.getStoredItem().copy();
         copy.setCount(s.getCount());
         return copy;
+    }
+
+    @Nullable
+    public DrawerSlot getDrawerSlot(int slot) {
+        if (slot < 0 || slot >= storage.getSlotCount()) return null;
+        return storage.getSlot(slot);
+    }
+
+    /**
+     * Playing insertion - used by contraptions to bypass the automation restriction,
+     * so players can insert items into empty locked slots on contraptions.
+     */
+    @NotNull
+    public ItemStack insertItemAsPlayer(int slot, ItemStack stack, boolean simulate) {
+        if (stack.isEmpty())
+            return ItemStack.EMPTY;
+
+        if (slot < 0 || slot >= storage.getSlotCount())
+            return stack;
+
+        DrawerSlot s = storage.getSlot(slot);
+        if (!s.canAccept(stack))
+            return stack;
+
+        ItemStack remaining = storage.insert(slot, stack, simulate);
+
+        if (!simulate && remaining.getCount() != stack.getCount())
+            onChange.run();
+
+        return remaining;
     }
 
     @Override @NotNull
