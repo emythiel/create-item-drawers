@@ -409,15 +409,13 @@ public class DrawerMountedStorage extends WrapperMountedItemStorage<DrawerItemHa
 
         for (int i = 0; i < Math.min(slotData.size(), wrapped.getSlots()); i++) {
             DrawerSlotData data = slotData.get(i);
-            ItemStack stack = wrapped.getStackInSlot(i);
+            DrawerSlot drawerSlot = wrapped.getDrawerSlot(i);
+            if (drawerSlot == null) continue;
 
-            if (stack.isEmpty()) {
-                data.storedItem = ItemStack.EMPTY;
-                data.count = 0;
-            } else {
-                data.storedItem = stack.copyWithCount(1);
-                data.count = stack.getCount();
-            }
+            data.storedItem = drawerSlot.getStoredItem().isEmpty()
+                ? ItemStack.EMPTY
+                : drawerSlot.getStoredItem().copyWithCount(1);
+            data.count = drawerSlot.getCount();
         }
     }
 
