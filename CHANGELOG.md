@@ -1,7 +1,11 @@
 # Changelog
 
+## 1.2.0 (TBA)
+- Drawers with contents are now directly inserted into the players inventory when sneak-wrenched
+- Reworked upgrade recipes based on feedback to not be as expensive
+
 ## 1.1.1 (2026-02-07)
-- Fixed packers not properly inserting multiple stacks into a drawer
+- Fixed packagers not properly inserting multiple stacks into a drawer
 - Improved left click extraction behaviour
 - Improved contraption handling (Minecart contraptions)
 
