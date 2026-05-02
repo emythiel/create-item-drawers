@@ -15,10 +15,14 @@ import dev.emythiel.createitemdrawers.util.DrawerInteractionHelper;
 import dev.emythiel.createitemdrawers.util.connection.ConnectedGroupHandler;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.ItemTags;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
@@ -36,6 +40,8 @@ import java.util.List;
 public class DrawerStorageBlock extends BaseDrawerBlock implements IWrenchable, IBE<DrawerStorageBlockEntity> {
 
     private final int slotCount;
+
+    private static final TagKey<Item> WRENCH_TAG = ItemTags.create(ResourceLocation.parse("c:tools/wrench"));
 
     public DrawerStorageBlock(Properties properties, int slotCount) {
         super(properties);
@@ -71,7 +77,7 @@ public class DrawerStorageBlock extends BaseDrawerBlock implements IWrenchable, 
         boolean sneaking = player.isShiftKeyDown();
 
         // Open GUI if front face is right-clicked with Create Wrench
-        if (held.is(AllItems.WRENCH.get()) && !sneaking) {
+        if (held.is(WRENCH_TAG) && !sneaking) {
             if (!level.isClientSide) {
                 player.openMenu(be, buf -> buf.writeBlockPos(pos));
             }

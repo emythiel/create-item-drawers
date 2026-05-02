@@ -24,12 +24,16 @@ import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.tags.ItemTags;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
@@ -51,6 +55,8 @@ public class DrawerStorageBlockEntity extends BaseDrawerBlockEntity
     private boolean renderIcons = true;
 
     private int extractCooldown = 0;
+
+    private static final TagKey<Item> WRENCH_TAG = ItemTags.create(ResourceLocation.parse("c:tools/wrench"));
 
     public DrawerStorageBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
         super(type, pos, state);
@@ -241,7 +247,7 @@ public class DrawerStorageBlockEntity extends BaseDrawerBlockEntity
             return false;
 
         Player player = Minecraft.getInstance().player;
-        boolean holdingWrench = player.getMainHandItem().is(AllItems.WRENCH.get());
+        boolean holdingWrench = player.getMainHandItem().is(WRENCH_TAG);
         if (GOOGLE_TOOLTIP_REQUIRE_WRENCH && !holdingWrench)
             return false;
 
