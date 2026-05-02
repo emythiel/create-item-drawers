@@ -1,6 +1,6 @@
 # Changelog
 
-## 1.2.0 (TBA)
+## 1.2.0 (2026-05-02)
 - Drawers with contents are now directly inserted into the players inventory when sneak-wrenched
 - Reworked upgrade recipes based on feedback to not be as expensive
 - Added ability to insert/extract items via the GUI
