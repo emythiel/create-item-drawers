@@ -3,6 +3,9 @@
 ## 1.2.0 (TBA)
 - Drawers with contents are now directly inserted into the players inventory when sneak-wrenched
 - Reworked upgrade recipes based on feedback to not be as expensive
+- Added ability to insert/extract items via the GUI
+  - Also added ability to open GUI when drawers are part of a contraption
+- Switched to using Wrench tag instead, improving compatibility a bit
 
 ## 1.1.1 (2026-02-07)
 - Fixed packagers not properly inserting multiple stacks into a drawer
