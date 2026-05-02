@@ -6,12 +6,13 @@ import com.simibubi.create.content.redstone.thresholdSwitch.ThresholdSwitchObser
 import com.simibubi.create.foundation.utility.CreateLang;
 import dev.emythiel.createitemdrawers.block.DrawerStorageBlock;
 import dev.emythiel.createitemdrawers.block.base.BaseDrawerBlockEntity;
+import dev.emythiel.createitemdrawers.gui.DrawerMenu;
+import dev.emythiel.createitemdrawers.gui.IDrawerGuiHolder;
 import dev.emythiel.createitemdrawers.item.CapacityUpgradeItem;
 import dev.emythiel.createitemdrawers.registry.ModConfigs;
 import dev.emythiel.createitemdrawers.storage.DrawerItemHandler;
 import dev.emythiel.createitemdrawers.storage.DrawerSlot;
 import dev.emythiel.createitemdrawers.storage.DrawerStorage;
-import dev.emythiel.createitemdrawers.gui.DrawerMenu;
 import dev.emythiel.createitemdrawers.util.CreateItemDrawerLang;
 import dev.emythiel.createitemdrawers.util.connection.ConnectedGroupHandler;
 import net.minecraft.ChatFormatting;
@@ -39,7 +40,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 
 public class DrawerStorageBlockEntity extends BaseDrawerBlockEntity
-                                      implements MenuProvider, IHaveGoggleInformation, ThresholdSwitchObservable {
+                                      implements IDrawerGuiHolder, MenuProvider, IHaveGoggleInformation, ThresholdSwitchObservable {
 
     private final DrawerStorage storage;
     private final DrawerItemHandler itemHandler;
@@ -72,6 +73,18 @@ public class DrawerStorageBlockEntity extends BaseDrawerBlockEntity
     @Override
     public DrawerItemHandler getLocalHandler() {
         return itemHandler;
+    }
+
+
+
+    @Override
+    public int getSlotCount() {
+        return storage.getSlotCount();
+    }
+
+    @Override
+    public dev.emythiel.createitemdrawers.storage.DrawerSlot getDrawerSlot(int slot) {
+        return storage.getSlot(slot);
     }
 
     @Override

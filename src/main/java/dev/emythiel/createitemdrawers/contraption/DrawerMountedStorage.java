@@ -11,7 +11,10 @@ import com.simibubi.create.content.contraptions.behaviour.MovementContext;
 import com.simibubi.create.foundation.codec.CreateCodecs;
 import dev.emythiel.createitemdrawers.CreateItemDrawers;
 import dev.emythiel.createitemdrawers.block.entity.DrawerStorageBlockEntity;
+import dev.emythiel.createitemdrawers.gui.IDrawerGuiHolder;
+import dev.emythiel.createitemdrawers.item.CapacityUpgradeItem;
 import dev.emythiel.createitemdrawers.network.SyncMountedStoragePacket;
+import dev.emythiel.createitemdrawers.registry.ModMenuTypes;
 import dev.emythiel.createitemdrawers.registry.ModMountedStorageTypes;
 import dev.emythiel.createitemdrawers.storage.DrawerItemHandler;
 import dev.emythiel.createitemdrawers.storage.DrawerSlot;
@@ -23,8 +26,13 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.MenuProvider;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.HorizontalDirectionalBlock;
@@ -42,7 +50,7 @@ import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DrawerMountedStorage extends WrapperMountedItemStorage<DrawerItemHandler> {
+public class DrawerMountedStorage extends WrapperMountedItemStorage<DrawerItemHandler> implements IDrawerGuiHolder {
 
     public static final MapCodec<DrawerMountedStorage> CODEC =
         RecordCodecBuilder.mapCodec(instance -> instance.group(
@@ -116,6 +124,7 @@ public class DrawerMountedStorage extends WrapperMountedItemStorage<DrawerItemHa
 
         DrawerItemHandler handler = new DrawerItemHandler(storage);
         DrawerMountedStorage mounted = new DrawerMountedStorage(ModMountedStorageTypes.MOUNTED_DRAWER.get(), handler);
+        handler.setOnChange(mounted::markDirty);
 
         mounted.slotCount = slotCount;
         mounted.upgradeItem = upgrade;
@@ -129,95 +138,134 @@ public class DrawerMountedStorage extends WrapperMountedItemStorage<DrawerItemHa
 
     @Override
     public boolean handleInteraction(ServerPlayer player, Contraption contraption, StructureBlockInfo info) {
-        ItemStack heldItem = player.getItemInHand(InteractionHand.MAIN_HAND);
-        boolean sneaking = player.isShiftKeyDown();
-
-        if (heldItem.isEmpty() && !sneaking)
-            return false;
-
-        int slot = getTargetedSlot(player, contraption, info);
-        if (slot < 0)
-            return false;
-
-        boolean anyInserted = false;
-
-        if (!heldItem.isEmpty()) {
-            int before = heldItem.getCount();
-            ItemStack leftover = wrapped.insertItemAsPlayer(slot, heldItem, false);
-            anyInserted = leftover.getCount() < before;
-            player.setItemInHand(InteractionHand.MAIN_HAND, leftover);
-
-            // If not sneaking, stop here
-            if (!sneaking) {
-                if (anyInserted) markDirty();
-                return anyInserted;
-            }
-        }
-
-        if (sneaking) {
-            DrawerSlot drawerSlot = wrapped.getDrawerSlot(slot);
-            if (drawerSlot != null && !drawerSlot.getStoredItem().isEmpty()) {
-                ItemStack stored = drawerSlot.getStoredItem();
-
-                for (int i = 0; i < player.getInventory().getContainerSize(); i++) {
-                    ItemStack inv = player.getInventory().getItem(i);
-                    if (inv.isEmpty()) continue;
-                    if (!ItemStack.isSameItemSameComponents(inv, stored)) continue;
-
-                    int before = inv.getCount();
-                    ItemStack leftover = wrapped.insertItemAsPlayer(slot, inv, false);
-                    if (leftover.getCount() < before) {
-                        anyInserted = true;
-                        player.getInventory().setItem(i, leftover);
-                    }
-                }
-            }
-        }
-
-        if (anyInserted) markDirty();
-        return anyInserted;
-    }
-
-    private int getTargetedSlot(ServerPlayer player, Contraption contraption, StructureBlockInfo info) {
-        AbstractContraptionEntity entity = contraption.entity;
-        if (entity == null) return -1;
-
-        Vec3 eyePos = player.getEyePosition();
-        Vec3 localEye = entity.toLocalVector(eyePos, 1.0f);
-        Vec3 localTarget = entity.toLocalVector(eyePos.add(player.getLookAngle().scale(5.0)), 1.0f);
-
+        int entityId = contraption.entity.getId();
         BlockPos localPos = info.pos();
-        java.util.Optional<Vec3> hit = new AABB(localPos).clip(localEye, localTarget);
-        if (hit.isEmpty()) return -1;
 
-        Direction facing = info.state().getValue(HorizontalDirectionalBlock.FACING);
-        return getSlotFromLocalHit(hit.get(), localPos, facing, wrapped.getSlots());
-    }
-
-    private static int getSlotFromLocalHit(Vec3 hitPos, BlockPos localPos, Direction facing, int slotCount) {
-        Vec3 local = hitPos.subtract(Vec3.atLowerCornerOf(localPos));
-        Vec3 faceLocal = VecHelper.rotateCentered(local, facing.getOpposite().toYRot(), Direction.Axis.Y);
-
-        double x = faceLocal.x();
-        double y = faceLocal.y();
-
-        return switch (slotCount) {
-            case 1 -> 0;
-            case 2 -> (y > 0.5) ? 0 : 1;
-            case 4 -> {
-                int row = (y > 0.5) ? 0 : 1;
-                int col = (x > 0.5) ? 0 : 1;
-                yield row * 2 + col;
+        player.openMenu(new MenuProvider() {
+            @Override
+            public Component getDisplayName() {
+                return dev.emythiel.createitemdrawers.util.CreateItemDrawerLang
+                    .translate("gui.drawer_" + slotCount).component();
             }
-            default -> -1;
-        };
+
+            @Override
+            public AbstractContainerMenu createMenu(int id, Inventory inv, Player player) {
+                return new ContraptionDrawerMenu(
+                    ModMenuTypes.CONTRAPTION_DRAWER_MENU.get(), id, inv,
+                    DrawerMountedStorage.this, entityId, localPos
+                );
+            }
+        }, buf -> {
+            buf.writeInt(entityId);
+            buf.writeBlockPos(localPos);
+        });
+
+        return true;
     }
+
+    @Override
+    public int getSlotCount() {
+        return slotCount;
+    }
+
+    @Override
+    @Nullable
+    public DrawerSlot getDrawerSlot(int slot) {
+        return wrapped.getDrawerSlot(slot);
+    }
+
+    @Override
+    public DrawerItemHandler getLocalHandler() {
+        return wrapped;
+    }
+
+    @Override
+    public ItemStack getUpgrade() {
+        return upgradeItem;
+    }
+
+    @Override
+    public void setUpgrade(ItemStack stack) {
+        this.upgradeItem = stack.copy();
+        int multiplier = 1;
+        if (!upgradeItem.isEmpty() && upgradeItem.getItem() instanceof CapacityUpgradeItem item) {
+            multiplier = item.getTierMultiplier();
+        }
+        wrapped.getStorage().setUpgradeMultiplier(multiplier);
+        markDirty();
+    }
+
+    @Override
+    public boolean getRenderItems() { return renderItems; }
+    @Override
+    public void setRenderItems(boolean v) { renderItems = v; }
+
+    @Override
+    public boolean getRenderCounts() { return renderCounts; }
+    @Override
+    public void setRenderCounts(boolean v) { renderCounts = v; }
+
+    @Override
+    public boolean getRenderIcons() { return renderIcons; }
+    @Override
+    public void setRenderIcons(boolean v) { renderIcons = v; }
+
+
+    public static DrawerMountedStorage fromBlockInfoNbt(CompoundTag nbt, HolderLookup.Provider provider) {
+        int count = nbt.contains("SlotCount") ? nbt.getInt("SlotCount") : 1;
+
+        DrawerStorage storage = new DrawerStorage(count);
+
+        if (nbt.contains("Slots")) {
+            net.minecraft.nbt.ListTag slots = nbt.getList("Slots", CompoundTag.TAG_COMPOUND);
+            for (int i = 0; i < Math.min(count, slots.size()); i++) {
+                CompoundTag slotTag = slots.getCompound(i);
+                DrawerSlot slot = storage.getSlot(i);
+                if (slotTag.contains("Item"))
+                    slot.setStoredItem(ItemStack.parseOptional(provider, slotTag.getCompound("Item")));
+                slot.setCount(slotTag.getInt("Count"));
+                slot.setLockMode(slotTag.getBoolean("Locked"));
+                slot.setVoidMode(slotTag.getBoolean("Void"));
+            }
+        }
+
+        ItemStack upgrade = ItemStack.EMPTY;
+        if (nbt.contains("Upgrade"))
+            upgrade = ItemStack.parseOptional(provider, nbt.getCompound("Upgrade"));
+
+        if (!upgrade.isEmpty() && upgrade.getItem() instanceof CapacityUpgradeItem item)
+            storage.setUpgradeMultiplier(item.getTierMultiplier());
+
+        DrawerItemHandler handler = new DrawerItemHandler(storage);
+        DrawerMountedStorage mounted = new DrawerMountedStorage(
+            ModMountedStorageTypes.MOUNTED_DRAWER.get(), handler
+        );
+
+        mounted.slotCount = count;
+        mounted.upgradeItem = upgrade;
+        mounted.renderItems = nbt.getBoolean("RenderItems");
+        mounted.renderCounts = nbt.getBoolean("RenderCounts");
+        mounted.renderIcons = nbt.getBoolean("RenderIcons");
+
+        for (int i = 0; i < count; i++) {
+            DrawerSlot s = storage.getSlot(i);
+            mounted.slotData.add(new DrawerSlotData(
+                s.getStoredItem().isEmpty() ? ItemStack.EMPTY : s.getStoredItem().copyWithCount(1),
+                s.getCount(), s.isLockMode(), s.isVoidMode()
+            ));
+        }
+
+        return mounted;
+    }
+
 
     public static DrawerMountedStorage fromStorage(DrawerStorageBlockEntity drawerBE) {
         DrawerStorage drawerStorage = drawerBE.getStorage();
         DrawerStorage storage = new DrawerStorage(drawerStorage.getSlotCount());
 
-        DrawerMountedStorage mounted = new DrawerMountedStorage(new DrawerItemHandler(storage));
+        DrawerItemHandler handler = new DrawerItemHandler(storage);
+        DrawerMountedStorage mounted = new DrawerMountedStorage(ModMountedStorageTypes.MOUNTED_DRAWER.get(), handler);
+        handler.setOnChange(mounted::markDirty);
 
         mounted.slotCount = drawerBE.getStorage().getSlotCount();
         mounted.renderItems = drawerBE.getRenderItems();
@@ -416,6 +464,9 @@ public class DrawerMountedStorage extends WrapperMountedItemStorage<DrawerItemHa
                 ? ItemStack.EMPTY
                 : drawerSlot.getStoredItem().copyWithCount(1);
             data.count = drawerSlot.getCount();
+            // Persist lock/void so they survive unmount even if toggled while mounted
+            data.lockMode = drawerSlot.isLockMode();
+            data.voidMode = drawerSlot.isVoidMode();
         }
     }
 

@@ -10,9 +10,9 @@ import org.jetbrains.annotations.NotNull;
 
 public class UpgradeSlot extends Slot {
 
-    private final DrawerStorageBlockEntity be;
+    private final IDrawerGuiHolder be;
 
-    public UpgradeSlot(DrawerStorageBlockEntity be, int x, int y) {
+    public UpgradeSlot(IDrawerGuiHolder be, int x, int y) {
         super(new SimpleContainer(1), 0, x, y);
         this.be = be;
     }
@@ -50,3 +50,4 @@ public class UpgradeSlot extends Slot {
         return 1;
     }
 }
+

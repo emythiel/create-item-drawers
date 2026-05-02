@@ -38,6 +38,10 @@ public class DrawerItemHandler extends ItemStackHandler {
         return copy;
     }
 
+    public DrawerStorage getStorage() {
+        return storage;
+    }
+
     @Nullable
     public DrawerSlot getDrawerSlot(int slot) {
         if (slot < 0 || slot >= storage.getSlotCount()) return null;

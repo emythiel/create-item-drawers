@@ -1,5 +1,6 @@
 package dev.emythiel.createitemdrawers.registry;
 
+import dev.emythiel.createitemdrawers.network.ContraptionSlotTogglePacket;
 import dev.emythiel.createitemdrawers.network.RenderPacket;
 import dev.emythiel.createitemdrawers.network.SlotTogglePacket;
 import dev.emythiel.createitemdrawers.network.SyncMountedStoragePacket;
@@ -32,6 +33,12 @@ public class ModPackets {
             SlotTogglePacket.TYPE,
             SlotTogglePacket.STREAM_CODEC,
             ServerPayloadHandler.getInstance()::handleSlotToggle
+        );
+
+        registrar.playToServer(
+            ContraptionSlotTogglePacket.TYPE,
+            ContraptionSlotTogglePacket.STREAM_CODEC,
+            ServerPayloadHandler.getInstance()::handleContraptionSlotToggle
         );
     }
 }

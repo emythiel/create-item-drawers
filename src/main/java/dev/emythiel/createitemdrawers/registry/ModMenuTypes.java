@@ -6,6 +6,8 @@ import com.tterrag.registrate.builders.MenuBuilder.ScreenFactory;
 import com.tterrag.registrate.util.entry.MenuEntry;
 import com.tterrag.registrate.util.nullness.NonNullSupplier;
 import dev.emythiel.createitemdrawers.CreateItemDrawers;
+import dev.emythiel.createitemdrawers.contraption.ContraptionDrawerMenu;
+import dev.emythiel.createitemdrawers.contraption.ContraptionDrawerScreen;
 import dev.emythiel.createitemdrawers.gui.DrawerScreen;
 import dev.emythiel.createitemdrawers.gui.DrawerMenu;
 import net.minecraft.client.gui.screens.Screen;
@@ -25,6 +27,9 @@ public class ModMenuTypes {
             .menu(name, factory, screenFactory)
             .register();
     }
+
+    public static final MenuEntry<ContraptionDrawerMenu> CONTRAPTION_DRAWER_MENU =
+        register("contraption_drawer_menu", ContraptionDrawerMenu::new, () -> ContraptionDrawerScreen::new);
 
     public static void register() {}
 }
