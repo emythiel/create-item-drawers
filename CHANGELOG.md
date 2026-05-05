@@ -1,5 +1,8 @@
 # Changelog
 
+## 1.2.1 (2026-05-05)
+- Fixed item/icon rendering on Drawers when part of a Aeronautics physics contraption
+
 ## 1.2.0 (2026-05-02)
 - Drawers with contents are now directly inserted into the players inventory when sneak-wrenched
 - Reworked upgrade recipes based on feedback to not be as expensive
