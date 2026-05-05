@@ -32,67 +32,77 @@ import net.minecraft.world.phys.Vec3;
 import static dev.emythiel.createitemdrawers.block.base.BaseDrawerBlock.HORIZONTAL_FACING;
 
 public class DrawerRenderer extends SafeBlockEntityRenderer<DrawerStorageBlockEntity> {
+
+    private Vec3 lastCameraPos = Vec3.ZERO;
+
     public DrawerRenderer(BlockEntityRendererProvider.Context ctx) {}
+
+    @Override
+    public boolean shouldRender(DrawerStorageBlockEntity be, Vec3 cameraPos) {
+        // Ponder scenes should always render, so skip all culling
+        if (be.getLevel() instanceof PonderLevel) return true;
+
+        // General check - if all 3 are disabled, just skip all culling stuff
+        boolean shouldRenderItems = ModConfigs.client().renderItems.get();
+        boolean shouldRenderCounts = ModConfigs.client().renderCounts.get();
+        boolean shouldRenderIcons = ModConfigs.client().renderIcons.get();
+        if (!shouldRenderItems && !shouldRenderCounts && !shouldRenderIcons) return false;
+
+        // Distance check
+        int itemDist = ModConfigs.client().renderItemsDistance.get();
+        int countDist = ModConfigs.client().renderCountsDistance.get();
+        int iconDist = ModConfigs.client().renderIconsDistance.get();
+
+        double dx = cameraPos.x - (be.getBlockPos().getX() + 0.5);
+        double dy = cameraPos.y - (be.getBlockPos().getY() + 0.5);
+        double dz = cameraPos.z - (be.getBlockPos().getZ() + 0.5);
+        double distSq = dx * dx + dy * dy + dz * dz;
+
+        boolean anyVisible =
+            (be.getRenderItems() && shouldRenderItems && distSq <= (double) itemDist * itemDist) ||
+            (be.getRenderCounts() && shouldRenderCounts && distSq <= (double) countDist * countDist) ||
+            (be.getRenderIcons() && shouldRenderIcons && distSq <= (double) iconDist * iconDist);
+        if (!anyVisible) return false;
+
+        // Facing check
+        Direction facing = be.getBlockState().getValue(HORIZONTAL_FACING);
+        Vec3 frontNormal = new Vec3(facing.getStepX(), facing.getStepY(), facing.getStepZ());
+        Vec3 toCamera = new Vec3(dx, dy, dz).normalize();
+        if (frontNormal.dot(toCamera) <= 0) return false;
+
+        this.lastCameraPos = cameraPos;
+        return true;
+    }
 
     @Override
     protected void renderSafe(DrawerStorageBlockEntity be, float partialTicks,
                               PoseStack ms, MultiBufferSource buffer, int packedLight, int overlay) {
 
         boolean shouldRenderItems = ModConfigs.client().renderItems.get();
-        int itemDist = ModConfigs.client().renderItemsDistance.get();
         boolean shouldRenderCounts = ModConfigs.client().renderCounts.get();
-        int countDist = ModConfigs.client().renderCountsDistance.get();
         boolean shouldRenderIcons = ModConfigs.client().renderIcons.get();
-        int iconDist = ModConfigs.client().renderIconsDistance.get();
 
         boolean isPonderScene = be.getLevel() instanceof PonderLevel;
 
-        if (!shouldRenderItems && !shouldRenderCounts && !shouldRenderIcons && !isPonderScene)
-            return; // All renders disabled and not ponder, just exit
+        int itemDist = ModConfigs.client().renderItemsDistance.get();
+        int countDist = ModConfigs.client().renderCountsDistance.get();
+        int iconDist = ModConfigs.client().renderIconsDistance.get();
+
+        Vec3 cam = isPonderScene
+            ? Minecraft.getInstance().gameRenderer.getMainCamera().getPosition()
+            : this.lastCameraPos;
+
+        double dx = cam.x - (be.getBlockPos().getX() + 0.5);
+        double dy = cam.y - (be.getBlockPos().getY() + 0.5);
+        double dz = cam.z - (be.getBlockPos().getZ() + 0.5);
+        double distSq = dx * dx + dy * dy + dz * dz;
+
+        boolean renderItems = isPonderScene || (be.getRenderItems()  && shouldRenderItems  && distSq <= (double) itemDist  * itemDist);
+        boolean renderCounts = isPonderScene || (be.getRenderCounts() && shouldRenderCounts && distSq <= (double) countDist * countDist);
+        boolean renderIcons = isPonderScene || (be.getRenderIcons()  && shouldRenderIcons  && distSq <= (double) iconDist  * iconDist);
 
         Minecraft mc = Minecraft.getInstance();
-        Player player = mc.player;
-        if (player == null) return;
-
-        // Check player distance
-        double distSq = player.distanceToSqr(
-            be.getBlockPos().getX() + 0.5,
-            be.getBlockPos().getY() + 0.5,
-            be.getBlockPos().getZ() + 0.5
-        );
-
-        boolean renderItems = be.getRenderItems() && distSq <= itemDist * itemDist && shouldRenderItems;
-        boolean renderCounts = be.getRenderCounts() && distSq <= countDist * countDist && shouldRenderCounts;
-        boolean renderIcons = be.getRenderIcons() && distSq <= iconDist * iconDist && shouldRenderIcons;
-
-        // If ponder scene, overwrite to force render
-        if (isPonderScene) {
-            renderItems = true;
-            renderCounts = true;
-            renderIcons = true;
-        }
-
-        if (!renderItems && !renderCounts && !renderIcons)
-            return;
-
-        // Check if player is in front of block (don't render if behind)
         Direction facing = be.getBlockState().getValue(HORIZONTAL_FACING);
-
-        Vec3 frontNormal = new Vec3(
-            facing.getStepX(),
-            facing.getStepY(),
-            facing.getStepZ()
-        ).normalize();
-
-        Vec3 toPlayer = new Vec3(
-            player.getX() - (be.getBlockPos().getX() + 0.5),
-            player.getY() - (be.getBlockPos().getY() + 0.5),
-            player.getZ() - (be.getBlockPos().getZ() + 0.5)
-        ).normalize();
-
-        if (frontNormal.dot(toPlayer) <= 0 && !isPonderScene)
-            return;
-
         Level level = be.getLevel();
         BlockPos facePos = be.getBlockPos().relative(facing);
         int light = level != null ? LevelRenderer.getLightColor(level, facePos) : LightTexture.pack(15, 15);
