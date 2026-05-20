@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.2.2 (2026-05-20)
+- Add Russian translation (Thanks @Discordia-is-fine!)
+- Now requires Create 6.0.10 and at least NeoForge 21.1.219
+
 ## 1.2.1 (2026-05-05)
 - Fixed item/icon rendering on Drawers when part of a Aeronautics physics contraption
 
