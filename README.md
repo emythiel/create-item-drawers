@@ -49,9 +49,8 @@ You're more than welcome to include it in your modpack.
 
 ### Porting and Forking
 This was mainly made for myself and some friends, and as such I have no plans to port to other modloaders, or port to previous versions.  
-I will try and see if I can at least keep it updated for the latest Create version on the most recent Minecraft version (At the moment, 1.21.1).
 
-Otherwise, feel free to fork it and port yourself.
+You're more than welcome to fork and port yourself.
 
 ### New features / Suggestions
 You're welcome to suggest things, but as mentioned above this was mainly made for myself and some friends, so I can't promise I'll dedicate a lot of effort to add suggested features.
