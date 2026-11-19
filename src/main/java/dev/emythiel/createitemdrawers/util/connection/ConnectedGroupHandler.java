@@ -49,10 +49,8 @@ public class ConnectedGroupHandler {
         if (drawerBE1 == null || drawerBE2 == null)
             return;
 
-        BlockPos controllerPos1 = drawerBE1.getBlockPos()
-            .offset(drawerBE1.group.offsets.get(0));
-        BlockPos controllerPos2 = drawerBE2.getBlockPos()
-            .offset(drawerBE2.group.offsets.get(0));
+        BlockPos controllerPos1 = drawerBE1.group.getController(drawerBE1.getBlockPos());
+        BlockPos controllerPos2 = drawerBE2.group.getController(drawerBE2.getBlockPos());
 
         if (controllerPos1.equals(controllerPos2)) {
             BaseDrawerBlockEntity controller = ConnectionHelper.getDrawer(world, controllerPos1);
@@ -115,27 +113,30 @@ public class ConnectedGroupHandler {
     }
 
     public static void connectControllers(Level world, BaseDrawerBlockEntity drawerBE1, BaseDrawerBlockEntity drawerBE2) {
+        BlockPos controllerPos = drawerBE1.getBlockPos();
 
-        drawerBE1.group.offsets.forEach(offset -> {
-            BlockPos connectedPos = drawerBE1.getBlockPos()
-                .offset(offset);
-            modifyAndUpdate(world, connectedPos, group -> {
-            });
-        });
-
-        drawerBE2.group.offsets.forEach(offset -> {
+        // Refresh the members that already belong to the target group, so their cached
+        // item handlers are dropped before the merge.
+        for (BlockPos offset : new ArrayList<>(drawerBE1.group.offsets)) {
             if (offset.equals(BlockPos.ZERO))
-                return;
-            BlockPos connectedPos = drawerBE2.getBlockPos()
-                .offset(offset);
-            modifyAndUpdate(world, connectedPos, group -> {
-                group.attachTo(drawerBE1.getBlockPos(), connectedPos);
-                drawerBE1.group.offsets.add(BlockPos.ZERO.subtract(group.offsets.get(0)));
+                continue;
+            modifyAndUpdate(world, controllerPos.offset(offset), group -> {
             });
-        });
+        }
 
-        drawerBE2.group.attachTo(drawerBE1.getBlockPos(), drawerBE2.getBlockPos());
-        drawerBE1.group.offsets.add(BlockPos.ZERO.subtract(drawerBE2.group.offsets.get(0)));
+        // Re-anchor every member of the second group onto the first controller. A member
+        // offset is always its absolute position relative to the controller, which keeps
+        // both groups consistent regardless of which drawer was the controller before.
+        for (BlockPos offset : new ArrayList<>(drawerBE2.group.offsets)) {
+            BlockPos memberPos = drawerBE2.getBlockPos()
+                .offset(offset);
+            BlockPos memberOffset = memberPos.subtract(controllerPos);
+
+            if (!drawerBE1.group.offsets.contains(memberOffset))
+                drawerBE1.group.offsets.add(memberOffset);
+
+            modifyAndUpdate(world, memberPos, group -> group.attachTo(controllerPos, memberPos));
+        }
     }
 
     public static void connectionGroupCleanup(BlockState state, Level level, BlockPos pos) {
@@ -150,8 +151,7 @@ public class ConnectedGroupHandler {
 
             if (thisGroup == null || otherGroup == null)
                 continue;
-            if (!pos.offset(thisGroup.offsets.get(0))
-                .equals(otherPos.offset(otherGroup.offsets.get(0))))
+            if (!thisGroup.getController(pos).equals(otherGroup.getController(otherPos)))
                 continue;
 
             ConnectedGroupHandler.toggleConnection(level, pos, otherPos);
@@ -184,7 +184,28 @@ public class ConnectedGroupHandler {
         }
 
         public BlockPos getController(BlockPos myPos) {
-            return myPos.offset(offsets.get(0));
+            return myPos.offset(getControllerOffset());
+        }
+
+        /**
+         * Offset from a member to its controller. A group without offsets (damaged or
+         * not yet written NBT) is treated as its own controller instead of throwing;
+         * {@link #read(CompoundTag)} repairs such a group on load.
+         */
+        public BlockPos getControllerOffset() {
+            return offsets.isEmpty() ? BlockPos.ZERO : offsets.get(0);
+        }
+
+        /**
+         * Identifies the current network layout, so cached handlers can tell whether
+         * they still describe this group.
+         */
+        public int signature() {
+            // offsets is a synchronized list, so the whole computation is locked to
+            // keep it consistent against concurrent writes from other threads.
+            synchronized (offsets) {
+                return 31 * (isController ? 1 : 0) + offsets.hashCode();
+            }
         }
 
         public void write(CompoundTag tag) {

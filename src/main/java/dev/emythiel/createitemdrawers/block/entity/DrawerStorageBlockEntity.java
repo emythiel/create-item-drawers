@@ -4,6 +4,7 @@ import com.simibubi.create.AllItems;
 import com.simibubi.create.api.equipment.goggles.IHaveGoggleInformation;
 import com.simibubi.create.content.redstone.thresholdSwitch.ThresholdSwitchObservable;
 import com.simibubi.create.foundation.utility.CreateLang;
+import dev.emythiel.createitemdrawers.CreateItemDrawers;
 import dev.emythiel.createitemdrawers.block.DrawerStorageBlock;
 import dev.emythiel.createitemdrawers.block.base.BaseDrawerBlockEntity;
 import dev.emythiel.createitemdrawers.gui.DrawerMenu;
@@ -177,10 +178,24 @@ public class DrawerStorageBlockEntity extends BaseDrawerBlockEntity
         renderCounts = tag.getBoolean("RenderCounts");
         renderIcons = tag.getBoolean("RenderIcons");
 
-        // load slots
+        // load slots - clamp to this drawer's slot count, so damaged, truncated or
+        // outdated save data cannot write past the end of the storage array
         ListTag list = tag.getList("Slots", Tag.TAG_COMPOUND);
-        for (int i = 0; i < list.size(); i++) {
-            storage.getSlot(i).load(list.getCompound(i), provider);
+        int slotCount = storage.getSlotCount();
+
+        if (list.size() > slotCount) {
+            CreateItemDrawers.LOGGER.warn(
+                "Drawer at {} was saved with {} slots but only has {} available, ignoring the extra entries",
+                worldPosition, list.size(), slotCount);
+        }
+
+        for (int i = 0; i < slotCount; i++) {
+            if (i < list.size()) {
+                storage.getSlot(i).load(list.getCompound(i), provider);
+            } else {
+                // missing entry (older save or truncated data) - reset to an empty slot
+                storage.getSlot(i).load(new CompoundTag(), provider);
+            }
         }
     }
 

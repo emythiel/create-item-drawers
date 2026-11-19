@@ -25,6 +25,7 @@ public abstract class BaseDrawerBlockEntity extends SmartBlockEntity implements 
 
     public ConnectedGroupHandler.ConnectedGroup group = new ConnectedGroupHandler.ConnectedGroup();
     private IItemHandler combinedHandler;
+    private int combinedHandlerSignature = Integer.MIN_VALUE;
     protected boolean reRender;
 
     public BaseDrawerBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
@@ -39,19 +40,37 @@ public abstract class BaseDrawerBlockEntity extends SmartBlockEntity implements 
     }
 
     public IItemHandler getItemHandler(Direction side) {
-        if (combinedHandler == null) {
+        int signature = handlerSignature();
+
+        if (combinedHandler == null || signature != combinedHandlerSignature) {
             combinedHandler = ConnectedGroupHandler.buildCombinedHandler(this);
             if (combinedHandler == null) {
                 combinedHandler = getLocalHandler();
             }
+            combinedHandlerSignature = signature;
         }
         return combinedHandler;
+    }
+
+    /**
+     * Describes the network layout the cached handler was built from. It is recomputed
+     * on every request, so a handler that went stale because the group changed without
+     * {@link #connectivityChanged()} being called (NBT restore, contraption transforms,
+     * external edits) is rebuilt instead of being returned again.
+     */
+    private int handlerSignature() {
+        BaseDrawerBlockEntity controller = getController();
+        if (controller == null)
+            return 0;
+
+        return 31 * controller.getBlockPos().hashCode() + controller.getGroup().signature();
     }
 
     public void connectivityChanged() {
         reRender = true;
         sendData();
         combinedHandler = null;
+        combinedHandlerSignature = Integer.MIN_VALUE;
         invalidateCapabilities();
     }
 
