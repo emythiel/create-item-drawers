@@ -1,5 +1,12 @@
 # Changelog
 
+## Unreleased
+- Implemented `DrawerItemHandler.setStackInSlot`, so forced slot writes behave like a normal insert instead of silently doing nothing
+- Save data is now clamped to the drawer's slot count when loading, preventing out of bounds errors on damaged or outdated data
+- Reworked drawer connection lookups to resolve the group controller instead of comparing the first offset, fixing unreliable results for damaged or unsorted groups
+- Simplified `ConnectedGroupHandler.connectControllers`, so merging groups keeps consistent member offsets
+- Cached combined item handlers now rebuild when the connection group changes without `connectivityChanged()` being called
+
 ## 1.2.2 (2026-05-20)
 - Add Russian translation (Thanks @Discordia-is-fine!)
 - Now requires Create 6.0.10 and at least NeoForge 21.1.219

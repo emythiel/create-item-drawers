@@ -26,15 +26,10 @@ public class ConnectionHelper {
 
         if (input1 == null || input2 == null)
             return false;
-        if (input1.offsets.isEmpty() || input2.offsets.isEmpty())
-            return false;
-        try {
-            if (pos.offset(input1.offsets.get(0)).equals(otherPos.offset(input2.offsets.get(0))))
-                return true;
-        } catch (IndexOutOfBoundsException e) {
-            // race condition
-        }
 
-        return false;
+        // Two drawers share a network exactly when they resolve to the same controller.
+        // Resolving the controller handles empty or partially written offset lists
+        // without relying on an exception for control flow.
+        return input1.getController(pos).equals(input2.getController(otherPos));
     }
 }

@@ -144,8 +144,47 @@ public class DrawerItemHandler extends ItemStackHandler {
         return s.canAccept(stack);
     }
 
+    /**
+     * Replaces the contents of a drawer slot.
+     * <p>
+     * A drawer keeps a single template stack next to a separate count, so the slot
+     * cannot simply store the given stack. The stack is normalised to a template of
+     * size one and the count is clamped to the slot capacity. Stacks the slot would
+     * refuse through {@link #insertItem} (locked templates, a different item, drawer
+     * blocks themselves) are ignored, so a forced write cannot corrupt the drawer.
+     */
     @Override
     public void setStackInSlot(int slot, @NotNull ItemStack stack) {
+        if (slot < 0 || slot >= storage.getSlotCount())
+            throw new IndexOutOfBoundsException(
+                "Slot " + slot + " is out of bounds for a drawer with " + storage.getSlotCount() + " slots");
 
+        DrawerSlot s = storage.getSlot(slot);
+
+        if (stack.isEmpty()) {
+            boolean wasEmpty = s.getStoredItem().isEmpty() && s.getCount() <= 0;
+
+            s.setCount(0);
+            if (!s.isLockMode())
+                s.setStoredItem(ItemStack.EMPTY);
+
+            if (!wasEmpty)
+                onChange.run();
+            return;
+        }
+
+        if (!s.canAccept(stack))
+            return;
+
+        // never store a non-empty template with a count of zero
+        int newCount = Math.max(1, Math.min(stack.getCount(), storage.getCapacity(slot, stack)));
+        ItemStack newTemplate = stack.copyWithCount(1);
+
+        if (s.getCount() == newCount && ItemStack.isSameItemSameComponents(s.getStoredItem(), newTemplate))
+            return;
+
+        s.setStoredItem(newTemplate);
+        s.setCount(newCount);
+        onChange.run();
     }
 }
